@@ -17,6 +17,7 @@ h1 {
 	text-shadow: 0 0 5px black;
 	padding: 8px;
 	font-size: 2.3em;
+	width: 50%;
 }
 
 #maincontainer {
@@ -32,13 +33,21 @@ h1 {
 #gridcontainer {
 	margin: 0 auto;
 	display: flex;
+	flex-wrap: wrap;
 	width: 512px;
 	height: 512px;
 	background: white;
 	box-shadow: 0 0 5px 1px black inset;
 }
 
-#buttons {
+#top {
+	display: flex;
+	justify-content: center;
+	margin: 0 auto;
+	width: 80%;
+}
+
+#bottombuttons {
 	display: flex;
 	justify-content: center;
 	margin: 0 auto;
@@ -57,16 +66,23 @@ button {
 }
 
 button:hover {
-	background: #e80000;
-	box-shadow: 0 0 2px 1px #ce0000 inset;
 	cursor: pointer;
 }
 
 button:focus, button:active {
+	outline: none;
+}
+
+button.focused {
 	background: #e80000;
 	outline: none;
 	cursor: pointer;
 	box-shadow: 0 0 2px 1px #870000 inset;
+}
+
+button#hover, button#drag {
+	width: 25%;
+	font-size: 1.4em;
 }
 
 button#clear, button#default, button#colorized, button#resize {
