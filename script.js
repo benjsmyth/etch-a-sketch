@@ -21,15 +21,15 @@ const resizeButton = document.getElementById('resize');
 // Nodelist for buttons.
 const buttons = document.querySelectorAll('button');
 
-// Nodelist for boxes.
-const boxes = document.getElementsByClassName('box');
-
 // Adds default grid of 16x16 boxes to window on load.
 window.onload = function() {
 	for (let i = 0; i < 256; i++) {
 		gridcontainer.appendChild(box.cloneNode());
 	}
 }
+
+// Nodelist for boxes.
+var boxes = document.getElementsByClassName('box');
 
 // Functions for button stylings.
 function changeHoverButton() {
@@ -62,7 +62,7 @@ function changeColorizedButton() {
 
 function changeClearButton() {
 	clearButton.classList.add('focused');
-	setTimeout(() => {buttons.forEach(button => {button.classList.remove('focused')})}, 250);
+	setTimeout(() => {clearButton.classList.remove('focused')}, 250);
 }
 
 function changeResizeButton() {
@@ -89,7 +89,7 @@ function mouseDragDefault(e) {
 		boxes[i].addEventListener('mouseup', (e) => {
     		e.target.style.border = 'none';
     		e.target.style.opacity = '1';
-        	e.target.style.background = '#141414';   
+        	e.target.style.background = '#141414'; 
          	for (i = 0; i < boxes.length; i++) {
             	boxes[i].removeEventListener('mouseover', mouseHoverDefault);
 			}           					
@@ -114,7 +114,7 @@ function mouseDragTransparent(e) {
 		boxes[i].addEventListener('mouseup', (e) => {
 			e.target.style.border = 'none';
 			e.target.style.background = '#141414'; 
-			e.target.style.opacity = String(Number(e.target.style.opacity) + 0.1);  
+			e.target.style.opacity = e.target.style.opacity; 
          	for (i = 0; i < boxes.length; i++) {
             	boxes[i].removeEventListener('mouseover', mouseHoverTransparent)
 			}           					
@@ -187,8 +187,6 @@ function colorizedDrag() {
    	}
 }
 
-// Functions for clearing grid and resizing grid.
-
 // Functions for deselecting other modes.
 function removeHoverDefault() {
 	for (let i = 0; i < boxes.length; i++) {
@@ -210,7 +208,7 @@ function removeHoverTransparent() {
 
 function removeDragTransparent() {
 	for (i = 0; i < boxes.length; i++) {
-		boxes[i].removeEventListener('mouseover', mouseDragTransparent);
+		boxes[i].removeEventListener('mousedown', mouseDragTransparent);
 	}
 }
 
@@ -222,8 +220,38 @@ function removeHoverColorized() {
 
 function removeDragColorized() {
 	for (i = 0; i < boxes.length; i++) {
-		boxes[i].removeEventListener('mouseover', mouseDragColorized);
+		boxes[i].removeEventListener('mousedown', mouseDragColorized);
 	}
+}
+
+// Functions for clearing grid and resizing grid.
+function clearGrid() {
+	for (let i = 0; i < boxes.length; i++) {
+		boxes[i].style.opacity = '0.1';
+		boxes[i].style.border = '1px solid black';
+		boxes[i].style.background = '#f9f9f9';
+	}
+}
+
+function resizeGrid() {
+	var resizeNumber = prompt('how many u want on each side');
+
+	for (i = 0; i < boxes.length; i++) {
+		gridcontainer.removeChild(boxes[i]);
+	}
+
+	const newBox = document.createElement('div');
+	newBox.classList.add('box');
+	newBox.style.height = String(512 / Number(resizeNumber)) + 'px';
+	newBox.style.width = String(512 / Number(resizeNumber)) + 'px';
+	newBox.style.opacity = '0.1';
+	newBox.style.border = '1px solid black';
+
+	for (let i = 0; i < (resizeNumber * resizeNumber); i++) {
+		gridcontainer.appendChild(newBox.cloneNode());
+	}
+
+	var boxes = document.getElementsByClassName('box');
 }
 
 // Checks what buttons have been selected, then chooses the corresponding function.
@@ -306,18 +334,18 @@ function checkSelected() {
 
 // Event listeners for changing button style.
 hoverButton.addEventListener('click', changeHoverButton);
-dragButton.addEventListener('click', changeDragButton, checkSelected);
-clearButton.addEventListener('click', changeClearButton, checkSelected);
-defaultButton.addEventListener('click', changeDefaultButton, checkSelected);
-transparentButton.addEventListener('click', changeTransparentButton, checkSelected);
-colorizedButton.addEventListener('click', changeColorizedButton, checkSelected);
-resizeButton.addEventListener('click', changeResizeButton, checkSelected);
+dragButton.addEventListener('click', changeDragButton);
+clearButton.addEventListener('click', changeClearButton);
+defaultButton.addEventListener('click', changeDefaultButton);
+transparentButton.addEventListener('click', changeTransparentButton);
+colorizedButton.addEventListener('click', changeColorizedButton);
+resizeButton.addEventListener('click', changeResizeButton);
 
 // Event listeners for selecting button modes.
 hoverButton.addEventListener('click', checkSelected);
 dragButton.addEventListener('click', checkSelected);
-clearButton.addEventListener('click', checkSelected);
+clearButton.addEventListener('click', clearGrid);
 defaultButton.addEventListener('click', checkSelected);
 transparentButton.addEventListener('click', checkSelected);
 colorizedButton.addEventListener('click', checkSelected);
-resizeButton.addEventListener('click', checkSelected);
+resizeButton.addEventListener('click', resizeGrid);
