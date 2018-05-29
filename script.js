@@ -326,10 +326,10 @@ function resizeGrid() {
 	resizeButton.classList.add('focused');
 
 	setTimeout(() => {
-		resizeNumber = String(parseInt(prompt('Please enter how many grids and columns you would like. The maximum number allowed is 50.')));
+		resizeNumber = String(parseInt(prompt('Please enter how many grids and columns you would like. The maximum number allowed is 100.')));
 		var boxesArray = Array.from(boxes);
 
-		if (resizeNumber <= 50 && resizeNumber > 0) {
+		if (resizeNumber <= 100 && resizeNumber > 0) {
 			for (let i = 0; i < boxesArray.length; i++) {
 				gridcontainer.removeChild(document.querySelector('.box'));
 			}
@@ -348,7 +348,7 @@ function resizeGrid() {
 			checkSelected();		
 		}
 
-		else if (resizeNumber <= 0 || resizeNumber > 50) {
+		else if (resizeNumber <= 0 || resizeNumber > 100) {
 			return;
 		}
 
