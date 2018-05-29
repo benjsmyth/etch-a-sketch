@@ -300,7 +300,7 @@ function checkSelected() {
 
 		removeHoverDefault();
 		removeHoverTransparent();
-		removeHoverColorized();
+		removeHoverColorized(); 
 	}
 }
 
