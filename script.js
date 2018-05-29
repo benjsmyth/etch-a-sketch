@@ -71,23 +71,19 @@ function changeClearButton() {
 	setTimeout(() => {clearButton.classList.remove('focused')}, 250);
 }
 
-function changeResizeButton() {
-	resizeButton.classList.add('focused');
-}
-
 // Functions for mouse reactions.
 const e = (e) => {};
 
 function mouseHoverDefault(e) {
 	e.target.style.border = 'none';
 	e.target.style.opacity = '1';
-	e.target.style.background = '#141414';
+	e.target.style.background = '#2c2d2d';
 }
 
 function mouseDragDefault(e) {
 	e.target.style.border = 'none';
 	e.target.style.opacity = '1';
-	e.target.style.background = '#141414';
+	e.target.style.background = '#2c2d2d';
 	for (i = 0; i < boxes.length; i++) {
     	boxes[i].addEventListener('mouseover', mouseHoverDefault);
 	}
@@ -102,13 +98,13 @@ function mouseDragDefault(e) {
 
 function mouseHoverTransparent(e) {
 	e.target.style.border = 'none';
-	e.target.style.background = '#141414'; 
+	e.target.style.background = '#2c2d2d'; 
 	e.target.style.opacity = String(Number(e.target.style.opacity) + 0.1);
 }
 
 function mouseDragTransparent(e) {
 	e.target.style.border = 'none';
-	e.target.style.background = '#141414'; 
+	e.target.style.background = '#2c2d2d'; 
 	e.target.style.opacity = String(Number(e.target.style.opacity) + 0.1);
 	for (i = 0; i < boxes.length; i++) {
     	boxes[i].addEventListener('mouseover', mouseHoverTransparent)
@@ -116,7 +112,7 @@ function mouseDragTransparent(e) {
 	for (i = 0; i < boxes.length; i++) {
 		boxes[i].addEventListener('mouseup', (e) => {
 			e.target.style.border = 'none';
-			e.target.style.background = '#141414';		
+			e.target.style.background = '#2c2d2d';		
          	for (i = 0; i < boxes.length; i++) {
             	boxes[i].removeEventListener('mouseover', mouseHoverTransparent)
 			}           					
@@ -233,6 +229,8 @@ function checkSelected() {
 
 	// Code to run for hover + default.
 	if (selectedButtons.includes(document.querySelector('button#hover.focused')) && selectedButtons.includes(document.querySelector('button#default.focused'))) {
+		gridcontainer.style.cursor = 'pointer';
+
 		removeHoverTransparent();
 		removeHoverColorized();
 		removeDragDefault();
@@ -244,6 +242,8 @@ function checkSelected() {
 
 	// Code to run for drag + default.
 	else if (selectedButtons.includes(document.querySelector('button#drag.focused')) && selectedButtons.includes(document.querySelector('button#default.focused'))) {
+		gridcontainer.style.cursor = 'pointer';
+
 		removeDragTransparent();
 		removeDragColorized();
 		removeHoverDefault();
@@ -255,6 +255,8 @@ function checkSelected() {
 
 		// Code to run for hover + transparent.
 	else if (selectedButtons.includes(document.querySelector('button#hover.focused')) && selectedButtons.includes(document.querySelector('button#transparent.focused'))) {
+		gridcontainer.style.cursor = 'pointer';
+
 		removeHoverDefault();
 		removeHoverColorized();
 		removeDragDefault();
@@ -266,6 +268,8 @@ function checkSelected() {
 
 		// Code to run for drag + transparent.
 	else if (selectedButtons.includes(document.querySelector('button#drag.focused')) && selectedButtons.includes(document.querySelector('button#transparent.focused'))) {
+		gridcontainer.style.cursor = 'pointer';
+
 		removeDragDefault();
 		removeDragColorized();
 		removeHoverDefault();
@@ -277,6 +281,8 @@ function checkSelected() {
 
 		// Code to run for hover + colorized.
 	else if (selectedButtons.includes(document.querySelector('button#hover.focused')) && selectedButtons.includes(document.querySelector('button#colorized.focused'))) {
+		gridcontainer.style.cursor = 'pointer';
+
 		removeHoverDefault();
 		removeHoverTransparent();
 		removeDragDefault();
@@ -288,6 +294,8 @@ function checkSelected() {
 
 		// Code to run for drag + colorized.
 	else if (selectedButtons.includes(document.querySelector('button#drag.focused')) && selectedButtons.includes(document.querySelector('button#colorized.focused'))) {
+		gridcontainer.style.cursor = 'pointer';
+
 		removeDragDefault();
 		removeDragTransparent()
 		removeHoverDefault();
@@ -315,35 +323,41 @@ function clearGrid() {
 var resizeNumber;
 
 function resizeGrid() {
-	clearGrid();
+	resizeButton.classList.add('focused');
 
-	resizeNumber = String(parseInt(prompt('Please enter how many grids and columns you would like. The maximum number allowed is 50.')));
-	var boxesArray = Array.from(boxes);
+	setTimeout(() => {
+		resizeNumber = String(parseInt(prompt('Please enter how many grids and columns you would like. The maximum number allowed is 50.')));
+		var boxesArray = Array.from(boxes);
 
-	if (resizeNumber <= 50 && resizeNumber > 0) {
-		for (let i = 0; i < boxesArray.length; i++) {
-			gridcontainer.removeChild(document.querySelector('.box'));
+		if (resizeNumber <= 50 && resizeNumber > 0) {
+			for (let i = 0; i < boxesArray.length; i++) {
+				gridcontainer.removeChild(document.querySelector('.box'));
+			}
+
+			var newBox = document.createElement('div');
+			newBox.classList.add('box');
+			newBox.style.height = String(512 / Number(resizeNumber)) + 'px';
+			newBox.style.width = String(512 / Number(resizeNumber)) + 'px';
+			newBox.style.opacity = '0.1';
+			newBox.style.border = '1px solid black';
+
+			for (let i = 0; i < (resizeNumber * resizeNumber); i++) {
+				gridcontainer.appendChild(newBox.cloneNode());
+			}
+
+			checkSelected();		
 		}
 
-		var newBox = document.createElement('div');
-		newBox.classList.add('box');
-		newBox.style.height = String(512 / Number(resizeNumber)) + 'px';
-		newBox.style.width = String(512 / Number(resizeNumber)) + 'px';
-		newBox.style.opacity = '0.1';
-		newBox.style.border = '1px solid black';
-
-		for (let i = 0; i < (resizeNumber * resizeNumber); i++) {
-			gridcontainer.appendChild(newBox.cloneNode());
+		else if (resizeNumber <= 0 || resizeNumber > 50) {
+			return;
 		}
 
-		checkSelected();		
-	}
+		else if (resizeNumber === null || resizeNumber === undefined) {
+			return;
+		}
+	}, 250);
 
-	else if (resizeNumber <= 0 || resizeNumber > 50) {
-		return;
-	}
-
-	resizeButton.classList.remove('focused');
+	setTimeout(() => {resizeButton.classList.remove('focused')}, 250);
 }
 
 // Function for resetting entire grid.
@@ -357,6 +371,18 @@ function resetAll() {
 	removeHoverTransparent();
 	removeHoverColorized(); 
 	removeDragColorized();
+
+	var boxesArray = Array.from(boxes);
+
+	for (let i = 0; i < boxesArray.length; i++) {
+		gridcontainer.removeChild(document.querySelector('.box'));
+	}
+
+	for (let i = 0; i < 256; i++) {
+		gridcontainer.appendChild(box.cloneNode());
+	}
+
+	gridcontainer.style.cursor = 'default';
 }
 
 // Event listeners for changing button style.
@@ -367,7 +393,6 @@ clearButton.addEventListener('click', changeClearButton);
 defaultButton.addEventListener('click', changeDefaultButton);
 transparentButton.addEventListener('click', changeTransparentButton);
 colorizedButton.addEventListener('click', changeColorizedButton);
-resizeButton.addEventListener('click', changeResizeButton);
 
 // Event listeners for selecting button modes.
 headerButton.addEventListener('click', resetAll);
