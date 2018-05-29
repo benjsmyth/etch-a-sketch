@@ -15,9 +15,7 @@ h1 {
 	font-family: 'Satisfy', cursive;
 	color: #f7e05d;
 	text-shadow: 0 0 5px black;
-	padding: 8px;
-	font-size: 2.3em;
-	width: 50%;
+	font-size: 1.9em;
 }
 
 #maincontainer {
@@ -80,8 +78,13 @@ button.focused {
 	box-shadow: 0 0 2px 1px #870000 inset;
 }
 
+button#header {
+	width: 52%;
+	padding: 8px 12px;
+}
+
 button#hover, button#drag {
-	width: 25%;
+	width: 24%;
 	font-size: 1.4em;
 }
 

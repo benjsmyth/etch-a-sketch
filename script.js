@@ -10,6 +10,7 @@ box.style.opacity = '0.1';
 box.style.border = '1px solid black';
 
 // Variables for buttons.
+const headerButton = document.getElementById('header');
 const hoverButton = document.getElementById('hover');
 const dragButton = document.getElementById('drag');
 const clearButton = document.getElementById('clear');
@@ -32,6 +33,11 @@ window.onload = function() {
 var boxes = document.getElementsByClassName('box');
 
 // Functions for button stylings.
+function changeHeaderButton() {
+	headerButton.classList.add('focused');
+	setTimeout(() => {buttons.forEach(button => {button.classList.remove('focused')})}, 250);
+}
+
 function changeHoverButton() {
 	hoverButton.classList.add('focused');
 	dragButton.classList.remove('focused');
@@ -66,7 +72,7 @@ function changeClearButton() {
 }
 
 function changeResizeButton() {
-
+	resizeButton.classList.add('focused');
 }
 
 // Functions for mouse reactions.
@@ -87,9 +93,6 @@ function mouseDragDefault(e) {
 	}
 	for (i = 0; i < boxes.length; i++) {
 		boxes[i].addEventListener('mouseup', (e) => {
-    		e.target.style.border = 'none';
-    		e.target.style.opacity = '1';
-        	e.target.style.background = '#141414'; 
          	for (i = 0; i < boxes.length; i++) {
             	boxes[i].removeEventListener('mouseover', mouseHoverDefault);
 			}           					
@@ -113,8 +116,7 @@ function mouseDragTransparent(e) {
 	for (i = 0; i < boxes.length; i++) {
 		boxes[i].addEventListener('mouseup', (e) => {
 			e.target.style.border = 'none';
-			e.target.style.background = '#141414'; 
-			e.target.style.opacity = e.target.style.opacity; 
+			e.target.style.background = '#141414';		
          	for (i = 0; i < boxes.length; i++) {
             	boxes[i].removeEventListener('mouseover', mouseHoverTransparent)
 			}           					
@@ -125,15 +127,15 @@ function mouseDragTransparent(e) {
 function mouseHoverColorized(e) {
 	const hue = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
 	e.target.style.border = 'none';
-	e.target.style.opacity = '1';
 	e.target.style.background = hue;
+	e.target.style.opacity = '0.5';
 }
 
 function mouseDragColorized(e) {
 	const hue = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
 	e.target.style.border = 'none';
-	e.target.style.opacity = '1';
 	e.target.style.background = hue;
+	e.target.style.opacity = '0.5';
 	for (i = 0; i < boxes.length; i++) {
     	boxes[i].addEventListener('mouseover', mouseHoverColorized);
 	}
@@ -141,8 +143,9 @@ function mouseDragColorized(e) {
 		boxes[i].addEventListener('mouseup', (e) => {
 			const hue = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
 			e.target.style.border = 'none';
-			e.target.style.opacity = '1';
+	
 			e.target.style.background = hue; 
+			e.target.style.opacity = '0.5';
          	for (i = 0; i < boxes.length; i++) {
             	boxes[i].removeEventListener('mouseover', mouseHoverColorized);
             }
@@ -153,7 +156,7 @@ function mouseDragColorized(e) {
 // Functions for all mode combinations.
 function defaultHover() {
 	for (let i = 0; i < boxes.length; i++) {
-		boxes[i].addEventListener('mouseover', mouseHoverDefault);
+		boxes[i].addEventListener('mouseenter', mouseHoverDefault);
 	}
 }
 
@@ -165,7 +168,7 @@ function defaultDrag() {
 
 function transparentHover() {
 	for (let i = 0; i < boxes.length; i++) {
-		boxes[i].addEventListener('mouseover', mouseHoverTransparent);
+		boxes[i].addEventListener('mouseenter', mouseHoverTransparent);
 	}
 }
 
@@ -177,7 +180,7 @@ function transparentDrag() {
 
 function colorizedHover() {
 	for (let i = 0; i < boxes.length; i++) {
-		boxes[i].addEventListener('mouseover', mouseHoverColorized);
+		boxes[i].addEventListener('mouseenter', mouseHoverColorized);
 	}
 }
 
@@ -190,7 +193,7 @@ function colorizedDrag() {
 // Functions for deselecting other modes.
 function removeHoverDefault() {
 	for (let i = 0; i < boxes.length; i++) {
-		boxes[i].removeEventListener('mouseover', mouseHoverDefault);
+		boxes[i].removeEventListener('mouseenter', mouseHoverDefault);
 	}
 }
 
@@ -202,7 +205,7 @@ function removeDragDefault() {
 
 function removeHoverTransparent() {
 	for (i = 0; i < boxes.length; i++) {
-		boxes[i].removeEventListener('mouseover', mouseHoverTransparent);
+		boxes[i].removeEventListener('mouseenter', mouseHoverTransparent);
 	}
 }
 
@@ -214,7 +217,7 @@ function removeDragTransparent() {
 
 function removeHoverColorized() {
 	for (i = 0; i < boxes.length; i++) {
-		boxes[i].removeEventListener('mouseover', mouseHoverColorized);
+		boxes[i].removeEventListener('mouseenter', mouseHoverColorized);
 	}
 }
 
@@ -224,7 +227,82 @@ function removeDragColorized() {
 	}
 }
 
-// Functions for clearing grid and resizing grid.
+// Checks what buttons have been selected, then chooses the corresponding function.
+function checkSelected() {
+	const selectedButtons = Array.from(document.querySelectorAll('.focused'));
+
+	// Code to run for hover + default.
+	if (selectedButtons.includes(document.querySelector('button#hover.focused')) && selectedButtons.includes(document.querySelector('button#default.focused'))) {
+		removeHoverTransparent();
+		removeHoverColorized();
+		removeDragDefault();
+		removeDragTransparent();
+		removeDragColorized();
+
+		defaultHover();
+	}
+
+	// Code to run for drag + default.
+	else if (selectedButtons.includes(document.querySelector('button#drag.focused')) && selectedButtons.includes(document.querySelector('button#default.focused'))) {
+		removeDragTransparent();
+		removeDragColorized();
+		removeHoverDefault();
+		removeHoverTransparent();
+		removeHoverColorized();
+
+		defaultDrag();
+	}
+
+		// Code to run for hover + transparent.
+	else if (selectedButtons.includes(document.querySelector('button#hover.focused')) && selectedButtons.includes(document.querySelector('button#transparent.focused'))) {
+		removeHoverDefault();
+		removeHoverColorized();
+		removeDragDefault();
+		removeDragTransparent();
+		removeDragColorized();
+
+		transparentHover();
+	}
+
+		// Code to run for drag + transparent.
+	else if (selectedButtons.includes(document.querySelector('button#drag.focused')) && selectedButtons.includes(document.querySelector('button#transparent.focused'))) {
+		removeDragDefault();
+		removeDragColorized();
+		removeHoverDefault();
+		removeHoverTransparent();
+		removeHoverColorized();
+
+		transparentDrag();
+	}
+
+		// Code to run for hover + colorized.
+	else if (selectedButtons.includes(document.querySelector('button#hover.focused')) && selectedButtons.includes(document.querySelector('button#colorized.focused'))) {
+		removeHoverDefault();
+		removeHoverTransparent();
+		removeDragDefault();
+		removeDragTransparent();
+		removeDragColorized();
+
+		colorizedHover();
+	}
+
+		// Code to run for drag + colorized.
+	else if (selectedButtons.includes(document.querySelector('button#drag.focused')) && selectedButtons.includes(document.querySelector('button#colorized.focused'))) {
+		removeDragDefault();
+		removeDragTransparent()
+		removeHoverDefault();
+		removeHoverTransparent();
+		removeHoverColorized(); 
+
+		colorizedDrag();
+	}
+
+	else {
+		return;
+	}
+}
+
+// Function for clearing grid.
 function clearGrid() {
 	for (let i = 0; i < boxes.length; i++) {
 		boxes[i].style.opacity = '0.1';
@@ -233,106 +311,56 @@ function clearGrid() {
 	}
 }
 
+//Function for resizing grid.
+var resizeNumber;
+
 function resizeGrid() {
-	var resizeNumber = prompt('how many u want on each side');
+	clearGrid();
 
-	for (i = 0; i < boxes.length; i++) {
-		gridcontainer.removeChild(boxes[i]);
+	resizeNumber = String(parseInt(prompt('Please enter how many grids and columns you would like. The maximum number allowed is 50.')));
+	var boxesArray = Array.from(boxes);
+
+	if (resizeNumber <= 50 && resizeNumber > 0) {
+		for (let i = 0; i < boxesArray.length; i++) {
+			gridcontainer.removeChild(document.querySelector('.box'));
+		}
+
+		var newBox = document.createElement('div');
+		newBox.classList.add('box');
+		newBox.style.height = String(512 / Number(resizeNumber)) + 'px';
+		newBox.style.width = String(512 / Number(resizeNumber)) + 'px';
+		newBox.style.opacity = '0.1';
+		newBox.style.border = '1px solid black';
+
+		for (let i = 0; i < (resizeNumber * resizeNumber); i++) {
+			gridcontainer.appendChild(newBox.cloneNode());
+		}
+
+		checkSelected();		
 	}
 
-	const newBox = document.createElement('div');
-	newBox.classList.add('box');
-	newBox.style.height = String(512 / Number(resizeNumber)) + 'px';
-	newBox.style.width = String(512 / Number(resizeNumber)) + 'px';
-	newBox.style.opacity = '0.1';
-	newBox.style.border = '1px solid black';
-
-	for (let i = 0; i < (resizeNumber * resizeNumber); i++) {
-		gridcontainer.appendChild(newBox.cloneNode());
+	else if (resizeNumber <= 0 || resizeNumber > 50) {
+		return;
 	}
 
-	var boxes = document.getElementsByClassName('box');
+	resizeButton.classList.remove('focused');
 }
 
-// Checks what buttons have been selected, then chooses the corresponding function.
-function checkSelected() {
-	const selectedButtons = Array.from(document.querySelectorAll('.focused'));
-	console.log(selectedButtons);
+// Function for resetting entire grid.
+function resetAll() {
+	clearGrid();
+	checkSelected();
 
-	// Code to run for hover + default.
-	if (selectedButtons.includes(document.querySelector('button#hover.focused')) && selectedButtons.includes(document.querySelector('button#default.focused'))) {
-		defaultHover();
-
-		removeHoverTransparent();
-		removeHoverColorized();
-
-		removeDragDefault();
-		removeDragTransparent();
-		removeDragColorized();
-	}
-
-	// Code to run for drag + default.
-	if (selectedButtons.includes(document.querySelector('button#drag.focused')) && selectedButtons.includes(document.querySelector('button#default.focused'))) {
-		defaultDrag();
-
-		removeDragTransparent();
-		removeDragColorized();
-
-		removeHoverDefault();
-		removeHoverTransparent();
-		removeHoverColorized();
-	}
-
-		// Code to run for hover + transparent.
-	if (selectedButtons.includes(document.querySelector('button#hover.focused')) && selectedButtons.includes(document.querySelector('button#transparent.focused'))) {
-		transparentHover();
-
-		removeHoverDefault();
-		removeHoverColorized();
-
-		removeDragDefault();
-		removeDragTransparent();
-		removeDragColorized();
-	}
-
-		// Code to run for drag + transparent.
-	if (selectedButtons.includes(document.querySelector('button#drag.focused')) && selectedButtons.includes(document.querySelector('button#transparent.focused'))) {
-		transparentDrag();
-
-		removeDragDefault();
-		removeDragColorized();
-
-		removeHoverDefault();
-		removeHoverTransparent();
-		removeHoverColorized();
-	}
-
-		// Code to run for hover + colorized.
-	if (selectedButtons.includes(document.querySelector('button#hover.focused')) && selectedButtons.includes(document.querySelector('button#colorized.focused'))) {
-		colorizedHover();
-
-		removeHoverDefault();
-		removeHoverTransparent();
-
-		removeDragDefault();
-		removeDragTransparent();
-		removeDragColorized();
-	}
-
-		// Code to run for drag + colorized.
-	if (selectedButtons.includes(document.querySelector('button#drag.focused')) && selectedButtons.includes(document.querySelector('button#colorized.focused'))) {
-		colorizedDrag();
-
-		removeDragDefault();
-		removeDragTransparent();
-
-		removeHoverDefault();
-		removeHoverTransparent();
-		removeHoverColorized(); 
-	}
+	removeDragDefault();
+	removeDragTransparent()
+	removeHoverDefault();
+	removeHoverTransparent();
+	removeHoverColorized(); 
+	removeDragColorized();
 }
 
 // Event listeners for changing button style.
+headerButton.addEventListener('click', changeHeaderButton);
 hoverButton.addEventListener('click', changeHoverButton);
 dragButton.addEventListener('click', changeDragButton);
 clearButton.addEventListener('click', changeClearButton);
@@ -342,6 +370,7 @@ colorizedButton.addEventListener('click', changeColorizedButton);
 resizeButton.addEventListener('click', changeResizeButton);
 
 // Event listeners for selecting button modes.
+headerButton.addEventListener('click', resetAll);
 hoverButton.addEventListener('click', checkSelected);
 dragButton.addEventListener('click', checkSelected);
 clearButton.addEventListener('click', clearGrid);
