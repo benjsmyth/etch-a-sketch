@@ -111,11 +111,25 @@ footer > p {
 }
 
 #codedby {
+	position: relative;
 	float: left;
-	margin-left: 12px;
+	width: 16.5%;
+	text-align: center;
 }
 
 #visitme {
+	position: relative;
 	float: right;
-	margin-right: 12px;
+	width: 11.5%;
+	color: #141414;
+	text-align: center;
+}
+
+p > a {
+	text-decoration: none;
+	color: #141414;
+}
+
+a:hover {
+	font-weight: 500;
 }
