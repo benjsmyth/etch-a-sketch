@@ -71,13 +71,21 @@ function changeClearButton() {
 	setTimeout(() => {clearButton.classList.remove('focused')}, 250);
 }
 
-// Functions for mouse reactions.
+// Variable for event handler.
 const e = (e) => {};
 
+// Function for default + hover.
 function mouseHoverDefault(e) {
 	e.target.style.border = 'none';
 	e.target.style.opacity = '1';
 	e.target.style.background = '#2c2d2d';
+}
+
+// Functions for default + drag.
+function mouseDragDefaultUp(e) {
+ 	for (i = 0; i < boxes.length; i++) {
+    	boxes[i].removeEventListener('mouseover', mouseHoverDefault);
+	} 	
 }
 
 function mouseDragDefault(e) {
@@ -88,18 +96,24 @@ function mouseDragDefault(e) {
     	boxes[i].addEventListener('mouseover', mouseHoverDefault);
 	}
 	for (i = 0; i < boxes.length; i++) {
-		boxes[i].addEventListener('mouseup', (e) => {
-         	for (i = 0; i < boxes.length; i++) {
-            	boxes[i].removeEventListener('mouseover', mouseHoverDefault);
-			}           					
-		});
+		boxes[i].addEventListener('mouseup', mouseDragDefaultUp);         					
 	}
 }
 
+// Function for transparent + hover.
 function mouseHoverTransparent(e) {
 	e.target.style.border = 'none';
 	e.target.style.background = '#2c2d2d'; 
 	e.target.style.opacity = String(Number(e.target.style.opacity) + 0.1);
+}
+
+// Functions for transparent + drag.
+function mouseDragTransparentUp(e) {
+	e.target.style.border = 'none';
+	e.target.style.background = '#2c2d2d';		
+ 	for (i = 0; i < boxes.length; i++) {
+    	boxes[i].removeEventListener('mouseover', mouseHoverTransparent);
+	} 
 }
 
 function mouseDragTransparent(e) {
@@ -107,24 +121,31 @@ function mouseDragTransparent(e) {
 	e.target.style.background = '#2c2d2d'; 
 	e.target.style.opacity = String(Number(e.target.style.opacity) + 0.1);
 	for (i = 0; i < boxes.length; i++) {
-    	boxes[i].addEventListener('mouseover', mouseHoverTransparent)
+    	boxes[i].addEventListener('mouseover', mouseHoverTransparent);
 	}
 	for (i = 0; i < boxes.length; i++) {
-		boxes[i].addEventListener('mouseup', (e) => {
-			e.target.style.border = 'none';
-			e.target.style.background = '#2c2d2d';		
-         	for (i = 0; i < boxes.length; i++) {
-            	boxes[i].removeEventListener('mouseover', mouseHoverTransparent)
-			}           					
-		});
+		boxes[i].addEventListener('mouseup', mouseDragTransparentUp);        					
 	}
 }
 
+// Function for colorized + hover.
 function mouseHoverColorized(e) {
 	const hue = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
 	e.target.style.border = 'none';
 	e.target.style.background = hue;
 	e.target.style.opacity = '0.5';
+}
+
+// Functions for colorized + drag.
+function mouseDragColorizedUp(e) {
+	const hue = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
+	e.target.style.border = 'none';
+
+	e.target.style.background = hue; 
+	e.target.style.opacity = '0.5';
+ 	for (i = 0; i < boxes.length; i++) {
+    	boxes[i].removeEventListener('mouseover', mouseHoverColorized);
+    }
 }
 
 function mouseDragColorized(e) {
@@ -136,17 +157,8 @@ function mouseDragColorized(e) {
     	boxes[i].addEventListener('mouseover', mouseHoverColorized);
 	}
 	for (i = 0; i < boxes.length; i++) {
-		boxes[i].addEventListener('mouseup', (e) => {
-			const hue = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
-			e.target.style.border = 'none';
-	
-			e.target.style.background = hue; 
-			e.target.style.opacity = '0.5';
-         	for (i = 0; i < boxes.length; i++) {
-            	boxes[i].removeEventListener('mouseover', mouseHoverColorized);
-            }
-        });
-	}
+		boxes[i].addEventListener('mouseup', mouseDragColorizedUp);
+    };
 }
 
 // Functions for all mode combinations.
@@ -193,6 +205,12 @@ function removeHoverDefault() {
 	}
 }
 
+function removeDragDefaultUp() {
+	for (i = 0; i < boxes.length; i++) {
+		boxes[i].removeEventListener('mouseup', mouseDragDefaultUp);         					
+	}
+}
+
 function removeDragDefault() {
 	for (let i = 0; i < boxes.length; i++) {
 		boxes[i].removeEventListener('mousedown', mouseDragDefault);
@@ -205,6 +223,12 @@ function removeHoverTransparent() {
 	}
 }
 
+function removeDragTransparentUp() {
+	for (i = 0; i < boxes.length; i++) {
+		boxes[i].removeEventListener('mouseup', mouseDragTransparentUp);
+	}
+}
+
 function removeDragTransparent() {
 	for (i = 0; i < boxes.length; i++) {
 		boxes[i].removeEventListener('mousedown', mouseDragTransparent);
@@ -214,6 +238,12 @@ function removeDragTransparent() {
 function removeHoverColorized() {
 	for (i = 0; i < boxes.length; i++) {
 		boxes[i].removeEventListener('mouseenter', mouseHoverColorized);
+	}
+}
+
+function removeDragColorizedUp() {
+	for (i = 0; i < boxes.length; i++) {
+		boxes[i].removeEventListener('mouseup', mouseDragColorizedUp);
 	}
 }
 
@@ -234,8 +264,11 @@ function checkSelected() {
 		removeHoverTransparent();
 		removeHoverColorized();
 		removeDragDefault();
+		removeDragDefaultUp();
 		removeDragTransparent();
+		removeDragTransparentUp();
 		removeDragColorized();
+		removeDragColorizedUp();
 
 		defaultHover();
 	}
@@ -245,7 +278,9 @@ function checkSelected() {
 		gridcontainer.style.cursor = 'pointer';
 
 		removeDragTransparent();
+		removeDragTransparentUp();
 		removeDragColorized();
+		removeDragColorizedUp();
 		removeHoverDefault();
 		removeHoverTransparent();
 		removeHoverColorized();
@@ -260,8 +295,11 @@ function checkSelected() {
 		removeHoverDefault();
 		removeHoverColorized();
 		removeDragDefault();
+		removeDragDefaultUp();
 		removeDragTransparent();
+		removeDragTransparentUp();
 		removeDragColorized();
+		removeDragColorizedUp();
 
 		transparentHover();
 	}
@@ -271,7 +309,9 @@ function checkSelected() {
 		gridcontainer.style.cursor = 'pointer';
 
 		removeDragDefault();
+		removeDragDefaultUp();
 		removeDragColorized();
+		removeDragColorizedUp();
 		removeHoverDefault();
 		removeHoverTransparent();
 		removeHoverColorized();
@@ -286,8 +326,11 @@ function checkSelected() {
 		removeHoverDefault();
 		removeHoverTransparent();
 		removeDragDefault();
+		removeDragDefaultUp();
 		removeDragTransparent();
+		removeDragTransparentUp();
 		removeDragColorized();
+		removeDragColorizedUp();
 
 		colorizedHover();
 	}
@@ -297,7 +340,9 @@ function checkSelected() {
 		gridcontainer.style.cursor = 'pointer';
 
 		removeDragDefault();
+		removeDragDefaultUp();
 		removeDragTransparent()
+		removeDragTransparentUp();
 		removeHoverDefault();
 		removeHoverTransparent();
 		removeHoverColorized(); 
@@ -366,11 +411,17 @@ function resetAll() {
 	checkSelected();
 
 	removeDragDefault();
+	removeDragDefaultUp();
+
 	removeDragTransparent()
+	removeDragTransparentUp();
+
+	removeDragColorized();
+	removeDragColorizedUp();
+
 	removeHoverDefault();
 	removeHoverTransparent();
 	removeHoverColorized(); 
-	removeDragColorized();
 
 	var boxesArray = Array.from(boxes);
 
