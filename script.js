@@ -50,19 +50,19 @@ function changeDragButton() {
 
 function changeDefaultButton() {
 	defaultButton.classList.add('focused');
-	transparentButton.classList.remove('focused')
+	transparentButton.classList.remove('focused');
 	colorizedButton.classList.remove('focused');
 }
 
 function changeTransparentButton() {
 	transparentButton.classList.add('focused');
-	defaultButton.classList.remove('focused')
+	defaultButton.classList.remove('focused');
 	colorizedButton.classList.remove('focused');
 }
 
 function changeColorizedButton() {
 	colorizedButton.classList.add('focused');
-	defaultButton.classList.remove('focused')
+	defaultButton.classList.remove('focused');
 	transparentButton.classList.remove('focused');
 }
 
@@ -158,7 +158,7 @@ function mouseDragColorized(e) {
 	}
 	for (i = 0; i < boxes.length; i++) {
 		boxes[i].addEventListener('mouseup', mouseDragColorizedUp);
-    };
+    }
 }
 
 // Functions for all mode combinations.
