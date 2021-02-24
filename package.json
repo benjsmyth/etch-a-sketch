@@ -1,0 +1,23 @@
+{
+  "name": "x__etch-a-sketch__210224",
+  "version": "1.0.0",
+  "description": "This is a basic online version of the classic \"Etch-A-Sketch\" board, in which one can make pixelated sketches on the canvas.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GuillaumeAI/x__etch-a-sketch__210224.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224/issues"
+  },
+  "homepage": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224#readme",
+  "dependencies": {
+    "html2canvas": "^1.0.0-rc.7"
+  }
+}

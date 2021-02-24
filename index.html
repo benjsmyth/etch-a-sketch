@@ -7,6 +7,11 @@
 	<link href="style.css" rel="stylesheet" type="text/css">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900|Satisfy" rel="stylesheet">
 	<script src="script.js" type="text/javascript" async></script>
+	
+	<script type="text/javascript">
+
+
+</script>
 </head>
 
 <body>
@@ -16,7 +21,10 @@
 			<button id="header"><h1>Etch-A-Sketch</h1></button>
 			<button id="drag">Drag</button>
 		</div>
-		<div id="gridcontainer">
+		<div id="canvaswrapper">
+			
+			<div id="gridcontainer">
+			</div>
 		</div>
 		<div id="bottombuttons">
 			<button id="clear">Clear</button>
@@ -24,12 +32,43 @@
 			<button id="transparent">Transparent</button>
 			<button id="colorized">Colorized</button>
 			<button id="resize">Resize</button>
+			<button onclick="saveimg()">Save</button>
 		</div>
 	</div>
+
 	<footer id="footer">
 		<p id="codedby">Coded by Ben Smyth, &copy; 2018.</p>
-		<p id="visitme"><a href="https://github.com/benjsmyth" target="_blank">Visit me on Github!</a></p>
+		<p id="visitme"><a href="https://github.com/benjsmyth" target="_blank">Visit forked project on Github!</a></p>
+		<p id="visitme"><a href="https://github.com/benjsmyth" target="_blank">Visit parent forked project author (Benjsmyth) on Github!</a></p>
 	</footer>
+
+
+
+	<script type="text/javascript" src="/html2canvas/dist/html2canvas.js"></script>
+	<script type="text/javascript">
+			
+			
+			setTimeout(() => { 
+				console.log("World!"); 
+				grabImag();
+				
+			}, 9000);
+			
+		function grabImag(){
+			console.log("World!"); 
+			html2canvas(document.getElementById("canvaswrapper")).then(function(canvas) {
+				document.body.appendChild(canvas);
+			});
+			
+		}
+			
+			//@STCGoal Save the ETCH a Sketch canvas to send it to the AI agent.
+	function saveimg() { 
+			grabImag();
+		
+	 }
+	</script>
+	
 </body>
 
 </html>

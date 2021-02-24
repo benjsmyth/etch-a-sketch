@@ -1,6 +1,8 @@
 // Variable for grid container element.
 const gridcontainer = document.getElementById('gridcontainer');
 
+
+
 // Variable for individual box.
 const box = document.createElement('div');
 box.classList.add('box');
