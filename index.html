@@ -52,9 +52,11 @@
 
 <!-- @STCGoal Logic doing all the work -->
 <script type="text/javascript">
-var timeOutBeforeProcessing = 11111;
+var timeOutBeforeProcessing = 1111;
 var doProcess = false;
 
+document.getElementById("hover").click();
+document.getElementById("default").click();
 
 setTimeout(() => { 
 console.log("Starting the whole thing!"); 
@@ -66,13 +68,14 @@ var htmlIdSource = "gridcontainer";// the html id that we capture, convert as im
 var frame = document.getElementById(htmlIdSource);
 var rect = frame.getBoundingClientRect();
 
-var fixWidth = rect.width +100;
-var fixHeight = rect.height +100;
+var WHFixOffset = 150;
+var fixWidth = rect.width +WHFixOffset;
+var fixHeight = rect.height +WHFixOffset;
 
     html2canvas(frame,{
     scrollX: 80,
     scrollY:  77,
-		width: fixWidth,
+		width: fixWidth + 15,
 		height: fixHeight
 }).then(function(canvas) {
         document.body.appendChild(canvas);
