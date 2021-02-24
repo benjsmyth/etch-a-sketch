@@ -36,6 +36,7 @@ h1 {
 	height: 512px;
 	background: white;
 	box-shadow: 0 0 5px 1px black inset;
+	/* border: 1px #141414; */
 }
 
 #top {

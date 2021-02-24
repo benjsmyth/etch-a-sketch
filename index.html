@@ -24,6 +24,7 @@
 			<button id="transparent">Transparent</button>
 			<button id="colorized">Colorized</button>
 			<button id="resize">Resize</button>
+			<button id="inference" onclick="startingTheWholeThing()">Inference</button>
 		</div>
 	</div>
 	<footer id="footer">
@@ -38,29 +39,28 @@
 
 <br>
 <hr>
+ 
+ <script type="text/javascript">
+	 document.getElementById("hover").click(); 
+	 document.getElementById("default").click();
+	 document.getElementById("hover").click(); 
+ </script>
 
   <!-- @STCGoal Capture Canvas from an HTML Elements -->
  <script type="text/javascript" src="/html2canvas/dist/html2canvas.js"></script>
 
  <!-- @STCGoal So we dont publish on the web our config like pika_token -->
  <script type="text/javascript" src="/config.js"></script>
-
-
+ 
+ 
  <!-- @STCGoal Render Stylistic inferences via hosted AI model -->
-<script src="https://cdn.jsdelivr.net/npm/@runwayml/hosted-models@latest/dist/hosted-models.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/@runwayml/hosted-models@latest/dist/hosted-models.js"></script>
+ 
+ <!-- @STCGoal Logic doing all the work -->
+ <script type="text/javascript">
 
-
-<!-- @STCGoal Logic doing all the work -->
-<script type="text/javascript">
 var timeOutBeforeProcessing = 1111;
-var doProcess = false;
-
-document.getElementById("hover").click();
-document.getElementById("default").click();
-
-setTimeout(() => { 
-console.log("Starting the whole thing!"); 
-
+var doProcess = true;
 //maincontainer
 //
 var htmlIdSource = "gridcontainer";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
@@ -71,13 +71,22 @@ var rect = frame.getBoundingClientRect();
 var WHFixOffset = 150;
 var fixWidth = rect.width +WHFixOffset;
 var fixHeight = rect.height +WHFixOffset;
-
-    html2canvas(frame,{
-    scrollX: 80,
-    scrollY:  77,
-		width: fixWidth + 15,
+var options = {
+	scrollX: 80,
+		scrollY:  77,
+		width: fixWidth + 25,
 		height: fixHeight
-}).then(function(canvas) {
+};
+
+
+setTimeout(() => { 
+console.log("Starting the whole thing!"); 
+//startingTheWholeThing();
+}, timeOutBeforeProcessing);
+
+function startingTheWholeThing(){
+
+    html2canvas(frame,options).then(function(canvas) {
         document.body.appendChild(canvas);
        // document.appendChild("<hr>");
         var enc64 = imgToBase64(canvas);
@@ -115,8 +124,7 @@ var fixHeight = rect.height +WHFixOffset;
 });
 
 console.log("ending the whole thing");
-}, timeOutBeforeProcessing);
-
+}
 //----------------------------------------------
 
    function imgToBase64(img) {
