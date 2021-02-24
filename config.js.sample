@@ -1,0 +1,2 @@
+var pika_token="TOKEN HERE";
+var pika_url = "https://SUBDOMAINHERE.hosted-models.runwayml.cloud/v1/";
