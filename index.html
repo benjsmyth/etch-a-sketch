@@ -52,15 +52,29 @@
 
 <!-- @STCGoal Logic doing all the work -->
 <script type="text/javascript">
-var timeOutBeforeProcessing = 22000;
-			
+var timeOutBeforeProcessing = 11111;
+var doProcess = false;
+
+
 setTimeout(() => { 
 console.log("Starting the whole thing!"); 
 
-var doProcess = true;
+//maincontainer
+//
 var htmlIdSource = "gridcontainer";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
+//
+var frame = document.getElementById(htmlIdSource);
+var rect = frame.getBoundingClientRect();
 
-    html2canvas(document.getElementById(htmlIdSource)).then(function(canvas) {
+var fixWidth = rect.width +100;
+var fixHeight = rect.height +100;
+
+    html2canvas(frame,{
+    scrollX: 80,
+    scrollY:  77,
+		width: fixWidth,
+		height: fixHeight
+}).then(function(canvas) {
         document.body.appendChild(canvas);
        // document.appendChild("<hr>");
         var enc64 = imgToBase64(canvas);
