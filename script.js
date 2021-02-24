@@ -3,13 +3,14 @@ const gridcontainer = document.getElementById('gridcontainer');
 
 
 
+
 // Variable for individual box.
 const box = document.createElement('div');
 box.classList.add('box');
 box.style.height = '32px';
 box.style.width = '32px';
 box.style.opacity = '0.1';
-box.style.border = '1px solid black';
+box.style.border = '1px solid gray';
 
 // Variables for buttons.
 const headerButton = document.getElementById('header');
@@ -456,3 +457,4 @@ defaultButton.addEventListener('click', checkSelected);
 transparentButton.addEventListener('click', checkSelected);
 colorizedButton.addEventListener('click', checkSelected);
 resizeButton.addEventListener('click', resizeGrid);
+
