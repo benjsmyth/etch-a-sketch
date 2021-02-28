@@ -7,48 +7,45 @@ import javax.imageio.ImageIO;
  
 void setup() {
   size(1200, 600);
-  PImage img = loadImage("http" + "://i.stack.imgur.com/WCveg.jpg");
-  image(img, 0, 0);
  
   String encoded = "";
-  PImage decoded = createImage(img.width, img.height, RGB);
+  PImage decoded = createImage(500, 500, RGB);
+ 
+  String fileLocation = "C:/Users/charles.fried/Documents/Window/FaceRecogntion/Face++/Faces/Charles/Snapshot_20170511.jpg";
  
   try {
-    encoded = EncodePImageToBase64(img);
-    //println(encoded);
+    encoded = encodeToBase64(fileLocation);
   } 
   catch (IOException e) {
-    println(e);
+    e.printStackTrace();
   }
-  String [] hell = {encoded};
- 
-  saveStrings("encoded.txt", hell);
  
   try {
     decoded = DecodePImageFromBase64(encoded);
-    println(decoded);
   } 
   catch (IOException e) {
     println(e);
   }
  
-  image(decoded, img.width, 0);
+  image(decoded, 0, 0);
+ 
+  String [] arrayForSave = {encoded};
+  saveStrings("encoded.txt", arrayForSave);
 }
  
+private String encodeToBase64(String fileLoc) throws IOException, FileNotFoundException {
  
+  File originalFile = new File(fileLoc);
+  String encodedBase64 = null;
  
-public String EncodePImageToBase64(PImage i_Image) throws UnsupportedEncodingException, IOException
-{
-  String result = null;
-  BufferedImage buffImage = (BufferedImage)i_Image.getNative();
-  ByteArrayOutputStream out = new ByteArrayOutputStream();
-  ImageIO.write(buffImage, "PNG", out);
-  byte[] bytes = out.toByteArray();
-  result = Base64.encodeBase64URLSafeString(bytes);
+  FileInputStream fileInputStreamReader = new FileInputStream(originalFile);
+  byte[] bytes = new byte[(int)originalFile.length()];
+  fileInputStreamReader.read(bytes);
+  encodedBase64 = new String(Base64.encodeBase64(bytes));
+  fileInputStreamReader.close();
  
-  return result;
+  return encodedBase64;
 }
- 
  
 public PImage DecodePImageFromBase64(String i_Image64) throws IOException
 {
