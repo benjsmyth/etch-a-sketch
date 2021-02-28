@@ -1,5 +1,7 @@
 //@STCGoal PImage to Base64 for API upload
+//Credit @CharlesDesign from https://forum.processing.org/two/discussion/22523/pimage-to-base64-for-api-upload
 
+S
 import org.apache.commons.codec.binary.Base64;
 import java.io.*;
 import java.awt.image.BufferedImage;
