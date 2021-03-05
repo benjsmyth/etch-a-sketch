@@ -17,24 +17,30 @@ void setup() {
   Serial.begin(9600); //Begin Serial Communication with a baud rate of 9600
 }
 
-
+// Keep track of the previous value
+int pA = 0;
+int pB = 0;
+int A = 0;
+int B = 0;
 
 void loop() {
    //New variables are declared to store the readings of the respective pins
   int Value1 = analogRead(AnalogPin0);
   int Value2 = analogRead(AnalogPin1);
-
-  int theMappedValue = map(Value1, 0, 1023, rLow, rHigh);
+ 
   
+  A = map(Value1, 0, 1023, rLow, rHigh);
+  B = map(Value2, 0, 1023, rLow, rHigh);
   /*The Serial.print() function does not execute a "return" or a space
       Also, the "," character is essential for parsing the values,
       The comma is not necessary after the last variable.*/
   
-  Serial.print(theMappedValue, DEC); 
+  Serial.print(A, DEC); 
   Serial.print(",");
- // Serial.println();
-  theMappedValue = map(Value2, 0, 1023, rLow, rHigh);
-  Serial.print(theMappedValue, DEC); 
+  Serial.print(B, DEC); 
   Serial.println();
+  
+  pA = A;
+  pB = B;
   //delay(500); // For illustration purposes only. This will slow down your program if not removed 
 }
