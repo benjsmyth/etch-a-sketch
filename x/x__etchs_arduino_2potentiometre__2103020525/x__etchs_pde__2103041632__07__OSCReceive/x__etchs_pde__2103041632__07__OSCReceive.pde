@@ -13,19 +13,21 @@ NetAddress dest;
 int inByte1 = 0;
 int inByte2 = 0;
  
-// keep track of old line positions
-float lastX = 0;
-float lastY = 0;
 
 
 int v = 0; // Verbose
 
+int startX = 600;
+int startY = 300;
+
+int strokeSize = 3;
+int strokeColor = 250;
 void setup() {
   
   
   // 3d in case we want to add a third pot...
   //size(displayWidth, displayHeight, P3D);
-  size(1000, 1000, P3D);
+  size(1280, 768, P3D);
 
   
     //Initialize OSC communication
@@ -35,8 +37,8 @@ void setup() {
  
   // start w black bg
   background(0);
-  stroke(255);  // white stroke
-  strokeWeight(2);  // a little thicker
+  stroke(strokeColor);  // white stroke
+  strokeWeight(strokeSize);  // a little thicker
 }
 //PROBABLY TRASH those
 int min = 2; //starts there
@@ -47,8 +49,13 @@ int d = 333;
 int counting = 0;
 
 //Starting point of the drawing.
-float x = 500;
-float y = 500;
+float x = startX;
+float y = startY;
+// keep track of old line positions
+float lastX = x;
+float lastY = y;
+
+
 float vx =0;
 float vy =0;
 //When we have negative or positive velocity, what is our move going to be ?
@@ -75,9 +82,22 @@ void draw() {
     line(10,20,55,77);
   }
 
-  rect(x-vx,y-vy, recSizeX, recSizeY);
+ 
+  //change our XY value according to received velocities
   x = x-vx;
   y = y-vy;
+  
+ // rect(x,y, recSizeX, recSizeY);
+  line(x,y,lastX,lastY);
+
+
+  lastX = x;
+  lastY = y;
+  
+  
+  println("lastX: "+ lastX + ", lastY: " + lastY );
+  println("X: "+ x + ", Y: " + y );
+  println("VX: "+ vx + ", VY: " + vy );
   counting++;
   //  println(counting);
   //delay(1);
@@ -87,7 +107,8 @@ void draw() {
 void keyPressed() {
   background(0);
   counting = -10;
-  
+  x=startX;
+  y=startY;
 
 }
 
@@ -101,25 +122,26 @@ void oscEvent(OscMessage theOscMessage) {
        // float p3 = theOscMessage.get(2).floatValue(); //get third parameters
       //  x = x - p1 / 2;
       //  y = y - p2 /2;
-      vx = p1;
-      vy = p2;
+      
+     
+     
       vx = 0;
       vy = 0;
-      if (p1 > 0 ) vx = vNeg;
-      if (p1 < 0 ) vx = vPos;
-      if (p2 > 0 ) vy = vNeg;
-      if (p2 < 0 ) vy = vPos;
+      int minXp = 1;
+      int minXn = -1;
+      int minYp = 1;
+      int minYn = -1;
+      if (p1 > minXp ) vx = vNeg;
+      if (p1 < minXn ) vx = vPos;
+      if (p2 > minYp ) vy = vNeg;
+      if (p2 < minYn ) vy = vPos;
       
        // updateDrums(p1, p2, p3);
-        
+        v=1;
     if (v > 0)    println("VelocityX: "+ p1 + ", Velocity Y: " + p2 +"  -> Received new params value from Wekinator");  
-        p1 = p1-200;
-        p2 = p2-200;
+      
        
-       // line(p1,p2,lastX+10,lastY+10);
-       // line(random(p1),random(p2),random(lastX),random(lastY));
-        lastX = p1;
-        lastY = p2;
+   
  
       } else {
         println("Error: unexpected params type tag received by Processing");
