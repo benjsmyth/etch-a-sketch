@@ -16,7 +16,9 @@ int inByte2 = 0;
 // keep track of old line positions
 float lastX = 0;
 float lastY = 0;
-int v = 0;
+
+
+int v = 0; // Verbose
 
 void setup() {
   
@@ -36,34 +38,49 @@ void setup() {
   stroke(255);  // white stroke
   strokeWeight(2);  // a little thicker
 }
+//PROBABLY TRASH those
 int min = 2; //starts there
 int max = 100;
-int counting = 0;
 int d = 333;
+
+
+int counting = 0;
+
+//Starting point of the drawing.
 float x = 500;
 float y = 500;
 float vx =0;
 float vy =0;
+//When we have negative or positive velocity, what is our move going to be ?
+float vNeg = -15;
+float vPos = 15;
+
+int recSizeX = 5;
+int recSizeY = 5;
+
 void draw() {
  
-  float tstX = 100;
-  float tstY = 90;
-  float tstXl = 177;
-  float tstYl = 222;
+
   
   boolean test = false;
   if (test)
   {
-  line(tstX,tstY,tstXl,tstYl);
- 
-  line(0,10,10,20);
-  line(10,20,55,77);
+    float tstX = 100;
+    float tstY = 90;
+    float tstXl = 177;
+    float tstYl = 222;
+    line(tstX,tstY,tstXl,tstYl);
+     
+    line(0,10,10,20);
+    line(10,20,55,77);
   }
-  rect(x-vx,y-vy, 30, 30);
-    
-    counting++;
+
+  rect(x-vx,y-vy, recSizeX, recSizeY);
+  x = x-vx;
+  y = y-vy;
+  counting++;
   //  println(counting);
-  delay(1);
+  //delay(1);
   
 }
  
@@ -86,21 +103,24 @@ void oscEvent(OscMessage theOscMessage) {
       //  y = y - p2 /2;
       vx = p1;
       vy = p2;
+      vx = 0;
+      vy = 0;
+      if (p1 > 0 ) vx = vNeg;
+      if (p1 < 0 ) vx = vPos;
+      if (p2 > 0 ) vy = vNeg;
+      if (p2 < 0 ) vy = vPos;
+      
        // updateDrums(p1, p2, p3);
         
-        println("VelocityX: "+ p1 + ", Velocity Y: " + p2 +"  -> Received new params value from Wekinator");  
+    if (v > 0)    println("VelocityX: "+ p1 + ", Velocity Y: " + p2 +"  -> Received new params value from Wekinator");  
         p1 = p1-200;
         p2 = p2-200;
        
-        line(p1,p2,lastX+10,lastY+10);
+       // line(p1,p2,lastX+10,lastY+10);
        // line(random(p1),random(p2),random(lastX),random(lastY));
         lastX = p1;
         lastY = p2;
-        
-        println("----------------------");
  
-        line(0,10,110,120);
-        //draw();
       } else {
         println("Error: unexpected params type tag received by Processing");
       }
