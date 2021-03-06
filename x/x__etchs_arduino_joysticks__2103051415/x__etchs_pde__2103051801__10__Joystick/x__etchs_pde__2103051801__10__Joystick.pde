@@ -103,7 +103,8 @@ void keyPressed() {
   counting = -10;
   x=startX;
   y=startY;
-
+  lX = x;
+  lY = y;
 }
  
 
