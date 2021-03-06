@@ -1,4 +1,6 @@
 
+//@STATUS DEPRECATED :: RunwayML library will do better.
+
 
 //Does receive the message from OSC but do not yet draw somehow the value received on the screen.
 
@@ -6,6 +8,9 @@
 //Necessary for OSC communication with Wekinator:
 import oscP5.*;
 import netP5.*;
+
+
+
 OscP5 oscP5;
 NetAddress dest;
  
@@ -244,3 +249,13 @@ String getDTTag()
   return y + "-" + m + "-" + h + "-" + min;
 
 }
+
+//public String EncodePImageToBase64(PImage i_Image) throws UnsupportedEncodingException, IOException {
+//    String result = null;
+//    BufferedImage buffImage = (BufferedImage)i_Image.getNative();
+//    ByteArrayOutputStream out = new ByteArrayOutputStream();
+//    ImageIO.write(buffImage, "PNG", out);
+//    byte[] bytes = out.toByteArray();
+//    result = Base64.encodeBase64URLSafeString(bytes);
+//    return result;
+//}
