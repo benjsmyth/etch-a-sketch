@@ -91,19 +91,21 @@ void parseEtchDrawing()
  //if (x > maxX || x < minX) mX =0; // we do not move in X, we reached the border
  //if (y > maxY || y < minY) mY =0; // we do not move in Y, we reached the border
  
+ //Defines border limits
  if (x > maxX && mX == 1 ) mX =0; // we do not move in X, we reached the border
  if ( x < minX && mX == -1) mX =0; // we do not move in X, we reached the border
  
    if (y > maxY && mY == 1 ) mY =0; // we do not move in X, we reached the border
  if ( y < minY && mY == -1) mY =0; // we do not move in X, we reached the border
  
-  
+  //ADd the move to our new target XY
    x = x + mX;
    y = y + mY;
  
+ //Draw our move
   line(x,y,lX,lY);
   
-
+///Keep track of the last position for our next move
   lX = x;
   lY = y;
   
