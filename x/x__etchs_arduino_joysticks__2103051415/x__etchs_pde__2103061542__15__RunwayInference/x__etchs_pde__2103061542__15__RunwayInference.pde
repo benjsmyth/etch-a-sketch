@@ -1,8 +1,7 @@
 
-//@STATUS DEPRECATED :: RunwayML library will do better.
+//@STATUS TODO :: The RunwayML library returns an inference of what we drew.
 
 
-//Does receive the message from OSC but do not yet draw somehow the value received on the screen.
 
 
 //Necessary for OSC communication with Wekinator:
@@ -20,8 +19,12 @@ NetAddress dest;
 
 int v = 0; // Verbose
 
-int startX = 512;
-int startY = 300;
+int startX = 400;
+int startY = 280;
+
+//So we dont draw outside the box
+int maxX = startX + (startX/2);
+int maxY = startY + (startY/2);
 
 float strokeSize = 3;
 int strokeColor = 250;
@@ -30,7 +33,7 @@ void setup() {
   
   // 3d in case we want to add a third pot...
   //size(displayWidth, displayHeight, P3D);
-  size(1024, 768, P3D);
+  size(1400, 768, P3D);
 
   
     //Initialize OSC communication
@@ -74,43 +77,34 @@ int recSizeY = 5;
 
 void draw() {
  
-
+ parseEtchDrawing();
   
-  boolean test = false;
-  if (test)
-  {
-    float tstX = 100;
-    float tstY = 90;
-    float tstXl = 177;
-    float tstYl = 222;
-    line(tstX,tstY,tstXl,tstYl);
-     
-    line(0,10,10,20);
-    line(10,20,55,77);
-  }
+ counting++;
+  
+}
 
+//Parse the Etch a Sketch Drawing
+void parseEtchDrawing()
+{
+   x = x + mX;
+   y = y + mY;
  
- x = x + mX;
- y = y + mY;
-  
- // rect(x,y, recSizeX, recSizeY);
   line(x,y,lX,lY);
-
+  
 
   lX = x;
   lY = y;
   
-  
   println("lastX: "+ lX + ", lastY: " + lY );
   println("X: "+ x + ", Y: " + y );
   
-  counting++;
-  //  println(counting);
-  //delay(1);
-  
 }
+
+
 String fnCurrent = "etch-current.png";
 PImage currentImg ;
+
+//Load the current Image
 void loadCurrentImg()
 {
   // saveCurrent();
@@ -118,21 +112,26 @@ void loadCurrentImg()
  
 }
 
+//display the current image (to redraw on it too)
 void displayCurrentImg()
 {
    image(currentImg, 0, 0);
 }
 
+
+//Would generate the inference preview
 void inferencePreview(int painterID)
 { 
    saveCurrent();
-  loadCurrentImg();
+   loadCurrentImg();
 
 }
 
+//save the frame to current
 void saveCurrent()
-{saveFrame(fnCurrent);
-println("Current file saved");delay(250);
+{
+  saveFrame(fnCurrent);
+  println("Current file saved");delay(250);
 }
 
 
@@ -173,12 +172,16 @@ void keyPressed() {
   //loadCurrentImg();
   // inferencePreview(1);
 }
+
+//save a frame with a unique timeline ID based on datetime
 void saveTlid(){
    String fn = "etch-11-" + getDTTag() + ".png";
    saveFrame(fn);
    println("Saved Tlid image as: " + fn);
    delay(250);
   }
+  
+//Reset the canvas so we can draw again
 void resetCanvas()
 {
   println("Resetting the canvas"); delay(100);
