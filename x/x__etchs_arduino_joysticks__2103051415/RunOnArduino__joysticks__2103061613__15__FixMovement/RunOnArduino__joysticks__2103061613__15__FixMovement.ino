@@ -40,7 +40,7 @@ int j2lX = 0;
 int j2lY = 0;
 
 boolean notMoving = false;
-
+boolean firstRun = true;
 void loop() {
   // put your main code here, to run repeatedly:
 
@@ -99,8 +99,9 @@ int v2 = parseRange(j2valX,j2lX,j2valY,j2lY);
 if (j1valX ==  j1lX && j1valY == j1lY && j2valX == j2lX && j2valY == j2lY) notMoving=true; else notMoving = false;
 
 
-if (!notMoving)
+if (!notMoving || firstRun)
 {
+  firstRun = false;
     Serial.print(v1, DEC); 
     Serial.print(",");
     Serial.print(v1, DEC); 
