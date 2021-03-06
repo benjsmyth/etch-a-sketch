@@ -25,6 +25,8 @@ int startY = 280;
 //So we dont draw outside the box
 int maxX = startX + (startX/2);
 int maxY = startY + (startY/2);
+int minX = startX - (startX/2);
+int minY = startY - (startY/2);
 
 float strokeSize = 3;
 int strokeColor = 250;
@@ -86,6 +88,16 @@ void draw() {
 //Parse the Etch a Sketch Drawing
 void parseEtchDrawing()
 {
+ //if (x > maxX || x < minX) mX =0; // we do not move in X, we reached the border
+ //if (y > maxY || y < minY) mY =0; // we do not move in Y, we reached the border
+ 
+ if (x > maxX && mX == 1 ) mX =0; // we do not move in X, we reached the border
+ if ( x < minX && mX == -1) mX =0; // we do not move in X, we reached the border
+ 
+   if (y > maxY && mY == 1 ) mY =0; // we do not move in X, we reached the border
+ if ( y < minY && mY == -1) mY =0; // we do not move in X, we reached the border
+ 
+  
    x = x + mX;
    y = y + mY;
  
