@@ -250,18 +250,47 @@ void displaycontentImage()
 void inferencePreview(int painterID)
 { 
     print("starting INference preview prep...");
-    saveCurrent();
-    loadcontentImage();
-    println("...Inference preview done");
+   // saveCurrent();
+   // loadcontentImage();
+    updateContentImage();
+    println("...Inference preview starting");
 
 }
+void xSavePart()
+{
+   PImage all ; 
+   all = get();
+  contentImage = all.get(minX,minY,maxX-minX,maxY-minY);
+  //An object image I can 
+  contentImage.save("content.png");
+  if (runwayResult != null) runwayResult.save("result.png");
+}
+
+void updateContentImage(){
+   PImage all ; 
+   all = get();
+  contentImage = all.get(minX,minY,maxX-minX,maxY-minY);
+  //An object image I can 
+  
+}
+void saveContentImage()
+{
+   updateContentImage();
+   contentImage.save("content.png");
+}
+void saveResult(){ if (runwayResult != null) runwayResult.save("result.png");}
 
 //save the frame to current
 void saveCurrent()
-{
+{ //TODO Save only the drawing canvas using get(...
   saveFrame(fnCurrent);
   println("Current file saved");
-  delay(1);
+  
+}
+void saveAll()
+{
+  saveFrame(fnCurrent);
+  println("Current file saved (all the canvas: " + fnCurrent);
 }
 String currentPainter = "Picasso";
 int bgR =55; int bgG = 55; int bgB = 55;
@@ -277,14 +306,23 @@ void startInferencing(int _newServerPort,String _painter)
    serverPort = _newServerPort;
    inferencePreview(0);
    runwayInference(serverPort);
+   
+   
+   if (doAutoSaveTimeline)
+   {
+     
    saveTlid();
-
+   }
    String _curStatus = "Current style is from : " + currentPainter;
   setStatus(_curStatus);
   
+    updateStrokeColor();
+  updateStrokeSize();
+  
+  
 }
 
-
+boolean doAutoSaveTimeline = false;
 
 int picassoPort = 8000;
 int monetPort = 8001;
@@ -316,8 +354,7 @@ void keyPressed() {
   else  if (key == '4') { startInferencing(KandinskyPort,"Kandinsky");  } 
   else  if (key == '5') { startInferencing(PollockPort,"Pollock");  } 
   else  if (key == '6') { startInferencing(xPort,"Experimental");  } 
-  
-  
+   
   
   //***************************************************
   //--------- Commands available in Normal Mode
@@ -326,7 +363,11 @@ void keyPressed() {
    if (key == 'i' || key== ' ') {
     startInferencing(serverPort,currentPainter);
   }
-  else if (key == 'y') { println("y");  }
+  else if (key == 'y') { 
+  //Works
+  println("experimenting a SavePart: see content.png in sketch current dir");  
+  xSavePart();
+}
   //Let us select the Painter style from the Inference Server (requires to start servers on these port on the ModelServer
   
   //
@@ -336,9 +377,13 @@ void keyPressed() {
    if (key == 'r') {
     resetCanvas();
   }
-  else  if (key == 's') {    
+  else  if (key == 's') {   
+    print("Saving bunch of stuff...");
    saveCurrent();
    saveFrame(saveBasePath + "etch-11-######.png");
+   saveResult();
+   saveContentImage();
+   println("...done");
   }else
    if (key == 't') {
      
@@ -405,17 +450,19 @@ void keyPressed() {
        bgR--;bgR--;bgR--;bgR--;bgR--;bgR--;bgR--;bgR--;bgR--;bgR--;
        println("bg Red now: " + bgR);
        resetCanvas();
-    }
+    } else 
      if (key == 'g') {
        bgG--;bgG--;bgG--;bgG--;bgG--;bgG--;bgG--;bgG--;bgG--;bgG--; 
        println("bg Green now: " + bgG);
        resetCanvas();
-    }
+    }else 
      if (key == 'b') {
        bgB--;bgB--;bgB--;bgB--;bgB--;bgB--;bgB--;bgB--;bgB--;bgB--; 
        println("bg Blue now: " + bgB);
        resetCanvas();
     }
+    
+    else if (key == 't') {toogleDoAutoSaveTimeline (); }
   }
   
   //-----------------------------------------------------------
@@ -428,6 +475,11 @@ void keyPressed() {
   
   //println(key);
    
+}
+void toogleDoAutoSaveTimeline() {doAutoSaveTimeline = !doAutoSaveTimeline;
+String msg = "doAutoSaveTimeline now: " +doAutoSaveTimeline;
+println(msg);
+setStatus(msg);
 }
 
 //save a frame with a unique timeline ID based on datetime
