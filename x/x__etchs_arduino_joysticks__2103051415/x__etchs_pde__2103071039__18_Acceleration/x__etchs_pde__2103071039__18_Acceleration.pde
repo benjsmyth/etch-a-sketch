@@ -249,11 +249,10 @@ void displaycontentImage()
 //Would generate the inference preview
 void inferencePreview(int painterID)
 { 
-  print("starting INference preview prep...");
-   saveCurrent();
-   loadcontentImage();
-   println("...Inference preview done");
-   
+    print("starting INference preview prep...");
+    saveCurrent();
+    loadcontentImage();
+    println("...Inference preview done");
 
 }
 
