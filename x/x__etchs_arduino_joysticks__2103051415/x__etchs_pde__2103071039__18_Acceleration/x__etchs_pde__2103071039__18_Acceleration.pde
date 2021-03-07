@@ -88,6 +88,10 @@ int minY = startY - (startY/2);
 
 float strokeSize = 3;
 int strokeColor = 250;
+int sR = 250;
+int sG = 250;
+int sB = 250;
+
 
 void setupUI()
 {
@@ -113,13 +117,22 @@ void setup() {
   
  
   // start w black bg
-  background(0);
- updateStrokeColor();
- updateStrokeSize();
+updateUI();
+
 }
+void updateUI() {
+    updateBG();
+  
+  updateStrokeColor();
+  updateStrokeSize();
+}
+
+void updateBG() {background(bgR,bgG,bgB);}
+
 void updateStrokeColor()
 {
-   stroke(strokeColor);  // white stroke
+   //stroke(strokeColor);  // white stroke
+   stroke(sR,sG,sB);
 }
 
 void updateStrokeSize()
@@ -252,7 +265,7 @@ void saveCurrent()
   delay(1);
 }
 String currentPainter = "Picasso";
-int bgR = 0; int bgG = 0; int bgB = 0;
+int bgR =55; int bgG = 55; int bgB = 55;
 
 void startInferencing(int _newServerPort,String _painter)
 {
@@ -280,38 +293,46 @@ int vangoghPort = 8002;
 int KandinskyPort = 8003;
 int PollockPort = 8004;
 int xPort = 8005;
+boolean modeN = true;
 boolean modeC = false;
 boolean modeA = false;
 boolean modeS = false;
+void setNormalMode() {setMode("-");modeN = true;println("Normal Mode");modeS=false;modeA=false;modeC=false;}
 void keyPressed() {
   //
-  if (keyCode == CONTROL ) {  modeC = !modeC; modeA= false;modeS=false;if (modeC) setMode("C");else setMode("-"); } 
-  if (keyCode == ALT ) {  modeA = !modeA;modeC=false;modeS=false; if (modeA) setMode("A");else setMode("-"); } 
-  if (keyCode == SHIFT ) {  modeS = !modeS;modeC=false;modeA=false; if (modeS) setMode("S");else setMode("-"); } 
+  if (keyCode == CONTROL ) {  modeC = !modeC;modeN=!modeC; modeA= false;modeS=false;if (modeC) setMode("C");else {setNormalMode();} }   
+  if (keyCode == ALT ) {  modeA = !modeA;modeN=!modeA;modeC=false;modeS=false; if (modeA) setMode("A");else {setNormalMode();} }    
+  if (keyCode == SHIFT ) {  modeS = !modeS;modeN=!modeS;modeC=false;modeA=false; if (modeS) setMode("S");else {setNormalMode();} } 
+  if (keyCode == TAB) setNormalMode();
+ // if (!modeS && !modeA && !modeC)  modeN=true;setMode("-");
   
-  println("mode: " + modeC);
   
-   if (key == 'i') {
+  println("modeC: " + modeC + ", modeS:" + modeS + ", modeA: "  + modeA + ", modeN: " + modeN);
+  
+  //-----------------
+  //----- Commands Available in Any Mode
+        if (key == '1') { startInferencing(picassoPort,"Picasso");  } 
+  else  if (key == '2') { startInferencing(monetPort,"Monet");  } 
+  else  if (key == '3') { startInferencing(vangoghPort,"Van Gogh");  } 
+  else  if (key == '4') { startInferencing(KandinskyPort,"Kandinsky");  } 
+  else  if (key == '5') { startInferencing(PollockPort,"Pollock");  } 
+  else  if (key == '6') { startInferencing(xPort,"Experimental");  } 
+  
+  
+  
+  //***************************************************
+  //--------- Commands available in Normal Mode
+  
+  if (modeN) {
+   if (key == 'i' || key== ' ') {
     startInferencing(serverPort,currentPainter);
   }
   else if (key == 'y') { println("y");  }
   //Let us select the Painter style from the Inference Server (requires to start servers on these port on the ModelServer
-  else  if (key == '1') {   setStatus("..."); startInferencing(picassoPort,"Picasso");  } 
-  else  if (key == '2') {   setStatus("..."); startInferencing(monetPort,"Monet");  } 
-  else  if (key == '3') {    startInferencing(vangoghPort,"Van Gogh");  } 
-  else  if (key == '4') {    startInferencing(KandinskyPort,"Kandinsky");  } 
-  else  if (key == '5') {    startInferencing(PollockPort,"Pollock");  } 
-  else  if (key == 'x') {    startInferencing(xPort,"Experimental");  } 
+  
   //
   
   //
-  else 
-   if (key == '7') {
-     setStrokeColor(strokeColor++);
-  } else 
-   if (key == '6') {
-     setStrokeColor(strokeColor--);
-  }
   else 
    if (key == 'r') {
     resetCanvas();
@@ -324,25 +345,88 @@ void keyPressed() {
      
       saveTlid();
   }else 
-   if (key == '0') {
+   
+     if (key == 'd') {
+       if (contentImage != null)  displaycontentImage();
+       else {
+         loadcontentImage();
+         displaycontentImage();
+         println("Current image was null, therefore loaded from last saved");
+       }
+    }
+  } 
+  
+  
+  
+  //----------------------------------------------------
+  //----- Commands in Mode S (Toggle using  Shift)  ----
+  else if (modeS)
+  {
+    //Mode S Shortcuts...
+    //...
+    
+     if (key == 'r') {
+       bgR++;bgR++;bgR++;bgR++;bgR++;bgR++;bgR++;bgR++;bgR++;bgR++;
+       println("bg Red now: " + bgR);
+       resetCanvas();
+    } else if (key == 'g') {
+       bgG++;bgG++;bgG++;bgG++;bgG++;bgG++;bgG++;bgG++;bgG++;bgG++;
+       println("bg Green now: " + bgG);
+       resetCanvas();
+    } else if (key == 'b') {
+       bgB++;bgB++;bgB++;bgB++;bgB++;bgB++;bgB++;bgB++;bgB++;bgB++;
+       println("bg Blue now: " + bgB);
+       resetCanvas();
+    } else  if (key == 's') {
+     setStrokeColor(strokeColor++);
+  } else 
+   if (key == 'n') {
+     setStrokeColor(strokeColor--);
+  }if (key == 'b') {
     strokeSize+=1;
     println(strokeSize);
     updateStrokeSize();
   }else 
-   if (key == '9') {
-    if (strokeSize > 1) strokeSize -= 1;
-    updateStrokeSize();
-    println(strokeSize);
-  }else
-   if (key == 'd') {
-     if (contentImage != null)  displaycontentImage();
-     else {
-       loadcontentImage();
-       displaycontentImage();
-       println("Current image was null, therefore loaded from last saved");
-     }
+   if (key == 'x') {
+      if (strokeSize > 1) strokeSize -= 1;
+      updateStrokeSize();
+      println(strokeSize);
+    }
+    
   }
- 
+  
+  //-----------------------------------------------------------
+  //-------------- Commands in Mode A (Toggle using  ALT)  ----
+   else if (modeA)
+  {
+    //Mode A Shortcuts...
+    //...
+    
+     if (key == 'r') {
+       bgR--;bgR--;bgR--;bgR--;bgR--;bgR--;bgR--;bgR--;bgR--;bgR--;
+       println("bg Red now: " + bgR);
+       resetCanvas();
+    }
+     if (key == 'g') {
+       bgG--;bgG--;bgG--;bgG--;bgG--;bgG--;bgG--;bgG--;bgG--;bgG--; 
+       println("bg Green now: " + bgG);
+       resetCanvas();
+    }
+     if (key == 'b') {
+       bgB--;bgB--;bgB--;bgB--;bgB--;bgB--;bgB--;bgB--;bgB--;bgB--; 
+       println("bg Blue now: " + bgB);
+       resetCanvas();
+    }
+  }
+  
+  //-----------------------------------------------------------
+  //-------------- Commands in Mode C (Toggle using CTRL)  ----
+   else if (modeC)
+  {
+    //Mode C Shortcuts...
+    //...
+  }
+  
   //println(key);
   
   //loadcontentImage();
@@ -497,13 +581,17 @@ void setStrokeColor(int _color)
 //Reset the canvas so we can draw again
 void resetCanvas()
 {
-  println("Resetting the canvas"); delay(100);
-  background(0);
+  println("Resetting the canvas"); 
+   
   counting = -10;
   x=startX;
   y=startY;
   lX = x;
   lY = y;
+  
+  
+  updateUI();
+  
 }
 
 
