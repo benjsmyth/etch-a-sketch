@@ -428,9 +428,7 @@ void keyPressed() {
   }
   
   //println(key);
-  
-  //loadcontentImage();
-  // inferencePreview(1);
+   
 }
 
 //save a frame with a unique timeline ID based on datetime
