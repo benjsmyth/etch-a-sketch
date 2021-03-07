@@ -11,28 +11,28 @@ import netP5.*;
 
 
 //------------ Display consequence / feedback when Inferencing is in progress
-import interfascia.*;
+//import interfascia.*;
 
-GUIController c;
-IFProgressBar p;
-float percent = 0;
-void setupUIProgressing(){
+//GUIController c;
+//IFProgressBar p;
+//float percent = 0;
+//void setupUIProgressing(){
    
-   c = new GUIController(this);
-   p = new IFProgressBar(10, 10, 80);
+//   c = new GUIController(this);
+//   p = new IFProgressBar(10, 10, 80);
 
-   c.add(p);
-   p.setProgress(percent);
+//   c.add(p);
+//   p.setProgress(percent);
 
-}
-void progressing(){
-     p.setProgress(percent);
-   if (percent < 1) {
-      percent += 0.01;
-   } else {
-      percent = 0;
-   }
-}
+//}
+//void progressing(){
+//     p.setProgress(percent);
+//   if (percent < 1) {
+//      percent += 0.01;
+//   } else {
+//      percent = 0;
+//   }
+//}
 
 
 // import Runway library
@@ -92,7 +92,9 @@ int strokeColor = 250;
 void setupUI()
 {
   initStatus();
-  setupUIProgressing();
+  initMode();
+  setMode("n");
+  //setupUIProgressing();
 }
 
 void setup() {
@@ -150,7 +152,7 @@ void draw() {
  
  drawRunwayResult();
   
- counting++;
+ //counting++;
   //delay(1);
 }
 
@@ -254,11 +256,11 @@ int bgR = 0; int bgG = 0; int bgB = 0;
 
 void startInferencing(int _newServerPort,String _painter)
 {
-  progressing();
-  setStatus("...");
-  delay(5);
-  setStatus("Inferencing started for painter:" + _painter);
-  delay(1335);
+  //progressing();
+ // setStatus("...");
+ // delay(5);
+ // setStatus("Inferencing started for painter:" + _painter);
+ // delay(1335);
   currentPainter = _painter;
    serverPort = _newServerPort;
    inferencePreview(0);
@@ -278,12 +280,21 @@ int vangoghPort = 8002;
 int KandinskyPort = 8003;
 int PollockPort = 8004;
 int xPort = 8005;
-
+boolean modeC = false;
+boolean modeA = false;
+boolean modeS = false;
 void keyPressed() {
   //
+  if (keyCode == CONTROL ) {  modeC = !modeC; modeA= false;modeS=false;if (modeC) setMode("C");else setMode("-"); } 
+  if (keyCode == ALT ) {  modeA = !modeA;modeC=false;modeS=false; if (modeA) setMode("A");else setMode("-"); } 
+  if (keyCode == SHIFT ) {  modeS = !modeS;modeC=false;modeA=false; if (modeS) setMode("S");else setMode("-"); } 
+  
+  println("mode: " + modeC);
+  
    if (key == 'i') {
     startInferencing(serverPort,currentPainter);
   }
+  else if (key == 'y') { println("y");  }
   //Let us select the Painter style from the Inference Server (requires to start servers on these port on the ModelServer
   else  if (key == '1') {   setStatus("..."); startInferencing(picassoPort,"Picasso");  } 
   else  if (key == '2') {   setStatus("..."); startInferencing(monetPort,"Monet");  } 
@@ -349,14 +360,14 @@ void saveTlid(){
 
 int parseOsc(float v1,float v1x,float v1y,float s3,float v2,float v2x,float v2y)
 {
-        v=2;
+       // v=2;
        if (v > 1)
        {
        print ("v1: " + v1 + ", " );
        print ("v1x:" + v1x);
        println ("v1y:" + v1y);
        }
-       v=0;
+      // v=0;
        
       // mX = parseJoy(j1x,j1y);
        //mX = v1x + v1y;
@@ -431,8 +442,25 @@ String getDTTag()
 
 //---------------------------------------------
 //------------ UI ----------------------------
-
-
+//---------------- Mode -------------------
+ int modePosX = 0;
+ int modeHeight = 25;
+ int modePosY= 20;
+ String curmode = "-";
+ void initMode(){
+    modePosY=  modeHeight;
+    modePosX = width - 100;
+  }
+    
+void setMode(String _curmode){
+  curmode = _curmode;
+  textSize(26);
+  fill(bgR, bgG, bgB);
+  noStroke();
+  rect(modePosX, modePosY - modeHeight * 1.5, 55, 55);
+  fill(255);
+  text( curmode,modePosX,modePosY);
+}
 //----------------- STATUS--------------
  int statusPosX = 20;
  int statusHeight = 25;
