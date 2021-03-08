@@ -14,28 +14,8 @@ import netP5.*;
 
 
 //------------ Display consequence / feedback when Inferencing is in progress
-//import interfascia.*;
+//TODO Find a UI lib to build up feedback
 
-//GUIController c;
-//IFProgressBar p;
-//float percent = 0;
-//void setupUIProgressing(){
-   
-//   c = new GUIController(this);
-//   p = new IFProgressBar(10, 10, 80);
-
-//   c.add(p);
-//   p.setProgress(percent);
-
-//}
-//void progressing(){
-//     p.setProgress(percent);
-//   if (percent < 1) {
-//      percent += 0.01;
-//   } else {
-//      percent = 0;
-//   }
-//}
 
 
 // import Runway library
@@ -175,8 +155,7 @@ void draw() {
 //Parse the Etch a Sketch Drawing
 void parseEtchDrawing()
 {
- //if (x > maxX || x < minX) mX =0; // we do not move in X, we reached the border
- //if (y > maxY || y < minY) mY =0; // we do not move in Y, we reached the border
+
  
  
   if (verbose > 1 )println("mX: "+ mX + ", mY: " + mY );
@@ -300,11 +279,8 @@ int bgR =55; int bgG = 55; int bgB = 55;
 
 void startInferencing(int _newServerPort,String _painter)
 {
-  //progressing();
- // setStatus("...");
- // delay(5);
- // setStatus("Inferencing started for painter:" + _painter);
- // delay(1335);
+
+
   currentPainter = _painter;
    serverPort = _newServerPort;
    inferencePreview(0);
@@ -357,6 +333,8 @@ void keyPressed() {
   else  if (key == '4') { startInferencing(KandinskyPort,"Kandinsky");  } 
   else  if (key == '5') { startInferencing(PollockPort,"Pollock");  } 
   else  if (key == '6') { startInferencing(xPort,"Experimental");  } 
+  
+  else  if (key == 'p') { xCopyInferenceToCanvas();  } 
    
   
   //***************************************************
@@ -372,8 +350,6 @@ void keyPressed() {
   xSavePart();
 }
   //Let us select the Painter style from the Inference Server (requires to start servers on these port on the ModelServer
-  
-  //
   
   //
   else 
@@ -479,6 +455,25 @@ void keyPressed() {
   //println(key);
    
 }
+
+
+
+
+
+
+
+void xCopyInferenceToCanvas()
+{
+  contentImage = runwayResult;
+  displaycontentImage();
+}
+
+
+
+
+
+
+
 void toogleDoAutoSaveTimeline() {doAutoSaveTimeline = !doAutoSaveTimeline;
 String msg = "doAutoSaveTimeline now: " +doAutoSaveTimeline;
 println(msg);
@@ -504,10 +499,7 @@ int parseOsc(float v1,float v1x,float v1y,float s3,float v2,float v2x,float v2y)
        println ("v1y:" + v1y);
        }
       // v=0;
-       
-      // mX = parseJoy(j1x,j1y);
-       //mX = v1x + v1y;
-       //mY = v2x + v2y;
+
        
        mX = v1;
        mY = v2;
