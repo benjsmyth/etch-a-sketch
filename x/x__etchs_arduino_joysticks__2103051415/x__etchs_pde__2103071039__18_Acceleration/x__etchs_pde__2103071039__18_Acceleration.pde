@@ -1,5 +1,8 @@
-
-//@STATUS TODO :: The RunwayML library returns an inference of what we drew.
+/*
+* Etch a SketchAI 
+* By J.Guillaume D.-Isabelle, 2021
+*/
+//@STATUS DONE :: The RunwayML library returns an inference of what we drew.
 //Now able to save/load a crop
 
 
