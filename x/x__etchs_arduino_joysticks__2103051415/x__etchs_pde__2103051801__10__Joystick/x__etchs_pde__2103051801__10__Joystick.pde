@@ -63,38 +63,29 @@ int recSizeY = 5;
 void draw() {
  
 
-  
-  boolean test = false;
-  if (test)
-  {
-    float tstX = 100;
-    float tstY = 90;
-    float tstXl = 177;
-    float tstYl = 222;
-    line(tstX,tstY,tstXl,tstYl);
-     
-    line(0,10,10,20);
-    line(10,20,55,77);
-  }
 
- 
- x = x + mX;
- y = y + mY;
-  
- // rect(x,y, recSizeX, recSizeY);
-  line(x,y,lX,lY);
-
-
-  lX = x;
-  lY = y;
-  
-  
-  println("lastX: "+ lX + ", lastY: " + lY );
-  println("X: "+ x + ", Y: " + y );
+ parseEtchDrawing();
   
   counting++;
   //  println(counting);
   //delay(1);
+  
+}
+
+void parseEtchDrawing()
+{
+   x = x + mX;
+   y = y + mY;
+  
+ // rect(x,y, recSizeX, recSizeY);
+  line(x,y,lX,lY);
+  
+
+  lX = x;
+  lY = y;
+  
+  println("lastX: "+ lX + ", lastY: " + lY );
+  println("X: "+ x + ", Y: " + y );
   
 }
 

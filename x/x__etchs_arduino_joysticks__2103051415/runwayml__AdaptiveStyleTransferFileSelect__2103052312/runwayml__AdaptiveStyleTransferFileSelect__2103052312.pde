@@ -38,12 +38,15 @@ PImage runwayResult;
 
 // status
 String status = "Press 'c' to select content image";
+String hostName = "192.168.2.44" ;
+int serverPort = 8000;
+
 
 void setup(){
   // match sketch size to default model camera setup
   size(1200,400);
   // setup Runway
-  runway = new RunwayHTTP(this,"192.168.2.44",8000);
+  runway = new RunwayHTTP(this,hostName,serverPort);
   // update manually
   runway.setAutoUpdate(false);
 }

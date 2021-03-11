@@ -82,7 +82,7 @@ void draw() {
  parseEtchDrawing();
   
  counting++;
-  
+  //delay(1);
 }
 
 //Parse the Etch a Sketch Drawing
@@ -91,18 +91,25 @@ void parseEtchDrawing()
  //if (x > maxX || x < minX) mX =0; // we do not move in X, we reached the border
  //if (y > maxY || y < minY) mY =0; // we do not move in Y, we reached the border
  
+ 
+  println("mX: "+ mX + ", mY: " + mY );
+  
  //Defines border limits
- if (x > maxX && mX == 1 ) mX =0; // we do not move in X, we reached the border
- if ( x < minX && mX == -1) mX =0; // we do not move in X, we reached the border
+ if (x > maxX && mX >0 ) mX =0; // we do not move in X, we reached the border
+ if ( x < minX && mX < 0) mX =0; // we do not move in X, we reached the border
  
-   if (y > maxY && mY == 1 ) mY =0; // we do not move in X, we reached the border
- if ( y < minY && mY == -1) mY =0; // we do not move in X, we reached the border
+   if (y > maxY && mY >0 ) mY =0; // we do not move in X, we reached the border
+ if ( y < minY && mY < 0) mY =0; // we do not move in X, we reached the border
  
+ float divider = 1;
   //ADd the move to our new target XY
-   x = x + mX;
-   y = y + mY;
+  if (mX != 0)
+   x = x + mX/divider;
+   if (mY != 0)
+   y = y + mY/divider;
  
  //Draw our move
+ if (mX != 0 || mY != 0)
   line(x,y,lX,lY);
   
 ///Keep track of the last position for our next move
@@ -111,6 +118,8 @@ void parseEtchDrawing()
   
   println("lastX: "+ lX + ", lastY: " + lY );
   println("X: "+ x + ", Y: " + y );
+  println("MinX: "+ minX + ", MaxX: " + maxX );
+  println("MinY: "+ minY + ", MaxY: " + maxY );
   
 }
 

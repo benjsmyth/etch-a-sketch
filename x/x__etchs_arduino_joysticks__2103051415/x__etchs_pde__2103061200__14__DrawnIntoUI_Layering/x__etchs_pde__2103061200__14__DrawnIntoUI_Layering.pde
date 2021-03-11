@@ -1,11 +1,12 @@
 
-//@STATUS TODO :
+//@STATUS FAILED :
 //v13: As soon as there is a line drawn, the bg dissapears
 //@NextStep is retry with BG Img and Layers
 
 
 //Necessary for OSC communication with Wekinator:
 import oscP5.*;
+int receivingPort= 12000;
 import netP5.*;
 
 
@@ -35,9 +36,13 @@ int startY = 300;
 
 float strokeSize = 3;
 int strokeColor = 250;
+
+
 String uiBgfn = "../../etch-bg-ui-frame.png";
 PImage bgUi;
 
+PGraphics[] layers = new PGraphics[3];
+int drawingLayerId = 2;
 
 void oldUI()
 {
@@ -45,15 +50,21 @@ void oldUI()
 }
 void setupUI()
 {
-  
   bgUi = loadImage(uiBgfn);
   background(bgUi);
 }
 void drawWorkAreas()
 {
-  rect(dPX, dPY, dSX, dSY);
-  rect(iPX, iPY, iSX, iSY);
+  layers[1].rect(dPX, dPY, dSX, dSY);
+  layers[1].rect(iPX, iPY, iSX, iSY);
 }
+void setupLayers()
+{
+    for (int i = 0; i < layers.length; i++) {
+    layers[i] = createGraphics(width, height);
+  }
+}
+
 boolean enableNewUI =true;
 void setup() {
   
@@ -61,36 +72,36 @@ void setup() {
   // 3d in case we want to add a third pot...
   //size(displayWidth, displayHeight, P3D);
   size(1400, 768, P3D);
-
+  
+  
   
     //Initialize OSC communication
-  oscP5 = new OscP5(this,12000); //listen for OSC messages on port 12000 (Wekinator default)
- // dest = new NetAddress("127.0.0.1",6448); //send messages back to Wekinator on port 6448, localhost (this machine) (default)
+  oscP5 = new OscP5(this,receivingPort); //listen for OSC messages on port 12000 (Wekinator default)
+  // dest = new NetAddress("127.0.0.1",6448); //send messages back to Wekinator on port 6448, localhost (this machine) (default)
   
  
   // start w black bg
  if (enableNewUI) setupUI();
  else oldUI();
+ 
+  setupLayers();
   
- updateStrokeColor();
- updateStrokeSize();
 }
-void drawUI()
-{
-  
-  fill(255);
-  ellipse(150, 550, 75, 75);
-  ellipse(650, 550, 75, 75);
 
+void beginDrawLayers()
+{
+   for (int i = 0; i < layers.length; i++) {
+    layers[i].beginDraw();
+  } 
 }
 void updateStrokeColor()
 {
-   stroke(strokeColor);  // white stroke
+   layers[drawingLayerId].stroke(strokeColor);  // white stroke
 }
 
 void updateStrokeSize()
 {
- strokeWeight(strokeSize);  // a little thicker
+ layers[drawingLayerId].strokeWeight(strokeSize);  // a little thicker
 }
 
 int counting = 0;
@@ -114,6 +125,14 @@ int recSizeY = 5;
 boolean uiIsDrawn = false;
 
 void draw() {
+ if (!uiIsDrawn){
+   beginDrawLayers();
+ uiIsDrawn = true;
+ }
+  
+ updateStrokeColor();
+ updateStrokeSize();
+ 
   
   parseEtchDrawing();
 
@@ -130,7 +149,8 @@ void parseEtchDrawing()
    y = y + mY;
   
  // rect(x,y, recSizeX, recSizeY);
-  line(x,y,lX,lY);
+  layers[drawingLayerId].line(x,y,lX,lY);
+  layers[drawingLayerId-1].line(x,y,lX,lY);
 
   lX = x;
   lY = y;

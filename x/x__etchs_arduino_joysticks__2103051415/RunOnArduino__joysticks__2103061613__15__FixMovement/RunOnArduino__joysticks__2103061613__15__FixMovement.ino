@@ -1,10 +1,17 @@
 
 
 /*
+ * @STATUS I DO NOT LIKE IT, even though it has interesting code
+ * I think that what I would like to feel is the speed 
+ * at which I am turning the wheel. How can I achieve that ?
+ * 
+ * 
 2 Joysticks : 1 for moving up down, 1 for left - right
 1 distance mesurement for Pen size
 1 button for something
 */
+
+int outValBase = 1; //The value we send as output
 
 int j2pinX = A3;
 int j2pinY = A4;
@@ -39,8 +46,14 @@ int j1lY = 0;
 int j2lX = 0;
 int j2lY = 0;
 
-boolean notMoving = false;
-boolean firstRun = true;
+int v1 = 0;
+int v2 = 0;
+int pv1 = 0;
+int pv2 = 0;
+
+boolean moving = true;
+boolean firstRun = true; 
+
 void loop() {
   // put your main code here, to run repeatedly:
 
@@ -77,64 +90,105 @@ void loop() {
       
       }
 
-
-      
-      //Create a neutral value for very low value (it oscillate a bit)
-//if (j1valX > minRangeNeutral && j1valX < maxRangeNeutral) j1valX = 0;
-//else if (j1valX > rangeValue) j1valX = 1;
-//else j1valX = -1;
-j1valX = mapRange(j1valX);
-j2valX = mapRange(j2valX);
-j1valY = mapRange(j1valY);
-j2valY = mapRange(j2valY);
-//Now all value are map to 1,0,-1
-
-int v1 = parseRange(j1valX,j1lX,j1valY,j1lY);
- 
-
-int v2 = parseRange(j2valX,j2lX,j2valY,j2lY);
- 
- 
-
-if (j1valX ==  j1lX && j1valY == j1lY && j2valX == j2lX && j2valY == j2lY) notMoving=true; else notMoving = false;
-
-
-if (!notMoving || firstRun)
-{
-  firstRun = false;
-    Serial.print(v1, DEC); 
-    Serial.print(",");
-    Serial.print(v1, DEC); 
-    Serial.print(",");
-    Serial.print(v2, DEC); 
-    Serial.print(",");
-    Serial.print(v2, DEC); 
-    Serial.print(",");
-    Serial.print(s3, DEC); 
-    Serial.print(",");
-    Serial.print(distance, DEC); 
-    Serial.print(",");
-    Serial.print(distance2, DEC); 
-    Serial.println();
-    notMoving = true;
-
-}
-//Store our last data for the next loop
-    j1lX = j1valX;
-    j2lX = j2valX;
-    j1lY = j1valY;
-    j2lY = j2valY;
-    
   
+        
+        //Create a neutral value for very low value (it oscillate a bit)
+  //if (j1valX > minRangeNeutral && j1valX < maxRangeNeutral) j1valX = 0;
+  //else if (j1valX > rangeValue) j1valX = 1;
+  //else j1valX = -1;
+  j1valX = mapRange(j1valX);
+  j2valX = mapRange(j2valX);
+  j1valY = mapRange(j1valY);
+  j2valY = mapRange(j2valY);
+  //Now all value are map to 1,0,-1
+  
+  
+  if (false)
+    printDebug(j1valX,j1valY,j2valX,j2valY);
+  
+    v1 = parseRange(j1valX,j1lX,j1valY,j1lY);
+ 
+    v2 = parseRange(j2valX,j2lX,j2valY,j2lY);
+  
+  
+  if (j1valX ==  j1lX && j1valY == j1lY && j2valX == j2lX && j2valY == j2lY  )
+    {  
+       
+      moving=false; 
+    } 
+  else moving = true;
+    
+    
+  //  Serial.print("v1:");Serial.print(v1);Serial.print(", pv1:");
+   // Serial.println ( pv1);
+
+  
+  if (moving || firstRun)
+  {
+    firstRun = false;
+    sendData(v1,pv1,v2,pv2,s3,distance,distance2);
+     delay(1);
+   //  sendData(0,0,0,0,s3,distance,distance2);
+    moving = false;
+  
+  }
+  //Store our last data for the next loop
+  j1lX = j1valX;
+  j2lX = j2valX;
+  j1lY = j1valY;
+  j2lY = j2valY;
+
+   
+  pv1 = v1;
+  pv2 = v2;
+
+if (!moving)
+  delay(5);
+  else delay(1);
+
+//send resets
+  
+
 }
 
-int mapRange(int val)
+void sendData(int v1,int v2,int v3,int v4,int v5,int v6,int v7)
+{
+    Serial.print(v1, DEC); 
+    Serial.print(",");
+    Serial.print(v2, DEC); 
+    Serial.print(",");
+    Serial.print(v3, DEC); 
+    Serial.print(",");
+    Serial.print(v4, DEC); 
+    Serial.print(",");
+    Serial.print(v5, DEC); 
+    Serial.print(",");
+    Serial.print(v6, DEC); 
+    Serial.print(",");
+    Serial.print(v7, DEC); 
+    Serial.println();
+}
+void printDebug(int v1,int v2,int v3,int v4)
+{
+  
+    Serial.println();
+    Serial.print(v1, DEC); 
+    Serial.print(",");
+    Serial.print(v2, DEC); 
+    Serial.print(",");
+    Serial.print(v3, DEC); 
+    Serial.print(",");
+    Serial.print(v4, DEC); 
+    Serial.print(" - ");
+}
+
+int mapRange(int _v)
 {
 
 
-    if (val > minRangeNeutral && val < maxRangeNeutral) return 0;
+    if (_v > minRangeNeutral && _v < maxRangeNeutral) return 0;
      else 
-     if (val > rangeValue) return 1;
+     if (_v > rangeValue) return 1;
       else return -1;
 
 }
@@ -152,24 +206,44 @@ int parseRange(int vx,int px,int vy,int py)
     0,-1
     1,-1
     */
-    if (vx == 1 && vy == 0 && px== 1 && py == -1) return 1;
-    if (vx == 1 && vy == 1 && px== 1 && py == 0) return 1;
-    if (vx == 0 && vy == 1 && px== 1 && py == 1) return 1;
-    if (vx == -1 && vy == 1 && px== 0 && py == 1) return 1;
-    if (vx == -1 && vy == 0 && px== -1 && py == 1) return 1;
-    if (vx == -1 && vy == -1 && px== -1 && py == 0) return 1;
-    if (vx == 0 && vy == -1 && px== -1 && py == -1) return 1;
-    if (vx == 1 && vy == -1 && px== 0 && py == -1) return 1;
+    if (vx == 1 && vy == 0 && px== 1 && py == -1) return outValBase;
+    else 
+    if (vx == 1 && vy == 0 && px== 1 && py == 1) return outValBase * -1;
+    
+    if (vx == 1 && vy == 1 && px== 1 && py == 0) return outValBase;
+    else
+    if (vx == 1 && vy == 1 && px== 0 && py == 1) return outValBase * -1;
+    
+    if (vx == 0 && vy == 1 && px== 1 && py == 1) return outValBase;
+    else
+    if (vx == 0 && vy == 1 && px== -1 && py == 1) return outValBase * -1;
+    
+    if (vx == -1 && vy == 1 && px== 0 && py == 1) return outValBase;
+    else
+    if (vx == -1 && vy == 1 && px== -1 && py == 0) return outValBase * -1;
+    
+    if (vx == -1 && vy == 0 && px== -1 && py == 1) return outValBase;
+    else
+    if (vx == -1 && vy == 0 && px== -1 && py == -1) return outValBase * -1;
+    
+    if (vx == -1 && vy == -1 && px== -1 && py == 0) return outValBase;
+    else
+    if (vx == -1 && vy == -1 && px== 0 && py == -1) return outValBase * -1;
+    
+    if (vx == 0 && vy == -1 && px== -1 && py == -1) return outValBase;
+    else
+    if (vx == 0 && vy == -1 && px== 1 && py == -1) return outValBase * -1;
 
-   
-    if (vx == 1 && vy == -1 && px== 1 && py == 0) return -1;
-    if (vx == 1 && vy == 0 && px== 1 && py == 1) return -1;
-    if (vx == 1 && vy == 1 && px== 0 && py == 1) return -1;
-    if (vx == 0 && vy == 1 && px== -1 && py == 1) return -1;
-    if (vx == -1 && vy == 1 && px== -1 && py == 0) return -1;
-    if (vx == -1 && vy == 0 && px== -1 && py == -1) return -1;
-    if (vx == -1 && vy == -1 && px== 0 && py == -1) return -1;
-    if (vx == 0 && vy == -1 && px== 1 && py == -1) return -1;
+    
+    if (vx == 1 && vy == -1 && px== 1 && py == 0) return outValBase * -1;
+    else
+    if (vx == 1 && vy == -1 && px== 0 && py == -1) return outValBase;
+    
+    
+    
+    
+    
+    
 
     return 0;
     
