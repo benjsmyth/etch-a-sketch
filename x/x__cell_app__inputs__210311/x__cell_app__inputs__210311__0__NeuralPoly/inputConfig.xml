@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<OSCInputGroup>
+  <oscMessage>/wek/inputs</oscMessage>
+  <numInputs>9</numInputs>
+  <groupName>Inputs</groupName>
+  <inputNames>
+    <string>aX</string>
+    <string>aY</string>
+    <string>aZ</string>
+    <string>gX</string>
+    <string>gY</string>
+    <string>gZ</string>
+    <string>pitch</string>
+    <string>roll</string>
+    <string>yaw</string>
+  </inputNames>
+</OSCInputGroup>
