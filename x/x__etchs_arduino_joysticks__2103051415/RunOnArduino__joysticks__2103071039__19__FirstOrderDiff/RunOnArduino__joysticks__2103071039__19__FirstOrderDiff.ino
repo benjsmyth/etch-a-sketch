@@ -1,6 +1,6 @@
-
-
-/*
+/*  Etch a Sketch Feature Extractor - Arduino Sketch
+ * By J.Guillaume D.-Isabelle, 2021
+ * 
  * @STATUS I DO NOT LIKE IT, even though it has interesting code
  * I think that what I would like to feel is the speed 
  * at which I am turning the wheel. How can I achieve that ?
@@ -53,6 +53,7 @@ int pv2 = 0;
 
 boolean moving = true;
 boolean firstRun = true; 
+int loopDelay = 5;
 
 void loop() {
   // put your main code here, to run repeatedly:
@@ -122,12 +123,20 @@ void loop() {
   //  Serial.print("v1:");Serial.print(v1);Serial.print(", pv1:");
    // Serial.println ( pv1);
 
-  
+  float FirstOrderDiffX = (
+    (j1valX - j1lX) /  loopDelay 
+    ) * 100;
+
+  float FirstOrderDiffY = (
+    (j1valY - j1lY) /  loopDelay 
+    ) * 100;
+
+    
   if (moving || firstRun)
   {
     firstRun = false;
-    sendData(v1,pv1,v2,pv2,s3,distance,distance2);
-     delay(1);
+    sendData(v1,j1valX,j1valY,s3,v2,j2valX,j2valY,FirstOrderDiffX,FirstOrderDiffY);
+    
    //  sendData(0,0,0,0,s3,distance,distance2);
     moving = false;
   
@@ -143,15 +152,15 @@ void loop() {
   pv2 = v2;
 
 if (!moving)
-  delay(5);
-  else delay(1);
+  delay(loopDelay);
+  else delay(loopDelay);
 
 //send resets
   
 
 }
 
-void sendData(int v1,int v2,int v3,int v4,int v5,int v6,int v7)
+void sendData(int v1,int v2,int v3,int v4,int v5,int v6,int v7,float _FirstOrderDiffX,float _FirstOrderDiffY)
 {
     Serial.print(v1, DEC); 
     Serial.print(",");
@@ -166,6 +175,10 @@ void sendData(int v1,int v2,int v3,int v4,int v5,int v6,int v7)
     Serial.print(v6, DEC); 
     Serial.print(",");
     Serial.print(v7, DEC); 
+    Serial.print(",");
+    Serial.print(_FirstOrderDiffX, DEC); 
+    Serial.print(",");
+    Serial.print(_FirstOrderDiffY, DEC); 
     Serial.println();
 }
 void printDebug(int v1,int v2,int v3,int v4)

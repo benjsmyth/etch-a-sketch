@@ -1,6 +1,7 @@
 //In this branch, I would like to add the Nick 'Milchreis' Müller Contrast example.
 //It would allow us to contrast the image we are going to send before we send it.
 //Select file, contrast choice, an action and voila we get a result.
+//@STATUS FAILED
 
 //...
 //I will use this example to get an inference from a local machine running RunwayML Model Servers
@@ -34,6 +35,18 @@
 // Receive HTTP messages from Runway
 // Running Adaptive-Style-Transfer model
 // example by George Profenza
+
+//----Contrast
+/* Example for changing contrast in an image.
+ * Use the mouse in X-axis (left and right) to change the contrast intensity.
+ * Author: Nick 'Milchreis' Müller
+ */
+
+import milchreis.imageprocessing.*;
+
+PImage image;
+
+//-----------------------------------------------
 
 // import Runway library
 import com.runwayml.*;
@@ -76,11 +89,15 @@ void draw(){
   // display status
   text(status,5,15);
 }
-
+boolean doneContrasting = false;
 void keyPressed(){
   if(key == 'c'){
     selectInput("Select a content image to process:", "contentImageSelected");
   }
+  if(key == 'd'){
+   doneContrasting = true;
+  }
+  
 }
 
 void contentImageSelected(File selection) {
@@ -91,10 +108,27 @@ void contentImageSelected(File selection) {
     contentImage = loadImage(selection.getAbsolutePath());
     // resize image (adjust as needed)
     contentImage.resize(600,400);
+    //
+   // contentImage=  
+   // contrasting(contentImage);
     // send it to Runway
     runway.query(contentImage,ModelUtils.IMAGE_FORMAT_JPG,"contentImage");
   }
 }
+
+PImage contrasting(PImage _img)
+{
+  while (!mousePressed || doneContrasting)
+  {
+     // Show the toned image by intensity by mouse x position
+    float intensity = map(mouseX, 0, width, -1.0f, 1.0f);
+    image(Contrast.apply(_img, intensity), 0, 0);
+  }
+  
+  return _img;
+}
+
+
 
 // this is called when new Runway data is available
 void runwayDataEvent(JSONObject runwayData){

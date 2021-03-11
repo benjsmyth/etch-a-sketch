@@ -98,6 +98,8 @@ j2valY = parseRange(j2valY);
     Serial.print(",");
     Serial.print(distance2, DEC); 
     Serial.println();
+
+  delay(1);
   
 }
 
