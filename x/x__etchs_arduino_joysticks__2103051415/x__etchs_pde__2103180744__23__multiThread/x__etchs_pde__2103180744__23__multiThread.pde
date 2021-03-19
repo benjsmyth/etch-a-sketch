@@ -186,7 +186,6 @@ void draw() {
    pStatus = curStatus;
    
  }
- //setStatus(curStatus);
  
  parseEtchDrawing();
  
@@ -196,8 +195,6 @@ void draw() {
   
  updateUI();
  
- //counting++;
-  //delay(1);
 }
 
 //Parse the Etch a Sketch Drawing
@@ -260,8 +257,6 @@ String fnCurrent =   saveBasePath  + "etch-current.png";
 //Load the current Image
 void loadcontentImage()
 {
-  // saveCurrent();
- // PImage outIMG ;
   contentImage = loadImage("content.png");;
   //contentImage = outIMG.get(minX,minY,maxX-minX,maxY-minY);
   contentImage.save(saveBasePath + "d-crop" + ".png");
@@ -304,14 +299,13 @@ void updateContentImage(){
 }
 void saveContentImage()
 {
-  // updateContentImage();
    contentImage.save("content.png");
 }
 void saveResult(){ if (runwayResult != null) runwayResult.save("result.png");}
 
 //save the frame to current
 void saveCurrent()
-{ //TODO Save only the drawing canvas using get(...
+{ 
   saveFrame(fnCurrent);
   println("Current file saved");
   
@@ -338,7 +332,6 @@ void wrapRunwayInfering()
   curStatus = "Current style is from : " + currentPainter;
   
   thread("updatingDone");
-   //updateUI();
 }
 void updatingDone()
 {
@@ -349,9 +342,7 @@ void startInferencing(int _newServerPort,String _painter)
 {
   
   curStatus = "Inferencing started (" + _painter + " )";
-  
- // updateStatus();updateUI();
-  
+    
    currentPainter = _painter;
    serverPort = _newServerPort;
    inferencePreview(0);
