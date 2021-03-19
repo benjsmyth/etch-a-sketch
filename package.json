@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224#readme",
   "dependencies": {
-    "html2canvas": "^1.0.0-rc.7"
+    "gia-runwayml-http": "0.0.2",
+    "html2canvas": "^1.0.0-rc.7",
+    "runwayml-http": "0.0.1"
   }
 }

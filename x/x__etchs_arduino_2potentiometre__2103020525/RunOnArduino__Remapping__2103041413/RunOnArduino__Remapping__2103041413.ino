@@ -34,13 +34,28 @@ void loop() {
   /*The Serial.print() function does not execute a "return" or a space
       Also, the "," character is essential for parsing the values,
       The comma is not necessary after the last variable.*/
-  
-  Serial.print(A, DEC); 
-  Serial.print(",");
-  Serial.print(B, DEC); 
-  Serial.println();
-  
+
+   boolean sending = hasMovedSignificantly(A,B,pA,pB);
+  //We send only if there was a move
+  if (sending)
+  {
+    
+    Serial.print(A, DEC); 
+    Serial.print(",");
+    Serial.print(B, DEC); 
+    Serial.println();
+  }
   pA = A;
   pB = B;
   //delay(500); // For illustration purposes only. This will slow down your program if not removed 
+}
+int vt =1;
+boolean hasMovedSignificantly(int a,int b,int pa,int pb)
+{
+  boolean k = false;
+
+  if ((a > pa+vt || a < pa-vt) && a != pa) return true;
+  if ((b > pb+vt || b < pb-vt) && b != pb) return true;
+
+  return k;
 }

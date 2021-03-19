@@ -65,6 +65,13 @@ float vPos = 15;
 int recSizeX = 5;
 int recSizeY = 5;
 
+//minimum range where we consider accelleration was a move
+int minXp = 1;
+int minXn = -1;
+int minYp = 1;
+int minYn = -1;
+
+
 void draw() {
  
 
@@ -83,9 +90,14 @@ void draw() {
   }
 
  
+
   //change our XY value according to received velocities
-  x = x-vx;
-  y = y-vy;
+  if (vx < 0)
+    x = x-vx;
+    else x = x+vx;
+  if (vy < 0)
+    y = y-vy;
+  else y = y+vy;
   
  // rect(x,y, recSizeX, recSizeY);
   line(x,y,lastX,lastY);
@@ -103,7 +115,7 @@ void draw() {
   //delay(1);
   
 }
- 
+
 void keyPressed() {
   background(0);
   counting = -10;
@@ -112,10 +124,25 @@ void keyPressed() {
 
 }
 
+int minInRange  = -500;
+int maxInRange = 500;
+int minOutRange = 50;
+int maxOutRange = -50;
 
 //This is called automatically when OSC message is received
 void oscEvent(OscMessage theOscMessage) {
  if (theOscMessage.checkAddrPattern("/wek/outputs")==true) {
+   int vOri =v;
+   v=2;
+   if (v > 1 )
+   {
+     println("----------------OSC Message:-----------------------------_");
+     println(theOscMessage);
+     println("----------------:OSC Message-----------------------------_");
+   
+   }
+   v=vOri;
+   
      if(theOscMessage.checkTypetag("ff")) { //Now looking for 2 parameters
         float p1 = theOscMessage.get(0).floatValue(); //get this parameter
         float p2 = theOscMessage.get(1).floatValue(); //get 2nd parameter
@@ -127,16 +154,18 @@ void oscEvent(OscMessage theOscMessage) {
      
       vx = 0;
       vy = 0;
-      int minXp = 1;
-      int minXn = -1;
-      int minYp = 1;
-      int minYn = -1;
-      if (p1 > minXp ) vx = vNeg;
-      if (p1 < minXn ) vx = vPos;
-      if (p2 > minYp ) vy = vNeg;
-      if (p2 < minYn ) vy = vPos;
+
       
-       // updateDrums(p1, p2, p3);
+      
+      //Uh ! What am I trying to achieve in here ??
+     // if (p1 > minXp ) vx = map(p1,0,500,0,50);
+    //  if (p1 < minXn ) vx = map(p1,0,-500,0,-50);
+    //  if (p2 > minYp ) vy = map(p2,0,500,0,50);
+    //  if (p2 < minYn ) vy = map(p2,0,500,0,-50);
+    //I think I am trying to remap to an acceptable movement in 4 possible directions.
+    vx = map(p1,minInRange,maxInRange,minOutRange,maxOutRange);
+    vy = map(p2,minInRange,maxInRange,minOutRange,maxOutRange);
+    
         v=1;
     if (v > 0)    println("VelocityX: "+ p1 + ", Velocity Y: " + p2 +"  -> Received new params value from Wekinator");  
       

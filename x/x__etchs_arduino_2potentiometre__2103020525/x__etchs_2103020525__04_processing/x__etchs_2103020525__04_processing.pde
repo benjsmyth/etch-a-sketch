@@ -39,13 +39,18 @@ void draw() {
     // and the next byte (first one was discarded)
     inByte2 = myPort.read();
   }
+ print(inByte1 + "\n");
+ print(inByte2 + "\n");
  
   // map these values so they are scaled to the sketch
   float x = map(inByte1, 0, 255, 0, width);
   float y = map(inByte2, 0, 255, 0, height);
  
- print(x);
- print(y);
+ if (v > 1) {
+   
+ print(x + "\n");
+ print(y + "\n");
+ }
   // draw a line
   line(x, y, lastX, lastY);
    

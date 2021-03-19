@@ -1,8 +1,10 @@
 //@STCGoal PImage to Base64 for API upload
 //Credit @CharlesDesign from https://forum.processing.org/two/discussion/22523/pimage-to-base64-for-api-upload
 
-S
+
 import org.apache.commons.codec.binary.Base64;
+//import commons-codec-1.15;
+//commons-codec-1.15.jar
 import java.io.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -13,7 +15,7 @@ void setup() {
   String encoded = "";
   PImage decoded = createImage(500, 500, RGB);
  
-  String fileLocation = "C:/Users/charles.fried/Documents/Window/FaceRecogntion/Face++/Faces/Charles/Snapshot_20170511.jpg";
+  String fileLocation = "/data/x/ETCH_A_SKETCH/x__etch-a-sketch__210224/processing/base64/shot_202102280453.jpg";
  
   try {
     encoded = encodeToBase64(fileLocation);
