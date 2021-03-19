@@ -65,7 +65,7 @@ int v = 0; // Verbose
 
 
 float strokeSize = 3;
-int strokeColor = 250;
+//int strokeColor = 250;
 int sR = 250;
 int sG = 250;
 int sB = 250;
@@ -109,7 +109,7 @@ void setupCanvasSize()
   startY = mgY + cY / 2;
   
 }
-
+boolean firstDrawn = false; //so we do stuff once in draw
 void setup() {
   
   
@@ -179,7 +179,12 @@ String curStatus = "";
 String pStatus = "-";
 void draw() {
  
- 
+  if (!firstDrawn) 
+  {
+    startInferencing(picassoPort,"Picasso");
+    firstDrawn  =true;
+  }
+  
  if (pStatus != curStatus)  
  {
    updateStatus();
@@ -193,8 +198,13 @@ void draw() {
  
  drawRunwayResult();
   
+ //if (updating) 
  updateUI();
- 
+ updating = false;
+}
+void endDraw()
+{
+  println("enddraw...");
 }
 
 //Parse the Etch a Sketch Drawing
@@ -299,7 +309,9 @@ void updateContentImage(){
 }
 void saveContentImage()
 {
+  if (contentImage != null)
    contentImage.save("content.png");
+   else updateContentImage();
 }
 void saveResult(){ if (runwayResult != null) runwayResult.save("result.png");}
 
@@ -331,7 +343,13 @@ void wrapRunwayInfering()
    
   curStatus = "Current style is from : " + currentPainter;
   
+  thread("doneInfering");
+  
   thread("updatingDone");
+}
+void doneInfering()
+{
+  saveResult();
 }
 void updatingDone()
 {
@@ -380,7 +398,7 @@ void keyPressed() {
  // if (!modeS && !modeA && !modeC)  modeN=true;setMode("-");
   
   
-  println("modeC: " + modeC + ", modeS:" + modeS + ", modeA: "  + modeA + ", modeN: " + modeN);
+ if (v > 1) println("modeC: " + modeC + ", modeS:" + modeS + ", modeA: "  + modeA + ", modeN: " + modeN);
   
   //-----------------
   //----- Commands Available in Any Mode
@@ -392,6 +410,19 @@ void keyPressed() {
   else  if (key == '6') { startInferencing(xPort,"Experimental");  } 
   
   else  if (key == 'p') { xCopyInferenceToCanvas();  } 
+  else  if (key == 'y') { 
+  //swapStrokeColor(); 
+ //setStrokeColor(0);
+ setStrokeColor(0,0,0);
+} else if (key == 'k') {
+    strokeSize+=1;
+    println(strokeSize);
+   // updateStrokeSize();
+  } else     if (key == 'x') {
+      if (strokeSize > 1) strokeSize -= 1;
+      updateStrokeSize();
+      println(strokeSize);
+    }
    
   
   //***************************************************
@@ -455,15 +486,16 @@ void keyPressed() {
        resetCanvas();
     } else 
     
+
     if (key == 's') {
-     setStrokeColor(strokeColor++);
+     setStrokeColor(sR++,sG++,sB++);
     } else    if (key == 'n') {
-     setStrokeColor(strokeColor--);
+     setStrokeColor(sR--,sG--,sB--);
   } else 
   if (key == 'k') {
     strokeSize+=1;
     println(strokeSize);
-    updateStrokeSize();
+   // updateStrokeSize();
   }else 
    if (key == 'x') {
       if (strokeSize > 1) strokeSize -= 1;
@@ -512,6 +544,33 @@ void keyPressed() {
 }
 
 
+//-------------------------------------------------Stroking interaction--------
+boolean strokeColorSwapped = false;
+
+int osR = 0;
+int osG = 0;
+int osB = 0;
+
+void swapStrokeColor()
+{
+  if (!strokeColorSwapped)
+  {
+    strokeColorSwapped = true;
+    osR = sR;
+    osG = sG;
+    osB = sB;
+    //setStrokeColor();
+    curStatus = "Swapping stroke color";
+  } else
+  {
+   // setStrokeColor(originalStrokeColor);
+    strokeColorSwapped =  false;  
+    sR = osR;
+    sG = osG;
+    osB = osB;
+    curStatus = "UnSwapping stroke color";
+}
+}
 
 
 
@@ -675,9 +734,11 @@ void updateStatus()
 
 //-------------- STROKE
 
-void setStrokeColor(int _color)
+void setStrokeColor(int _r,int _g,int _b)
 {
-      strokeColor = _color;updateStrokeColor();
+      sR = _r; sG = _g; sB = _b;
+      //updateStrokeColor();    
+       updating = true;
 }
 
 
