@@ -129,18 +129,23 @@ void setup() {
   
  
   // start w black bg
-updateUI();
+  clearBG();
 
   surface.setTitle("Etch a Sketch AI - EtchAI Prototype no 1");
 }
+
 void updateUI() {
-    updateBG();
-  
+    
+  updateBG();  
   updateStrokeColor();
   updateStrokeSize();
+  
 }
 
-void updateBG() {background(bgR,bgG,bgB);}
+void clearBG() {background(bgR,bgG,bgB);
+updateUI();
+}
+void updateBG() {}
 
 void updateStrokeColor()
 {
@@ -170,15 +175,24 @@ int recSizeX = 5;
 int recSizeY = 5;
 
 
-
-
+String curStatus = "";
+String pStatus = "-";
 void draw() {
+ 
+ 
+ if (pStatus != curStatus)  
+ {
+   updateStatus();
+   pStatus = curStatus;
+   updateUI();
+ }
+ //setStatus(curStatus);
  
  parseEtchDrawing();
  
  drawRunwayResult();
   
-  setStatus(curStatus);
+ 
  //counting++;
   //delay(1);
 }
@@ -274,15 +288,8 @@ void inferencePreview(int painterID)
     println("...Inference preview starting");
 
 }
-void xSavePart()
-{
-   PImage all ; 
-   all = get();
-  contentImage = all.get(minX,minY,maxX-minX,maxY-minY);
-  //An object image I can 
-  contentImage.save("content.png");
-  if (runwayResult != null) runwayResult.save("result.png");
-}
+
+
 
 void updateContentImage(){
    PImage all ; 
@@ -315,9 +322,10 @@ int bgR =55; int bgG = 55; int bgB = 55;
 
 void startInferencing(int _newServerPort,String _painter)
 {
-
-
-  currentPainter = _painter;
+  curStatus = "Inferencing started";
+  updateStatus();updateUI();
+  
+   currentPainter = _painter;
    serverPort = _newServerPort;
    inferencePreview(0);
    runwayInference(serverPort);
@@ -331,9 +339,8 @@ void startInferencing(int _newServerPort,String _painter)
   curStatus = "Current style is from : " + currentPainter;
   
   
-    updateStrokeColor();
-  updateStrokeSize();
-  
+
+   updateUI();
   
 }
 
@@ -387,11 +394,7 @@ void keyPressed() {
    if (key == 'i' || key== ' ') {
     startInferencing(serverPort,currentPainter);
   }
-  else if (key == 'y') { 
-  //Works
-  println("experimenting a SavePart: see content.png in sketch current dir");  
-  xSavePart();
-}
+  
   //Let us select the Painter style from the Inference Server (requires to start servers on these port on the ModelServer
   
   //
@@ -642,14 +645,18 @@ void setMode(String _curmode){
  int statusPosX = 20;
  int statusHeight = 25;
  int statusPosY= 20;
- String curStatus = "";
+
  void initStatus(){
     statusPosY= height - statusHeight;
   }
 
- int statusR = 244;int statusG = 200; int statusB = 188;
+int statusR = 244;int statusG = 200; int statusB = 188;
 void setStatus(String _curStatus){
   curStatus = _curStatus;
+
+}
+void updateStatus()
+{
   textSize(32);
   fill(statusR,statusG,statusB);
   noStroke();
