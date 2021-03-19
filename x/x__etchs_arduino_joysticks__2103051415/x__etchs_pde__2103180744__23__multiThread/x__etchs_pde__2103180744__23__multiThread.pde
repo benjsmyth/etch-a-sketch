@@ -178,6 +178,7 @@ void draw() {
  
  drawRunwayResult();
   
+  setStatus(curStatus);
  //counting++;
   //delay(1);
 }
@@ -326,8 +327,9 @@ void startInferencing(int _newServerPort,String _painter)
    {     
      saveTlid();
    }
-   String _curStatus = "Current style is from : " + currentPainter;
-  setStatus(_curStatus);
+   
+  curStatus = "Current style is from : " + currentPainter;
+  
   
     updateStrokeColor();
   updateStrokeSize();
