@@ -218,14 +218,18 @@ String fnCurrent =   saveBasePath  + "etch-current.png";
 void loadcontentImage()
 {
   // saveCurrent();
-  PImage outIMG ;
-  outIMG = loadImage(fnCurrent);;
-  contentImage = outIMG.get(minX,minY,maxX-minX,maxY-minY);
+ // PImage outIMG ;
+  contentImage = loadImage("content.png");;
+  //contentImage = outIMG.get(minX,minY,maxX-minX,maxY-minY);
   contentImage.save(saveBasePath + "d-crop" + ".png");
+  contentImage.save("canvas" + ".png");
  
 
 }
-
+void saveCanvas(PImage _canvas)
+{
+  _canvas.save("canvas" + ".png");
+}
 //display the current image (to redraw on it too)
 void displaycontentImage()
 {
@@ -240,6 +244,7 @@ void inferencePreview(int painterID)
    // saveCurrent();
    // loadcontentImage();
     updateContentImage();
+    saveContentImage();
     println("...Inference preview starting");
 
 }
@@ -307,11 +312,17 @@ void startInferencing(int _newServerPort,String _painter)
 
 boolean doAutoSaveTimeline = true;
 
-int picassoPort = 8000;
+int picassoPort = 8001;
+char picassoKey = '1';
 int monetPort = 8001;
+char monetKey='4';
 int vangoghPort = 8002;
-int KandinskyPort = 8003;
-int PollockPort = 8004;
+char vangoghKey = '3';
+int kandinskyPort = 8000;
+char kandinskyKey = '2';
+int pollockPort = 8004;
+char pollockKey = '5';
+
 int xPort = 8005;
 boolean modeN = true;
 boolean modeC = false;
@@ -331,11 +342,11 @@ void keyPressed() {
   
   //-----------------
   //----- Commands Available in Any Mode
-        if (key == '1') { startInferencing(picassoPort,"Picasso");  } 
-  else  if (key == '2') { startInferencing(monetPort,"Monet");  } 
-  else  if (key == '3') { startInferencing(vangoghPort,"Van Gogh");  } 
-  else  if (key == '4') { startInferencing(KandinskyPort,"Kandinsky");  } 
-  else  if (key == '5') { startInferencing(PollockPort,"Pollock");  } 
+        if (key == picassoKey) { startInferencing(picassoPort,"Picasso");  } 
+  else  if (key == monetKey) { startInferencing(monetPort,"Monet");  } 
+  else  if (key == vangoghKey) { startInferencing(vangoghPort,"Van Gogh");  } 
+  else  if (key == kandinskyKey) { startInferencing(kandinskyPort,"Kandinsky");  } 
+  else  if (key == pollockKey) { startInferencing(pollockPort,"pollock");  } 
   else  if (key == '6') { startInferencing(xPort,"Experimental");  } 
   
   else  if (key == 'p') { xCopyInferenceToCanvas();  } 
@@ -374,12 +385,12 @@ void keyPressed() {
   }else 
    
      if (key == 'd') {
-       if (contentImage != null)  displaycontentImage();
-       else {
+       //if (contentImage != null)  displaycontentImage();
+       //else {
          loadcontentImage();
          displaycontentImage();
          println("Current image was null, therefore loaded from last saved");
-       }
+       //}
     }
   } 
   
