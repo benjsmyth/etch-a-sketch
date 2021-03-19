@@ -63,15 +63,6 @@ NetAddress dest;
 
 int v = 0; // Verbose
 
-int startX = 500;
-int startY = 310;
-
-//So we dont draw outside the box
-int maxX = startX + (startX/2);
-int maxY = startY + (startY/2);
-int minX = startX - (startX/2);
-int minY = startY - (startY/2);
-
 float strokeSize = 3;
 int strokeColor = 250;
 int sR = 250;
@@ -87,14 +78,43 @@ void setupUI()
   //setupUIProgressing();
 }
 
+
+
+int startX = 700;
+int startY = 360;
+
+//So we dont draw outside the box
+int maxX = startX + (startX/2);
+int maxY = startY + (startY/2);
+int minX = startX - (startX/2);
+int minY = startY - (startY/2);
+int mgX = 30;
+int mgY = 20;
+
+void setupCanvasSize()
+{
+// Trying to get that relative to the whole canvas size
+  //Run after the size of surface is def
+  //@STCStatus : NOT WORKING - I have to find another way to increase the canvas size
+  maxX = width + width / 2 + mgX;
+  maxY = height +  height / 2 + mgY;
+  minX = width - width / 2 - mgX;
+  minY = height - height / 2 - mgY;
+  
+  startX = width / 3 - mgX;
+  startY = height / 2 - mgY;
+  
+}
 void setup() {
-  
-  
+    
   // 3d in case we want to add a third pot...
   //size(displayWidth, displayHeight, P3D);
-  size(1600, 768, P3D);
+  size(1900, 920, P3D);
+  
   surface.setTitle("Initializing...");
   setupUI();
+ 
+  //setupCanvasSize();
   
   setupRunway();
   
@@ -141,8 +161,7 @@ float mX = 0; //Move in X
 float mY = 0; //Move in Y 
 
 
-int recSizeX = 5;
-int recSizeY = 5;
+
 
 
 
