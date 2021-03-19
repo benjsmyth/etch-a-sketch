@@ -243,7 +243,7 @@ void loadcontentImage()
 {
   // saveCurrent();
  // PImage outIMG ;
-  contentImage = loadImage("content.png");;
+  contentImage = loadImage("content.png");
   //contentImage = outIMG.get(minX,minY,maxX-minX,maxY-minY);
   contentImage.save(saveBasePath + "d-crop" + ".png");
   contentImage.save("canvas" + ".png");
@@ -310,7 +310,7 @@ void saveAll()
 }
 String currentPainter = "Picasso";
 int bgR =55; int bgG = 55; int bgB = 55;
-
+String curStylePrefix = " Current style is from : ";
 void startInferencing(int _newServerPort,String _painter)
 {
 
@@ -325,10 +325,10 @@ void startInferencing(int _newServerPort,String _painter)
    {     
      saveTlid();
    }
-   String _curStatus = "Current style is from : " + currentPainter;
+  String _curStatus = curStylePrefix + currentPainter;
   setStatus(_curStatus);
   
-    updateStrokeColor();
+  updateStrokeColor();
   updateStrokeSize();
   
   
@@ -505,8 +505,11 @@ void keyPressed() {
 
 void xCopyInferenceToCanvas()
 {
+  if (runwayResult == null) runwayResult = loadImage("result.png");
+  
   contentImage = runwayResult;
   displaycontentImage();
+  saveTlid();
 }
 
 
@@ -640,11 +643,13 @@ void setMode(String _curmode){
  void initStatus(){
     statusPosY= height - statusHeight;
   }
-    
+
+int statusR = 244;int statusG = 200; int statusB = 188;
 void setStatus(String _curStatus){
   curStatus = _curStatus;
   textSize(32);
-  fill(bgR, bgG, bgB);
+  //fill(bgR, bgG, bgB);
+  fill(statusR,statusG,statusB);
   noStroke();
   rect(statusPosX, statusPosY - statusHeight * 1.5, width/2, statusHeight*2);
   fill(0,20,height -25);
