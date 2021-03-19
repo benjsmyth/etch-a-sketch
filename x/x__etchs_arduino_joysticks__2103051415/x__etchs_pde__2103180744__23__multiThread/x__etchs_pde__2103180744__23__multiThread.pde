@@ -174,7 +174,7 @@ float mY = 0; //Move in Y
 int recSizeX = 5;
 int recSizeY = 5;
 
-
+boolean updating = false;
 String curStatus = "";
 String pStatus = "-";
 void draw() {
@@ -184,14 +184,17 @@ void draw() {
  {
    updateStatus();
    pStatus = curStatus;
-   updateUI();
+   
  }
  //setStatus(curStatus);
  
  parseEtchDrawing();
  
+ if (updating) updateContentImage();
+ 
  drawRunwayResult();
   
+ updateUI();
  
  //counting++;
   //delay(1);
@@ -280,10 +283,11 @@ void displaycontentImage()
 //Would generate the inference preview
 void inferencePreview(int painterID)
 { 
+  updating = true;
     print("starting INference preview prep...");
    // saveCurrent();
    // loadcontentImage();
-    updateContentImage();
+   // updateContentImage();
     saveContentImage();
     println("...Inference preview starting");
 
@@ -300,7 +304,7 @@ void updateContentImage(){
 }
 void saveContentImage()
 {
-   updateContentImage();
+  // updateContentImage();
    contentImage.save("content.png");
 }
 void saveResult(){ if (runwayResult != null) runwayResult.save("result.png");}
@@ -320,14 +324,9 @@ void saveAll()
 String currentPainter = "Picasso";
 int bgR =55; int bgG = 55; int bgB = 55;
 
-void startInferencing(int _newServerPort,String _painter)
+void wrapRunwayInfering()
 {
-  curStatus = "Inferencing started";
-  updateStatus();updateUI();
   
-   currentPainter = _painter;
-   serverPort = _newServerPort;
-   inferencePreview(0);
    runwayInference(serverPort);
    
    
@@ -338,9 +337,26 @@ void startInferencing(int _newServerPort,String _painter)
    
   curStatus = "Current style is from : " + currentPainter;
   
+  thread("updatingDone");
+   //updateUI();
+}
+void updatingDone()
+{
+  delay(25);
+  updating = false;
+}
+void startInferencing(int _newServerPort,String _painter)
+{
   
-
-   updateUI();
+  curStatus = "Inferencing started (" + _painter + " )";
+  
+ // updateStatus();updateUI();
+  
+   currentPainter = _painter;
+   serverPort = _newServerPort;
+   inferencePreview(0);
+   
+   thread("wrapRunwayInfering");
   
 }
 
