@@ -30,7 +30,7 @@ PImage runwayResult;
 
 // status
 String status = "Press 'c' to select content image";
-String hostName = "192.168.2.44" ;
+String hostName = "192.168.2.132" ;
 int serverPort = 8000;
 
 
