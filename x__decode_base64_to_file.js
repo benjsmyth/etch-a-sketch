@@ -1,6 +1,6 @@
 'use strict';
 // node v8.11.3
-const Buffer = require('buffer').Buffer;
+const Buffer = require('safer-buffer').Buffer;
 const path = require('path');
 const fs = require('fs');
 
@@ -50,7 +50,7 @@ fs.readFile(jsonFile, 'utf8', function (err, data) {
       if (error) {
         throw error;
       } else {
-        let buf = Buffer(data);
+        let buf = Buffer.from(data);
         let base64 = buf.toString('base64');
         // console.log('Base64 ' + filename + ': ' + base64);
         return base64;
@@ -63,7 +63,7 @@ fs.readFile(jsonFile, 'utf8', function (err, data) {
    * @param  {string} filename
    */
   function decode_base64(base64str, filename) {
-    let buf = Buffer(base64str, 'base64');
+    let buf = Buffer.from(base64str, 'base64');
   
     fs.writeFileSync( filename, buf);
 
