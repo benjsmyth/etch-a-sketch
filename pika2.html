@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Etch-A-Sketch</title>
+	<link href="style.css" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900|Satisfy" rel="stylesheet">
+	<script src="script.js" type="text/javascript" async></script>
+	
+	<script type="text/javascript">
+
+
+</script>
+</head>
+
+<body>
+	<div id="maincontainer">
+		<div id="top">
+			<button id="hover">Hover</button>
+			<button id="header"><h1>Etch-A-Sketch</h1></button>
+			<button id="drag">Drag</button>
+		</div>
+		<div id="canvaswrapper">
+			
+			<div id="gridcontainer">
+			</div>
+		</div>
+		<div id="bottombuttons">
+			<button id="clear">Clear</button>
+			<button id="default">Default</button>
+			<button id="transparent">Transparent</button>
+			<button id="colorized">Colorized</button>
+			<button id="resize">Resize</button>
+			<button onclick="saveimg()">Save</button>
+		</div>
+	</div>
+
+	<footer id="footer">
+		<p id="codedby">Coded by Ben Smyth, &copy; 2018.</p>
+		<p id="visitme"><a href="https://github.com/benjsmyth" target="_blank">Visit forked project on Github!</a></p>
+		<p id="visitme"><a href="https://github.com/benjsmyth" target="_blank">Visit parent forked project author (Benjsmyth) on Github!</a></p>
+	</footer>
+
+
+	
+
+<br>
+<hr>
+
+  <!-- @STCGoal Capture Canvas from an HTML Elements -->
+ <script type="text/javascript" src="/html2canvas/dist/html2canvas.js"></script>
+ node_modules/html2canvas/dist/html2canvas.js
+ 
+ <!-- @STCGoal So we dont publish on the web our config like pika_token -->
+ <script type="text/javascript" src="/config.js"></script>
+
+
+ <!-- @STCGoal Render Stylistic inferences via hosted AI model -->
+<script src="https://cdn.jsdelivr.net/npm/@runwayml/hosted-models@latest/dist/hosted-models.js"></script>
+
+
+<!-- @STCGoal Logic doing all the work -->
+<script type="text/javascript">
+
+//----------------------------------------------------------------------------------
+//--------------------------------------------Inference Starts after that timeout
+	var infereAfterTimeOut = 13000;
+//----------------------------------------------------------FEATURE ON/OFF --------------------
+//----------------- Toogle This for processing Style or Not (Cost 0.01$ USD per inference -----
+        var doProcess = true;
+
+
+			
+setTimeout(() => { 
+				console.log("Starting the whole thing!"); 
+
+
+
+var htmlIdSource = "canvaswrapper";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
+
+    html2canvas(document.getElementById(htmlIdSource)).then(function(canvas) {
+        document.body.appendChild(canvas);
+       // document.appendChild("<hr>");
+        var enc64 = imgToBase64(canvas);
+       // console.log(enc64);
+       //@STCStatus We have an encoded grabbed capture
+       //----------------------------------------------
+       
+       //----------------------------------------------
+       //@STCGoal posting to our hosted Pika model on the cloud
+    const model = new rw.HostedModel({
+        url: pika_url,
+        token: pika_token,
+    });
+    //// You can use the info() method to see what type of input object the model expects
+    model.info().then(info => console.log(info));
+    const inputs = {
+        "contentImage": enc64
+    };
+
+		if (doProcess){
+			model.query(inputs).then(outputs => {
+					const { stylizedImage } = outputs;
+					console.log('-------Runway stylized:');
+					console.log(stylizedImage);
+					var image = new Image();
+					image.src= stylizedImage;
+					document.body.appendChild(image);
+					// use the outputs in your project
+    });
+	}
+	else {
+		console.log("-------- DISABLED WARNING-----");
+		console.log("-- Processing style is disabled, set doProcess = true to enable");
+	}
+    
+});
+
+
+
+console.log("ending the whole thing");
+}, infereAfterTimeOut);
+
+//----------------------------------------------
+
+   function imgToBase64(img) {
+       const canvas = document.createElement('canvas');
+       const ctx = canvas.getContext('2d');
+       canvas.width = img.width;
+       canvas.height = img.height;
+
+       // I think this won't work inside the function from the console
+       img.crossOrigin = 'anonymous';
+
+       ctx.drawImage(img, 0, 0);
+
+       return canvas.toDataURL();
+}
+
+</script>
+ 
+
+</body>
+
+</html>
