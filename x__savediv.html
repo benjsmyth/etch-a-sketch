@@ -1,0 +1,73 @@
+<html> 
+<head>
+	<meta charset="UTF-8">
+	<title>Etch-A-Sketch</title>
+	<link href="x__savediv.css" rel="stylesheet" type="text/css">
+
+  
+ 
+ <script language="javascript">
+   
+    html2canvas([document.getElementById('mydiv')], {
+    onrendered: function (canvas) {
+    document.getElementById('canvas').appendChild(canvas);
+    var data = canvas.toDataURL('image/png');
+     //display 64bit imag
+     var image = new Image();
+    image.src = data;
+    document.getElementById('image').appendChild(image);
+    // AJAX call to send `data` to a PHP file that creates an PNG image from the dataURI string and saves it to a directory on the server
+
+    var file= dataURLtoBlob(data);
+
+// Create new form data
+var fd = new FormData();
+fd.append("imageNameHere", file);
+
+$.ajax({
+   url: "uploadFile.php",
+   type: "POST",
+   data: fd,
+   processData: false,
+   contentType: false,
+}).done(function(respond){
+
+    $(".return-data").html("Uploaded Canvas image link: <a href="+respond+">"+respond+"</a>").hide().fadeIn("fast");
+    });
+
+  }
+});
+
+function dataURLtoBlob(dataURL) {
+// Decode the dataURL    
+var binary = atob(dataURL.split(',')[1]);
+// Create 8-bit unsigned array
+var array = [];
+
+</script>
+</head>
+<body>
+
+  
+<div id="mydiv" style="background-image:url(Koala.jpg) ;background-size: 100%;
+background-size :200px 200px;
+background-repeat: no-repeat;">
+<p>text!</p>
+<img src="mug.png" height="100" width="100"/></div>
+<div id="canvas">
+<p>Canvas:</p>
+</div>
+
+ <div style="width:200px; float:left" id="image">
+ <p style="float:left">Image: </p>
+ </div>
+ <div style="float:left;margin-top: 120px;" class="return-data">
+ </div>
+ <script src="/node_modules/html2canvas/dist/html2canvas.js"></script>
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+
+
+</body>
+
+</html>

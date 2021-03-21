@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+
+<!--@STCGoal WORKS Encode base64 an image captured from an HTML div -->
+
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Encode an image base 64</title>
+	<link href="x__savediv.css" rel="stylesheet" type="text/css">
+
+ 
+   
+</head>
+<body>
+
+  
+   <div id="mydiv" style="background-image:url(Koala.jpg) ;background-size: 100%;
+   background-size :200px 200px;
+   background-repeat: no-repeat;">
+   <p>text!</p>
+   </div>
+<img src="mug.png" height="100" width="100"/></div>
+
+  
+ 
+
+ <script type="text/javascript" src="/html2canvas/dist/html2canvas.js"></script>
+ <script type="text/javascript">
+     html2canvas(document.getElementById("mydiv")).then(function(canvas) {
+         document.body.appendChild(canvas);
+         var enc64 = imgToBase64(canvas);
+         console.log(enc64);
+         
+     });
+
+    function imgToBase64(img) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        // I think this won't work inside the function from the console
+        img.crossOrigin = 'anonymous';
+
+        ctx.drawImage(img, 0, 0);
+
+        return canvas.toDataURL();
+}
+
+ </script>
+ 
+
+</body>
+
+</html>
