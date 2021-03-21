@@ -19,15 +19,21 @@ fs.readFile(jsonFile, 'utf8', function (err, data) {
     if (err) throw err;
     // console.log(data);
     jsonData = JSON.parse(data);
-    stylizedImage = jsonData.stylizedImage;
-    
-    //console.log(stylizedImage);
-    let buff = new Buffer(stylizedImage, 'base64');
+    var tmp = jsonData.stylizedImage;
 
-    decode_base64(stylizedImage, target);
+    
+    stylizedImage = tmp
+    .replace(/^data:image\/png;base64,/, "")
+    .replace(/^data:image\/jpeg;base64,/, "")
+    
+    ;
+
+   decode_base64(stylizedImage, target);
 
    // fs.writeFileSync(target, buff);
     console.log("should have written:" + target);
+    
+
   });
 
 
@@ -44,28 +50,22 @@ fs.readFile(jsonFile, 'utf8', function (err, data) {
       if (error) {
         throw error;
       } else {
-        let buf = Buffer.from(data);
+        let buf = Buffer(data);
         let base64 = buf.toString('base64');
         // console.log('Base64 ' + filename + ': ' + base64);
         return base64;
       }
     });
   }
-  
+
   /**
    * @param  {string} base64str
    * @param  {string} filename
    */
   function decode_base64(base64str, filename) {
-    let buf = Buffer.from(base64str, 'base64');
+    let buf = Buffer(base64str, 'base64');
   
-    fs.writeFile(path.join(__dirname, '/', filename), buf, function(error) {
-      if (error) {
-        throw error;
-      } else {
-        console.log('File created from base64 string!');
-        return true;
-      }
-    });
+    fs.writeFileSync( filename, buf);
+
   }
   
