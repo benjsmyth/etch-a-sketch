@@ -23,10 +23,37 @@ var imgFile = args[0];
 var target = args[1];
 
 
-console.log("Reading: " + imgFile);
+console.log("Reading using v3: " + imgFile);
 
-encode_base64_v2(imgFile, target);
+//encode_base64_v2(imgFile, target);
+encode_base64_v3(imgFile, target);
 
+/**
+ * @param  {string} filename
+ * @param  {string} targetJsonFile
+ */
+function encode_base64_v3(filename, targetJsonFile) {
+    var base64Raw = fs.readFileSync(filename, 'base64');
+    
+    var base64 = base64Raw;
+    var ext = path.extname(imgFile).replace(".","");
+    if (ext == "jpg" || ext == "JPG" || ext == "JPEG" ) ext = "jpeg";
+    if (ext == "pneg" || ext == "PNG" || ext == "Png" ) ext = "png";
+    
+
+    if (base64Raw.indexOf("data:")== -1) //fixing the string
+     base64 = `data:image/${ext};base64,`
+        + base64Raw  ;
+
+    //console.log(base64);
+    var jsonRequest = new Object();
+    jsonRequest.contentImage = base64;
+    var jsonData = JSON.stringify(jsonRequest);
+    
+    fs.writeFileSync(targetJsonFile, jsonData);
+    //console.log("Should have saved :" + targetJsonFile);
+
+}
 /**
  * @param  {string} filename
  * @param  {string} targetJsonFile
