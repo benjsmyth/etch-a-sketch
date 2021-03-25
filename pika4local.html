@@ -132,9 +132,24 @@ function renderimg()
 		var o = new Object();
 		o.contentImage = enc64;
 		var jsonString = JSON.stringify(o);
-		fetch(pika_url,{method: 'POST',body: jsonString})
-		.then(results => results.json())
-		.then(console.log());
+		console.log("Sending stringified :" + jsonString);
+
+		fetch(pika_url,{headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },method: 'POST',body: jsonString})
+ 
+		.then(outputs => {
+			console.log("outputs:");
+			console.log(outputs);
+			console.log("------------------");
+			const { stylizedImage } = outputs;
+			console.log('-------Runway stylized:');
+			console.log(stylizedImage);
+			var image = new Image();
+			image.src= stylizedImage;
+			document.body.appendChild(image);
+		});
 
 		// model.query(inputs).then(outputs => {
 		// 		const { stylizedImage } = outputs;
