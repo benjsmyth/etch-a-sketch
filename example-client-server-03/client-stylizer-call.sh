@@ -8,7 +8,7 @@ source _env.sh
 ## Picasso
 export modelinfo="Picasse v02 - iteration X"
 export callport=9000
-sleep 1
+
 
 ./__launch-call.sh
 

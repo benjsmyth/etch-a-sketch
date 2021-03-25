@@ -16,14 +16,14 @@ echo "CallURL: $callurl"
 echo "Output Responses: $responseFile"
 
 echo curl --header  \"$callContentType\"  --request POST   --data @$requestFile $callurl --output $responseFile
-sleep 1
+
 # Call the modeling service
 curl --header  "$callContentType"  --request POST   --data @$requestFile $callurl --output $responseFile
 
 # Post process response
 echo "Calling post scripting: $nodepostscripting"
 echo "  It will convert: $responseFile to $responseImage and generate HTML in : $resulthtml"
-sleep 1
+
 echo "node $nodepostscripting  $responseFile $responseImage --html  >> $resulthtml"
 
 echo "<hr><h2>$modelinfo</h2>" >> $resulthtml
