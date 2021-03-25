@@ -1,5 +1,4 @@
 #!/bin/env node
-
 'use strict';
 
 
@@ -19,37 +18,66 @@ const fs = require('fs');
 var args = process.argv.slice(2);
 
 
-var imgFile = args[0];
-var target = args[1];
+if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "--h" || !args[0])
+    console.log(`
+  -------------------------------------
+  ContentImage request Preper
+  by Guillaume D-Isabelle, 2021
+  --------------------------------------
+  -------------HELP----------------------
+  Prep a Request file for AST by creating a target JSON request file with a base64 image tag contentImage.
+
+Synopsis:  
+     ./img2stylizationRequest.js [IMAGE] [OutJSON]
+     
+usage : 
+
+./img2stylizationRequest.js mycontent.jpg myrequest.json
+
+------------------------------
+`);
+
+else // Lets do the work
+{
+    var imgFile = args[0];
+    var target = args[1];
 
 
-console.log("Reading using v3: " + imgFile);
+    console.log("Reading using v3: " + imgFile);
 
-//encode_base64_v2(imgFile, target);
-encode_base64_v3(imgFile, target);
+    //encode_base64_v2(imgFile, target);
+    try {
+        encode_base64_v3(imgFile, target);
+        console.log("filje: " + target + " should have been created");
+    } catch (error) {
+        console.log("something went wrong: " );
+        console.log(error);
+    }
 
+    
+}
 /**
  * @param  {string} filename
  * @param  {string} targetJsonFile
  */
 function encode_base64_v3(filename, targetJsonFile) {
     var base64Raw = fs.readFileSync(filename, 'base64');
-    
-    var base64 = base64Raw;
-    var ext = path.extname(imgFile).replace(".","");
-    if (ext == "jpg" || ext == "JPG" || ext == "JPEG" ) ext = "jpeg";
-    if (ext == "pneg" || ext == "PNG" || ext == "Png" ) ext = "png";
-    
 
-    if (base64Raw.indexOf("data:")== -1) //fixing the string
-     base64 = `data:image/${ext};base64,`
-        + base64Raw  ;
+    var base64 = base64Raw;
+    var ext = path.extname(imgFile).replace(".", "");
+    if (ext == "jpg" || ext == "JPG" || ext == "JPEG") ext = "jpeg";
+    if (ext == "pneg" || ext == "PNG" || ext == "Png") ext = "png";
+
+
+    if (base64Raw.indexOf("data:") == -1) //fixing the string
+        base64 = `data:image/${ext};base64,`
+            + base64Raw;
 
     //console.log(base64);
     var jsonRequest = new Object();
     jsonRequest.contentImage = base64;
     var jsonData = JSON.stringify(jsonRequest);
-    
+
     fs.writeFileSync(targetJsonFile, jsonData);
     //console.log("Should have saved :" + targetJsonFile);
 
