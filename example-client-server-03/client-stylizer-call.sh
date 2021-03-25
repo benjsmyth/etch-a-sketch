@@ -1,33 +1,33 @@
+#!/bin/bash
+
 
 # vars
+source _env.sh
+
 
 ## Picasso
+export modelinfo="Picasse v02 - iteration X"
 export callport=9000
-
-export callhost="as.guillaumeisabelle.com"
-export callurl="http://$callhost:$callport/stylize"
-
-## simple call JSON with "contentImage" with Encoded base64
-### "contentImage": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."}
-requestFile=request2.json
-
-
-#--------------------------------------------
-responseFile=response2.json
-
-# Make the call
-echo "Calling $callurl using curl..."
 sleep 1
 
-curl --header  "$callContentType"  --request POST   --data @$requestFile $callurl --output $responseFile
+./__launch-call.sh
+ls
+sleep 1
 
-# Calling with another server (style)
-echo "Calling to stylize using Kandinsky..."
-responseFile=response2w.json
 ## Kandinsky
+export modelinfo="Kandinsky"
 export callport=9001
-export callurl="http://$callhost:$callport/stylize"
-curl --header  "$callContentType"  --request POST   --data @$requestFile $callurl --output $responseFile
+./__launch-call.sh
 
-# Response
-## {"stylizedImage":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4..."}
+
+## "Picasse v03 - iteration 165k
+export modelinfo="Picasse v03 - iteration 165ik"
+export callport=9002
+./__launch-call.sh
+
+
+
+## "Picasse v03 - iteration 30k
+export modelinfo="Picasse v03 - iteration 30k"
+export callport=9003
+./__launch-call.sh
