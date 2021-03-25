@@ -57,10 +57,10 @@
 
 
  <!-- @STCGoal Render Stylistic inferences via hosted AI model -->
+<script src="https://cdn.jsdelivr.net/npm/@runwayml/hosted-models@latest/dist/hosted-models.js"></script>
 
- 
- <script type="text/javascript" src="/node_modules/gia-runwayml-http/index.js"></script>
- 
+ <!-- <script type="text/javascript" src="/node_modules/html2canvas/dist/html2canvas.js"></script>
+  -->
 
 <!-- @STCGoal Logic doing all the work -->
 <script type="text/javascript">
@@ -97,11 +97,7 @@ setTimeout(() => {
        return canvas.toDataURL();
 }
 
-
-//const GIARunwayHTTP = require('/node_modules/gia-runwayml-http/index.js');
-
-
-function renderimg2()
+function renderimg()
 {
 	
 	console.log("RENDER the whole thing!"); 
@@ -118,14 +114,11 @@ function renderimg2()
 	
 	//----------------------------------------------
 	//@STCGoal posting to our hosted Pika model on the cloud
-	// const model = new rw.HostedModel({
-	// 	url: pika_url,
-	// 	token: pika_token,
-	// });
+	const model = new rw.HostedModel({
+		url: pika_url,
+		token: pika_token,
+	});
 	//// You can use the info() method to see what type of input object the model expects
-
-
-	//-----------------------OLD ref
 	model.info().then(info => console.log(info));
 	const inputs = {
 		"contentImage": enc64

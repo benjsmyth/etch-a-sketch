@@ -28,11 +28,11 @@
 		</div>
 		<div id="bottombuttons">
 			<button id="clear">Clear</button>
-			<button id="default">Default</button>
-			<button id="transparent">Transparent</button>
-			<button id="colorized">Colorized</button>
-			<button id="resize">Resize</button>
-			<button onclick="saveimg()">Save</button>
+			<button id="default">Black</button>
+			<button id="transparent">Gray</button>
+			<button id="colorized">Color</button>
+			<button id="resize">Size</button>
+			<button onclick="renderimg()"> Render</button>
 		</div>
 	</div>
 
@@ -73,53 +73,10 @@
 
 			
 setTimeout(() => { 
-				console.log("Starting the whole thing!"); 
+	console.log("Starting the whole thing BYPASSED in this by the button RENDER!"); 
 
 
-
-var htmlIdSource = "canvaswrapper";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
-
-    html2canvas(document.getElementById(htmlIdSource)).then(function(canvas) {
-        document.body.appendChild(canvas);
-       // document.appendChild("<hr>");
-        var enc64 = imgToBase64(canvas);
-       // console.log(enc64);
-       //@STCStatus We have an encoded grabbed capture
-       //----------------------------------------------
-       
-       //----------------------------------------------
-       //@STCGoal posting to our hosted Pika model on the cloud
-    const model = new rw.HostedModel({
-        url: pika_url,
-        token: pika_token,
-    });
-    //// You can use the info() method to see what type of input object the model expects
-    model.info().then(info => console.log(info));
-    const inputs = {
-        "contentImage": enc64
-    };
-
-		if (doProcess){
-			model.query(inputs).then(outputs => {
-					const { stylizedImage } = outputs;
-					console.log('-------Runway stylized:');
-					console.log(stylizedImage);
-					var image = new Image();
-					image.src= stylizedImage;
-					document.body.appendChild(image);
-					// use the outputs in your project
-    });
-	}
-	else {
-		console.log("-------- DISABLED WARNING-----");
-		console.log("-- Processing style is disabled, set doProcess = true to enable");
-	}
-    
-});
-
-
-
-console.log("ending the whole thing");
+				
 }, infereAfterTimeOut);
 
 //----------------------------------------------
@@ -138,6 +95,56 @@ console.log("ending the whole thing");
        return canvas.toDataURL();
 }
 
+function renderimg()
+{
+	
+	console.log("RENDER the whole thing!"); 
+
+	var htmlIdSource = "canvaswrapper";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
+
+	html2canvas(document.getElementById(htmlIdSource)).then(function(canvas) {
+		document.body.appendChild(canvas);
+	// document.appendChild("<hr>");
+		var enc64 = imgToBase64(canvas);
+	// console.log(enc64);
+	//@STCStatus We have an encoded grabbed capture
+	//----------------------------------------------
+	
+	//----------------------------------------------
+	//@STCGoal posting to our hosted Pika model on the cloud
+	const model = new rw.HostedModel({
+		url: pika_url,
+		token: pika_token,
+	});
+	//// You can use the info() method to see what type of input object the model expects
+	model.info().then(info => console.log(info));
+	const inputs = {
+		"contentImage": enc64
+	};
+
+		if (doProcess){
+			model.query(inputs).then(outputs => {
+					const { stylizedImage } = outputs;
+					console.log('-------Runway stylized:');
+					console.log(stylizedImage);
+					var image = new Image();
+					image.src= stylizedImage;
+					document.body.appendChild(image);
+					// use the outputs in your project
+	});
+	}
+	else {
+		console.log("-------- DISABLED WARNING-----");
+		console.log("-- Processing style is disabled, set doProcess = true to enable");
+	}
+
+	});
+
+
+
+	console.log("ending the whole thing");
+
+}
 </script>
  
 
