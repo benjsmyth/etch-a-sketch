@@ -2,7 +2,6 @@
 
 
 # Prep context
-export resulthtml=results.html
 export callmethod="stylize"
 export responseBase=response$callport
 export callurl="http://$callhost:$callport/$callmethod"
@@ -27,6 +26,7 @@ echo "  It will convert: $responseFile to $responseImage and generate HTML in : 
 sleep 1
 echo "node $nodepostscripting  $responseFile $responseImage --html  >> $resulthtml"
 
+echo "<hr><h2>$modelinfo</h2>" >> $resulthtml
 node $nodepostscripting  $responseFile $responseImage --html  >> $resulthtml
 
 # cleanup

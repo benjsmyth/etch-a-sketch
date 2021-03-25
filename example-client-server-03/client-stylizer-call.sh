@@ -11,8 +11,8 @@ export callport=9000
 sleep 1
 
 ./__launch-call.sh
-ls
-sleep 1
+
+
 
 ## Kandinsky
 export modelinfo="Kandinsky"
