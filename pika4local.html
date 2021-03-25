@@ -15,33 +15,34 @@
 </head>
 
 <body>
-	<div id="maincontainer">
-		<div id="top">
-			<button id="hover">Hover</button>
-			<button id="header"><h1>Etch-A-Sketch</h1></button>
-			<button id="drag">Drag</button>
-		</div>
-		<div id="canvaswrapper">
-			
-			<div id="gridcontainer">
+	<table><tr><td valign=top>
+
+		<div id="maincontainer">
+			<div id="top">
+				<button id="hover">Hover</button>
+				<button id="header"><h1>Etch-A-Sketch</h1></button>
+				<button id="drag">Drag</button>
+			</div>
+			<div id="canvaswrapper">
+				
+				<div id="gridcontainer">
+				</div>
+			</div>
+			<div id="bottombuttons">
+				<button id="clear">Clear</button>
+				<button id="default">Black</button>
+				<button id="transparent">Gray</button>
+				<button id="colorized">Color</button>
+				<button id="resize">Size</button>
+				<button onclick="renderimg()"> Render</button>
 			</div>
 		</div>
-		<div id="bottombuttons">
-			<button id="clear">Clear</button>
-			<button id="default">Black</button>
-			<button id="transparent">Gray</button>
-			<button id="colorized">Color</button>
-			<button id="resize">Size</button>
-			<button onclick="renderimg()"> Render</button>
-		</div>
-	</div>
-
-	<footer id="footer">
-		<p id="codedby">Coded by Ben Smyth, &copy; 2018.</p>
-		<p id="visitme"><a href="https://github.com/benjsmyth" target="_blank">Visit forked project on Github!</a></p>
-		<p id="visitme"><a href="https://github.com/benjsmyth" target="_blank">Visit parent forked project author (Benjsmyth) on Github!</a></p>
-	</footer>
-
+	</td>
+<td>
+	<div id="result"></div>
+</td>
+</tr></table>
+	
 
 	
 
@@ -73,6 +74,7 @@
 //----------------- Toogle This for processing Style or Not (Cost 0.01$ USD per inference -----
         var doProcess = true;
 
+var debug = false;
 
 			
 setTimeout(() => { 
@@ -104,9 +106,11 @@ function renderimg()
 	console.log("RENDER the whole thing!"); 
 
 	var htmlIdSource = "canvaswrapper";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
+html2canvas(document.getElementById(htmlIdSource)).then(function(canvas) {
+	if (debug) document.body.appendChild(canvas);
 
-	html2canvas(document.getElementById(htmlIdSource)).then(function(canvas) {
-		document.body.appendChild(canvas);
+	//resultDiv.removeChild();
+//	resultDiv.appendChild(canvas);
 	// document.appendChild("<hr>");
 		var enc64 = imgToBase64(canvas);
 	// console.log(enc64);
@@ -132,8 +136,32 @@ function renderimg()
 		var o = new Object();
 		o.contentImage = enc64;
 		var jsonString = JSON.stringify(o);
-		console.log("Sending stringified :" + jsonString);
+	if (debug)	console.log("Sending stringified :" + jsonString);
 
+		(async () => {
+  const rawResponse = await fetch(pika_url, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({contentImage: enc64})
+  });
+  const content = await rawResponse.json();
+
+ if (debug) console.log(content.stylizedImage);
+ 
+			var image = new Image();
+			image.src= content.stylizedImage;
+
+var resultDiv = document.getElementById("result");
+var separator = new Image();
+separator.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAmoAAACUCAYAAAAj1QU/AAAABHNCSVQICAgIfAhkiAAAABl0RVh0U29mdHdhcmUAZ25vbWUtc2NyZWVuc2hvdO8Dvz4AAALMSURBVHic7dahAcAgEMDA0v0XfgUL4Im4myAya2b2BwBAzv86AACAO6MGABBl1AAAoowaAECUUQMAiDJqAABRRg0AIMqoAQBEGTUAgCijBgAQZdQAAKKMGgBAlFEDAIgyagAAUUYNACDKqAEARBk1AIAoowYAEGXUAACijBoAQJRRAwCIMmoAAFFGDQAgyqgBAEQZNQCAKKMGABBl1AAAoowaAECUUQMAiDJqAABRRg0AIMqoAQBEGTUAgCijBgAQZdQAAKKMGgBAlFEDAIgyagAAUUYNACDKqAEARBk1AIAoowYAEGXUAACijBoAQJRRAwCIMmoAAFFGDQAgyqgBAEQZNQCAKKMGABBl1AAAoowaAECUUQMAiDJqAABRRg0AIMqoAQBEGTUAgCijBgAQZdQAAKKMGgBAlFEDAIgyagAAUUYNACDKqAEARBk1AIAoowYAEGXUAACijBoAQJRRAwCIMmoAAFFGDQAgyqgBAEQZNQCAKKMGABBl1AAAoowaAECUUQMAiDJqAABRRg0AIMqoAQBEGTUAgCijBgAQZdQAAKKMGgBAlFEDAIgyagAAUUYNACDKqAEARBk1AIAoowYAEGXUAACijBoAQJRRAwCIMmoAAFFGDQAgyqgBAEQZNQCAKKMGABBl1AAAoowaAECUUQMAiDJqAABRRg0AIMqoAQBEGTUAgCijBgAQZdQAAKKMGgBAlFEDAIgyagAAUUYNACDKqAEARBk1AIAoowYAEGXUAACijBoAQJRRAwCIMmoAAFFGDQAgyqgBAEQZNQCAKKMGABBl1AAAoowaAECUUQMAiDJqAABRRg0AIMqoAQBEGTUAgCijBgAQZdQAAKKMGgBAlFEDAIgyagAAUUYNACDKqAEARBk1AIAoowYAEGXUAACijBoAQJRRAwCIMmoAAFFGDQAgyqgBAEQZNQCAKKMGABBl1AAAog6DLQUSriwc6QAAAABJRU5ErkJggg==";
+resultDiv.prepend(image);
+resultDiv.prepend(separator);
+		//	document.body.replaceChild(image);
+})();
+/*
 		fetch(pika_url,{headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
@@ -150,7 +178,7 @@ function renderimg()
 			image.src= stylizedImage;
 			document.body.appendChild(image);
 		});
-
+*/
 		// model.query(inputs).then(outputs => {
 		// 		const { stylizedImage } = outputs;
 		// 		console.log('-------Runway stylized:');
@@ -175,6 +203,29 @@ function renderimg()
 }
 </script>
  
+
+
+<!-- 
+	
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+		<footer id="footer" style="font-size: smaller;">
+		<p id="codedby">Etch a Sketch Coded by Ben Smyth, &copy; 2018.</p>
+		<p id="codedby2">EtchAI Coded by Guillaume D.Isabelle, &copy; 2021.</p>
+		<p id="visitmefork"><a href="https://github.com/GuillaumeAI/x__etch-a-sketch__210224" target="_blank">Visit EtchAI forked project author (Guillaume D.I)</a></p>
+		<p id="visitme"><a href="https://github.com/benjsmyth" target="_blank">Visit ETch a Sketch project author (Benjsmyth) on Github!</a></p>
+	</footer> -->
+
 
 </body>
 
