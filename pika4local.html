@@ -57,7 +57,8 @@
 
 
  <!-- @STCGoal Render Stylistic inferences via hosted AI model -->
-<script src="https://cdn.jsdelivr.net/npm/@runwayml/hosted-models@latest/dist/hosted-models.js"></script>
+
+ 
 
  <!-- <script type="text/javascript" src="/node_modules/html2canvas/dist/html2canvas.js"></script>
   -->
@@ -114,26 +115,36 @@ function renderimg()
 	
 	//----------------------------------------------
 	//@STCGoal posting to our hosted Pika model on the cloud
-	const model = new rw.HostedModel({
-		url: pika_url,
-		token: pika_token,
-	});
+	// const model = new rw.HostedModel({
+	// 	url: pika_url,
+	// 	token: pika_token,
+	// });
 	//// You can use the info() method to see what type of input object the model expects
-	model.info().then(info => console.log(info));
+
+	//NOT Present in the local server methods
+	/*	model.info().then(info => console.log(info));
 	const inputs = {
 		"contentImage": enc64
 	};
+*/
+	if (doProcess){
+		console.log("Fetching " + pika_url  + " starting");
+		var o = new Object();
+		o.contentImage = enc64;
+		var jsonString = JSON.stringify(o);
+		fetch(pika_url,{method: 'POST',body: jsonString})
+		.then(results => results.json())
+		.then(console.log());
 
-		if (doProcess){
-			model.query(inputs).then(outputs => {
-					const { stylizedImage } = outputs;
-					console.log('-------Runway stylized:');
-					console.log(stylizedImage);
-					var image = new Image();
-					image.src= stylizedImage;
-					document.body.appendChild(image);
-					// use the outputs in your project
-	});
+		// model.query(inputs).then(outputs => {
+		// 		const { stylizedImage } = outputs;
+		// 		console.log('-------Runway stylized:');
+		// 		console.log(stylizedImage);
+		// 		var image = new Image();
+		// 		image.src= stylizedImage;
+		// 		document.body.appendChild(image);
+		// 		// use the outputs in your project
+		// });
 	}
 	else {
 		console.log("-------- DISABLED WARNING-----");
