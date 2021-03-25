@@ -98,39 +98,36 @@ setTimeout(() => {
        ctx.drawImage(img, 0, 0);
 
        return canvas.toDataURL();
-}
-
+			}
+			
+			
 function renderimg()
 {
 	
 	console.log("RENDER the whole thing!"); 
 
 	var htmlIdSource = "canvaswrapper";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
-html2canvas(document.getElementById(htmlIdSource)).then(function(canvas) {
-	if (debug) document.body.appendChild(canvas);
+	var frame = document.getElementById(htmlIdSource);
+var rect = frame.getBoundingClientRect();
+	var WHFixOffset = 150;
+var fixWidth = rect.width +WHFixOffset;
+var fixHeight = rect.height +WHFixOffset;
+var options = {
+	scrollX: 80,
+		scrollY:  77,
+		width: fixWidth + 25,
+		height: fixHeight
+};
 
-	//resultDiv.removeChild();
-//	resultDiv.appendChild(canvas);
-	// document.appendChild("<hr>");
-		var enc64 = imgToBase64(canvas);
-	// console.log(enc64);
-	//@STCStatus We have an encoded grabbed capture
-	//----------------------------------------------
+html2canvas(frame,options).then(function(canvas) {
+	//if (debug) 
+	document.body.appendChild(canvas);
+
 	
-	//----------------------------------------------
-	//@STCGoal posting to our hosted Pika model on the cloud
-	// const model = new rw.HostedModel({
-	// 	url: pika_url,
-	// 	token: pika_token,
-	// });
-	//// You can use the info() method to see what type of input object the model expects
+//	resultDiv.appendChild(canvas);
 
-	//NOT Present in the local server methods
-	/*	model.info().then(info => console.log(info));
-	const inputs = {
-		"contentImage": enc64
-	};
-*/
+		var enc64 = imgToBase64(canvas);
+	 
 	if (doProcess){
 		console.log("Fetching " + pika_url  + " starting");
 		var o = new Object();
@@ -156,7 +153,7 @@ html2canvas(document.getElementById(htmlIdSource)).then(function(canvas) {
 
 var resultDiv = document.getElementById("result");
 var separator = new Image();
-separator.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAmoAAACUCAYAAAAj1QU/AAAABHNCSVQICAgIfAhkiAAAABl0RVh0U29mdHdhcmUAZ25vbWUtc2NyZWVuc2hvdO8Dvz4AAALMSURBVHic7dahAcAgEMDA0v0XfgUL4Im4myAya2b2BwBAzv86AACAO6MGABBl1AAAoowaAECUUQMAiDJqAABRRg0AIMqoAQBEGTUAgCijBgAQZdQAAKKMGgBAlFEDAIgyagAAUUYNACDKqAEARBk1AIAoowYAEGXUAACijBoAQJRRAwCIMmoAAFFGDQAgyqgBAEQZNQCAKKMGABBl1AAAoowaAECUUQMAiDJqAABRRg0AIMqoAQBEGTUAgCijBgAQZdQAAKKMGgBAlFEDAIgyagAAUUYNACDKqAEARBk1AIAoowYAEGXUAACijBoAQJRRAwCIMmoAAFFGDQAgyqgBAEQZNQCAKKMGABBl1AAAoowaAECUUQMAiDJqAABRRg0AIMqoAQBEGTUAgCijBgAQZdQAAKKMGgBAlFEDAIgyagAAUUYNACDKqAEARBk1AIAoowYAEGXUAACijBoAQJRRAwCIMmoAAFFGDQAgyqgBAEQZNQCAKKMGABBl1AAAoowaAECUUQMAiDJqAABRRg0AIMqoAQBEGTUAgCijBgAQZdQAAKKMGgBAlFEDAIgyagAAUUYNACDKqAEARBk1AIAoowYAEGXUAACijBoAQJRRAwCIMmoAAFFGDQAgyqgBAEQZNQCAKKMGABBl1AAAoowaAECUUQMAiDJqAABRRg0AIMqoAQBEGTUAgCijBgAQZdQAAKKMGgBAlFEDAIgyagAAUUYNACDKqAEARBk1AIAoowYAEGXUAACijBoAQJRRAwCIMmoAAFFGDQAgyqgBAEQZNQCAKKMGABBl1AAAoowaAECUUQMAiDJqAABRRg0AIMqoAQBEGTUAgCijBgAQZdQAAKKMGgBAlFEDAIgyagAAUUYNACDKqAEARBk1AIAoowYAEGXUAACijBoAQJRRAwCIMmoAAFFGDQAgyqgBAEQZNQCAKKMGABBl1AAAog6DLQUSriwc6QAAAABJRU5ErkJggg==";
+separator.src = separatorBase64;
 resultDiv.prepend(image);
 resultDiv.prepend(separator);
 		//	document.body.replaceChild(image);
