@@ -1,9 +1,11 @@
 #!/bin/bash
 
+# Choose from one of these hosts
 export callhost="as.guillaumeisabelle.com"
 export callhost="orko.guillaumeisabelle.com"
-export requestFile="request2.json"
-export requestFile="request-0014.json"
+
+export requestFile="request.json"
+#export requestFile="request-0014.json"
 
 export callContentType="Content-Type: application/json"
 
