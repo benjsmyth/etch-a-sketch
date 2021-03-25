@@ -7,7 +7,6 @@ export responseBase=response$callport
 export callurl="http://$callhost:$callport/$callmethod"
 export responseFile=$responseBase.json
 export responseImage=$responseBase.jpg
-export nodepostscripting="../util_decode_base64_to_html_tag.js"
 
 
 echo "Calling : $modelinfo on port: $callport"
