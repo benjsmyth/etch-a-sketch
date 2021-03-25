@@ -168,24 +168,25 @@ float mY = 0; //Move in Y
 
 
 
-
-
+//------------------------------------------------------------------
+//------------------------------------------------------DRAW--------
 
 void draw() {
  
  parseEtchDrawing();
  
- drawRunwayResult();
+ //if (!updating)
+   drawRunwayResult();
   
- //counting++;
-  //delay(1);
+  if (!updating)  setStatus(_curStatus);
+ //delay(1);
 }
 
 //Parse the Etch a Sketch Drawing
 void parseEtchDrawing()
 {
 
- 
+
  
   if (verbose > 1 )println("mX: "+ mX + ", mY: " + mY );
   
@@ -225,14 +226,15 @@ void runwayInference(int portNum)
   runway = new RunwayHTTP(this,hostName,portNum);
   // update manually
   runway.setAutoUpdate(false);
-    runway.query(contentImage,ModelUtils.IMAGE_FORMAT_JPG,"contentImage");  
+  runway.query(contentImage,ModelUtils.IMAGE_FORMAT_JPG,"contentImage");  
 }
 void drawRunwayResult()
 {
    // draw image received from Runway
   if(runwayResult != null){
-    image(runwayResult,maxX+100,minY);
+    image(runwayResult,maxX+mgX,minY);
   }
+  //else println("probably updating");
 }
 
 String fnCurrent =   saveBasePath  + "etch-current.png";
@@ -268,10 +270,11 @@ void inferencePreview(int painterID)
    // saveCurrent();
    // loadcontentImage();
     updateContentImage();
-    saveContentImage();
+    thread("saveContentImage");
     println("...Inference preview starting");
 
 }
+int countTime = 0;
 void xSavePart()
 {
    PImage all ; 
@@ -308,42 +311,73 @@ void saveAll()
   saveFrame(fnCurrent);
   println("Current file saved (all the canvas: " + fnCurrent);
 }
+int countingTime()
+{
+  int s = second(); 
+  int m = minute(); 
+  int h = hour(); 
+  //text(h+":"+m+":"+s, 15, 50);
+  return h + m +s;
+}
 String currentPainter = "Picasso";
 int bgR =55; int bgG = 55; int bgB = 55;
 String curStylePrefix = " Current style is from : ";
-void startInferencing(int _newServerPort,String _painter)
+String _curStatus = "";
+boolean updating = false;
+void completeInferenceProcessThread()
 {
-
-
-  currentPainter = _painter;
-   serverPort = _newServerPort;
-   inferencePreview(0);
-   runwayInference(serverPort);
+  _curStatus = curStylePrefix + currentPainter;
+  
+    println("Entering sub:completeInferenceProcessThread()");
+    runwayInference(serverPort);
+  
+    println("exiting runwayInference(serverPort): " + countingTime());
    
    
    if (doAutoSaveTimeline)
-   {     
-     saveTlid();
+   {
+     
+    println("entering saveTlid(): " + countingTime());
+     saveTlid(); 
+     println("exiting saveTlid(): " + countingTime());
    }
-  String _curStatus = curStylePrefix + currentPainter;
-  setStatus(_curStatus);
+  
   
   updateStrokeColor();
   updateStrokeSize();
   
+  println("ending startInferencing(): " + countingTime());
+}
+void startInferencing(int _newServerPort,String _painter)
+{
+  updatingStarted();
+  println("-------------------------------------------");
+  countTime = 0;
+  println("Counting started: " + countingTime());
+  currentPainter = _painter;
+   serverPort = _newServerPort;
+    println("entering inferencePreview(): " + countingTime());
+   inferencePreview(0);
+    println("exiting inferencePreview(): " + countingTime());
+    
+    println("entering runwayInference(serverPort): " + countingTime());
+   
+   //chg for trying to run in a thread
+    thread("completeInferenceProcessThread");
+   
   
 }
 
 boolean doAutoSaveTimeline = true;
 
-int picassoPort = 8001;
+int picassoPort = 8000;
 char picassoKey = '1';
-int monetPort = 8001;
-char monetKey='4';
-int vangoghPort = 8002;
-char vangoghKey = '3';
-int kandinskyPort = 8000;
+int kandinskyPort = 8001;
 char kandinskyKey = '2';
+int monetPort = 8002;
+char monetKey='3';
+int vangoghPort = 8003;
+char vangoghKey = '4';
 int pollockPort = 8004;
 char pollockKey = '5';
 
@@ -535,7 +569,7 @@ void saveTlid(){
 
 int parseOsc(float v1,float v1x,float v1y,float s3,float v2,float v2x,float v2y)
 {
-       // v=2;
+        v=2;
        if (v > 1)
        {
        print ("v1: " + v1 + ", " );
@@ -568,6 +602,8 @@ void oscEvent(OscMessage theOscMessage) {
         float j2x = theOscMessage.get(5).floatValue(); //get 2nd parameter
         float j2y = theOscMessage.get(6).floatValue(); //get 2nd parameter
        
+       // println("parsing OSC etch");
+        
        parseOsc(v1,j1x,j1y,s3,v2,j2x,j2y);
        
  
@@ -690,7 +726,14 @@ void resetCanvas()
 
 
 
-
+void updatingCompleted()
+{
+  updating = false;
+}
+void updatingStarted()
+{
+  updating = true;
+}
 
 //--------------------------------
 //---------RUNWAY ML RELATED------
@@ -703,10 +746,12 @@ void runwayDataEvent(JSONObject runwayData){
   // try to decode the image from
   try{
     runwayResult = ModelUtils.fromBase64(base64ImageString);
+    
   }catch(Exception e){
     e.printStackTrace();
   }
   status = "received runway result";
+  updatingCompleted();
 }
 
 // this is called each time Processing connects to Runway

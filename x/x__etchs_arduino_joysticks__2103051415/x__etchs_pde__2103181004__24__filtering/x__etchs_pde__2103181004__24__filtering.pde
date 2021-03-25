@@ -315,7 +315,9 @@ void saveContentImage()
    contentImage.save("content.png");
    //else updateContentImage();
 }
-void saveResult(){ if (runwayResult != null) runwayResult.save("result.png");}
+void saveResult(){ 
+delay(1);
+if (runwayResult != null) runwayResult.save("result.png");}
 
 //save the frame to current
 void saveCurrent()
@@ -396,7 +398,61 @@ boolean modeA = false;
 boolean modeS = false;
 
 
+//-------------------------convolution on key c-------------
+float[][] matrix = { { -1, -1, -1 },
+                     { -1,  9, -1 },
+                     { -1, -1, -1 } }; 
 
+void convolute()
+{
+  updateContentImage();
+    // Calculate the small rectangle we will process
+ 
+ 
+  int matrixsize = 3;
+  loadPixels();
+  // Begin our loop for every pixel in the smaller image
+  for (int x = mgX; x <  cX+mgX; x++) {
+    for (int y = mgY; y <  cY+ mgY ; y++ ) {
+      color c = convolution(x , y    , matrix, matrixsize);
+      int loc = x + y*width;
+      pixels[loc] = c;
+    }
+  }
+  updatePixels();
+  updateContentImage();
+}
+
+color convolution(int x, int y, float[][] matrix, int matrixsize)
+{
+  float rtotal = 0.0;
+  float gtotal = 0.0;
+  float btotal = 0.0;
+  int offset = matrixsize / 2;
+  for (int i = 0; i < matrixsize; i++){
+    for (int j= 0; j < matrixsize; j++){
+      // What pixel are we testing
+      int xloc = x+i-offset ;
+      int yloc = y+j-offset ;
+      int loc = xloc + contentImage.width*yloc;
+      // Make sure we haven't walked off our image, we could do better here
+      loc = constrain(loc,0,contentImage.pixels.length-1);
+      // Calculate the convolution
+      rtotal += (red(contentImage.pixels[loc]) * matrix[i][j]);
+      gtotal += (green(contentImage.pixels[loc]) * matrix[i][j]);
+      btotal += (blue(contentImage.pixels[loc]) * matrix[i][j]);
+    }
+  }
+  // Make sure RGB is within range
+  rtotal = constrain(rtotal, 0, 255);
+  gtotal = constrain(gtotal, 0, 255);
+  btotal = constrain(btotal, 0, 255);
+  // Return the resulting color
+  return color(rtotal, gtotal, btotal);
+}
+
+//----------------------------------End convolution--------------------
+//-----------------------------------------filtering blur and posterize
 void filterContent()
 {
   filter(POSTERIZE, 4);
@@ -404,6 +460,20 @@ void filterContent()
   updateContentImage();
   refreshInferencing();
   println("filtering image");
+  
+}
+
+//----------------------------------Bright
+void bright()
+{
+  
+}
+void inverting()
+{
+  filter(INVERT);
+  updateContentImage();
+  refreshInferencing();
+  println("inverted image");
   
 }
 
@@ -430,6 +500,10 @@ void keyPressed() {
   
   else  if (key == 'p') { xCopyInferenceToCanvas();  } 
   else  if (key == 'f') { filterContent();  } 
+  else  if (key == 'c') { convolute();  } 
+  else  if (key == 'b') { bright();  } 
+  else  if (key == 'i') { inverting();  } 
+  //convolute()
   
   else  if (key == 'y') { 
   //swapStrokeColor(); 
