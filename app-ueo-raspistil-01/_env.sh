@@ -15,5 +15,6 @@ echo "Current Service host is : $callhost"
 export resulthtml=results.html
 
 # Scripting we call
-export nodepostscripting="../util_decode_base64_to_html_tag.js"
-export node_util_cat_contentImage="../util_cat_contentImage_json.js"
+export nodepostscripting="node ../util_decode_base64_to_html_tag.js"
+export node_util_cat_contentImage="node ../util_cat_contentImage_json.js"
+export node_base64_contentImage_request_maker="node ../img2stylizationRequest.js"
