@@ -198,6 +198,8 @@ void draw() {
  
  drawRunwayResult();
   
+ updateContentImage();
+  
  //if (updating) 
  updateUI();
  updating = false;
@@ -311,7 +313,7 @@ void saveContentImage()
 {
   if (contentImage != null)
    contentImage.save("content.png");
-   else updateContentImage();
+   //else updateContentImage();
 }
 void saveResult(){ if (runwayResult != null) runwayResult.save("result.png");}
 

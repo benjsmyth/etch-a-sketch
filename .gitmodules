@@ -1,6 +1,0 @@
-[submodule "html2canvas"]
-	path = html2canvas
-	url = git://github.com/niklasvh/html2canvas.git
-[submodule "modules/gia-runwayml-http"]
-	path = modules/gia-runwayml-http
-	url = git@github.com:GuillaumeAI/gia-runwayml-http.git
