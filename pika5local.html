@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Etch-A-Sketch</title>
+	<link href="style4.css" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900|Satisfy" rel="stylesheet">
+	<script src="script.js" type="text/javascript" async></script>
+	
+	<script type="text/javascript">
+
+
+</script>
+</head>
+
+<body>
+	<table><tr><td valign=top>
+
+		<div id="maincontainer">
+			<div id="top">
+				<button id="hover">Hover</button>
+				<button id="header"><h1>Etch-A-Sketch</h1></button>
+				<button id="drag">Drag</button>
+			</div>
+			<div id="canvaswrapper">
+				
+				<div id="gridcontainer">
+				</div>
+			</div>
+			<div id="bottombuttons">
+				<button id="clear">Clear</button>
+				<button id="default">Black</button>
+				<button id="transparent">Gray</button>
+				<button id="colorized">Color</button>
+				<button id="resize">Size</button>
+				<button onclick="renderimg()"> Render</button>
+			</div>
+		</div>
+	</td>
+<td>
+	<div id="result"></div>
+</td>
+</tr></table>
+	
+
+	
+
+<br>
+<hr>
+
+  <!-- @STCGoal Capture Canvas from an HTML Elements -->
+ <script type="text/javascript" src="/node_modules/html2canvas/dist/html2canvas.js"></script>
+ 
+
+ <!-- @STCGoal So we dont publish on the web our config like pika_token -->
+ <script type="text/javascript" src="/config.js"></script>
+
+
+ <!-- @STCGoal Render Stylistic inferences via hosted AI model -->
+
+ 
+
+ <!-- <script type="text/javascript" src="/node_modules/html2canvas/dist/html2canvas.js"></script>
+  -->
+
+<!-- @STCGoal Logic doing all the work -->
+<script type="text/javascript">
+
+//----------------------------------------------------------------------------------
+//--------------------------------------------Inference Starts after that timeout
+	var infereAfterTimeOut = 19000;
+//----------------------------------------------------------FEATURE ON/OFF --------------------
+//----------------- Toogle This for processing Style or Not (Cost 0.01$ USD per inference -----
+        var doProcess = true;
+
+var debug = false;
+
+			
+setTimeout(() => { 
+	// mouseHoverDefault(this);
+	// changeDefaultButton();
+	var hoverHandler = document.getElementById("hover");
+	hoverHandler.click();
+	var defaultHandler = document.getElementById("default");
+	defaultHandler.click();
+	hoverHandler.releasePointerCapture();
+	defaultHandler.releasePointerCapture();
+},333);
+
+
+setTimeout(() => { 
+	console.log("Starting the whole thing BYPASSED in this by the button RENDER!"); 
+
+
+				
+}, infereAfterTimeOut);
+
+//----------------------------------------------
+
+function imgToBase64(img) {
+	const canvas = document.createElement('canvas');
+	const ctx = canvas.getContext('2d');
+	canvas.width = img.width;
+	canvas.height = img.height;
+
+	// I think this won't work inside the function from the console
+	img.crossOrigin = 'anonymous';
+
+	ctx.drawImage(img, 0, 0);
+
+	return canvas.toDataURL();
+}
+			
+renderimg();
+var previousResult = new Image();
+var previousContent = new Image();
+function renderimg()
+{
+	
+	console.log("RENDER the whole thing!"); 
+	
+	var htmlIdSource = "canvaswrapper";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
+	var frame = document.getElementById(htmlIdSource);
+	// var rect = frame.getBoundingClientRect();
+	// var WHFixOffset = 140;
+	// var fixWidth = rect.width +WHFixOffset;
+	// var fixHeight = rect.height +WHFixOffset;
+	// var options = {
+	// scrollX: 0,
+	// 	scrollY:  100,
+	// 	width: fixWidth + 25-100,
+	// 	height: fixHeight -70
+	// };
+var options = {
+	scrollX: 0,
+		scrollY:  100
+};
+ //options = {};
+
+html2canvas(frame,options).then(function(canvas) {
+	//if (debug) 
+	try {
+			document.body.removeChild(previousContent);
+	} catch (error) {	}
+
+	document.body.appendChild(canvas);
+	previousContent = canvas;
+	//console.log("The canvas lib has a toDataURL method to encode in base64");
+	//console.log(canvas.toDataURL());
+//	resultDiv.appendChild(canvas);
+
+		var enc64 = 
+		imgToBase64(canvas);
+		// canvas.toDataURL();
+	 
+	if (doProcess){
+		console.log("Fetching " + pika_url  + " starting");
+		var o = new Object();
+		o.contentImage = enc64;
+		var jsonString = JSON.stringify(o);
+	if (debug)	console.log("Sending stringified :" + jsonString);
+
+		(async () => {
+  const rawResponse = await fetch(pika_url, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({contentImage: enc64})
+  });
+  const content = await rawResponse.json();
+
+ if (debug) console.log(content.stylizedImage);
+ 
+			var resultImage = new Image();
+			resultImage.src= content.stylizedImage;
+
+var resultDiv = document.getElementById("result");
+// var separator = new Image();
+// separator.src = separatorBase64;
+try {
+	resultDiv.removeChild(previousResult);
+} catch (error) {
+	
+}
+resultDiv.appendChild(resultImage);
+previousResult = resultImage;
+//resultDiv.prepend(separator);
+		//	document.body.replaceChild(image);
+})();
+
+
+	}
+	else {
+		console.log("-------- DISABLED WARNING-----");
+		console.log("-- Processing style is disabled, set doProcess = true to enable");
+	}
+
+	});
+
+
+
+	console.log("ending the whole thing");
+
+}
+</script>
+ 
+
+
+<!-- 
+	
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+		<footer id="footer" style="font-size: smaller;">
+		<p id="codedby">Etch a Sketch Coded by Ben Smyth, &copy; 2018.</p>
+		<p id="codedby2">EtchAI Coded by Guillaume D.Isabelle, &copy; 2021.</p>
+		<p id="visitmefork"><a href="https://github.com/GuillaumeAI/x__etch-a-sketch__210224" target="_blank">Visit EtchAI forked project author (Guillaume D.I)</a></p>
+		<p id="visitme"><a href="https://github.com/benjsmyth" target="_blank">Visit ETch a Sketch project author (Benjsmyth) on Github!</a></p>
+	</footer> -->
+
+
+</body>
+
+</html>
