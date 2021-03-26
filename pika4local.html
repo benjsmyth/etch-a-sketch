@@ -78,6 +78,18 @@ var debug = false;
 
 			
 setTimeout(() => { 
+	// mouseHoverDefault(this);
+	// changeDefaultButton();
+	var hoverHandler = document.getElementById("hover");
+	hoverHandler.click();
+	var defaultHandler = document.getElementById("default");
+	defaultHandler.click();
+	hoverHandler.releasePointerCapture();
+	defaultHandler.releasePointerCapture();
+},333);
+
+
+setTimeout(() => { 
 	console.log("Starting the whole thing BYPASSED in this by the button RENDER!"); 
 
 
@@ -86,56 +98,61 @@ setTimeout(() => {
 
 //----------------------------------------------
 
-   function imgToBase64(img) {
-       const canvas = document.createElement('canvas');
-       const ctx = canvas.getContext('2d');
-       canvas.width = img.width;
-       canvas.height = img.height;
+function imgToBase64(img) {
+	const canvas = document.createElement('canvas');
+	const ctx = canvas.getContext('2d');
+	canvas.width = img.width;
+	canvas.height = img.height;
 
-       // I think this won't work inside the function from the console
-       img.crossOrigin = 'anonymous';
+	// I think this won't work inside the function from the console
+	img.crossOrigin = 'anonymous';
 
-       ctx.drawImage(img, 0, 0);
+	ctx.drawImage(img, 0, 0);
 
-       return canvas.toDataURL();
-			}
+	return canvas.toDataURL();
+}
 			
 renderimg();
 var previousResult = new Image();
-var previousContent;
+var previousContent = new Image();
 function renderimg()
 {
 	
 	console.log("RENDER the whole thing!"); 
-
+	
 	var htmlIdSource = "canvaswrapper";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
 	var frame = document.getElementById(htmlIdSource);
-var rect = frame.getBoundingClientRect();
-	var WHFixOffset = 140;
-var fixWidth = rect.width +WHFixOffset;
-var fixHeight = rect.height +WHFixOffset;
+	// var rect = frame.getBoundingClientRect();
+	// var WHFixOffset = 140;
+	// var fixWidth = rect.width +WHFixOffset;
+	// var fixHeight = rect.height +WHFixOffset;
+	// var options = {
+	// scrollX: 0,
+	// 	scrollY:  100,
+	// 	width: fixWidth + 25-100,
+	// 	height: fixHeight -70
+	// };
 var options = {
 	scrollX: 0,
-		scrollY:  77,
-		width: fixWidth + 25-100,
-		height: fixHeight -70
+		scrollY:  100
 };
-// options = {
-// 	scrollX: 0,
-// 		scrollY:  77,
-// 		height:  rect.height +100
-// };
+ //options = {};
 
 html2canvas(frame,options).then(function(canvas) {
 	//if (debug) 
-	document.body.appendChild(canvas);
+	try {
+			document.body.removeChild(previousContent);
+	} catch (error) {	}
 
+	document.body.appendChild(canvas);
+	previousContent = canvas;
 	//console.log("The canvas lib has a toDataURL method to encode in base64");
 	//console.log(canvas.toDataURL());
 //	resultDiv.appendChild(canvas);
 
-		var enc64 = canvas.toDataURL();
-		//imgToBase64(canvas);
+		var enc64 = 
+		imgToBase64(canvas);
+		// canvas.toDataURL();
 	 
 	if (doProcess){
 		console.log("Fetching " + pika_url  + " starting");
@@ -161,8 +178,8 @@ html2canvas(frame,options).then(function(canvas) {
 			resultImage.src= content.stylizedImage;
 
 var resultDiv = document.getElementById("result");
-var separator = new Image();
-separator.src = separatorBase64;
+// var separator = new Image();
+// separator.src = separatorBase64;
 try {
 	resultDiv.removeChild(previousResult);
 } catch (error) {
@@ -173,33 +190,8 @@ previousResult = resultImage;
 //resultDiv.prepend(separator);
 		//	document.body.replaceChild(image);
 })();
-/*
-		fetch(pika_url,{headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },method: 'POST',body: jsonString})
- 
-		.then(outputs => {
-			console.log("outputs:");
-			console.log(outputs);
-			console.log("------------------");
-			const { stylizedImage } = outputs;
-			console.log('-------Runway stylized:');
-			console.log(stylizedImage);
-			var image = new Image();
-			image.src= stylizedImage;
-			document.body.appendChild(image);
-		});
-*/
-		// model.query(inputs).then(outputs => {
-		// 		const { stylizedImage } = outputs;
-		// 		console.log('-------Runway stylized:');
-		// 		console.log(stylizedImage);
-		// 		var image = new Image();
-		// 		image.src= stylizedImage;
-		// 		document.body.appendChild(image);
-		// 		// use the outputs in your project
-		// });
+
+
 	}
 	else {
 		console.log("-------- DISABLED WARNING-----");
