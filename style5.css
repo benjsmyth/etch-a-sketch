@@ -28,6 +28,15 @@ h1 {
 	box-shadow: 0 0 3px 1px black;
 }
 
+#maincontainer2 {
+	margin: 30px auto;
+	width: 640px;
+	height: 640px;
+	text-align: center;
+	background: black;
+	border-radius: 20px;
+	box-shadow: 0 0 3px 1px black;
+}
 #gridcontainer {
 	margin: 0 auto;
 	display: flex;
@@ -133,4 +142,32 @@ p > a {
 
 a:hover {
 	font-weight: 500;
+}
+
+
+
+
+#top2 {
+	display: flex;
+	justify-content: center;
+	margin: 0 auto;
+	width: 80%;
+}
+
+#bottombuttons2 {
+	display: flex;
+	justify-content: center;
+	margin: 0 auto;
+	width: 80%;
+	height: 59px;
+}
+
+.b2 {
+	font-family: 'Satisfy', cursive;
+	font-size: 1.2em;
+	background: gray;
+	color: #ffe88e;
+	text-shadow: 0 0 2px black;
+	border: none;
+	transition: background 200ms ease-in-out, box-shadow 200ms ease-in;
 }
