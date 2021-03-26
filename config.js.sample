@@ -1,2 +1,9 @@
 var pika_token="TOKEN HERE";
 var pika_url = "https://SUBDOMAINHERE.hosted-models.runwayml.cloud/v1/";
+//new settings
+/*
+var pika_port="9002";
+var pika_url="http://orko.guillaumeisabelle.com:"+pika_port+"/stylize";
+var autorefreshing = true;
+var autorefreshingTimeout = 3000;
+*/
