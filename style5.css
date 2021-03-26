@@ -17,6 +17,9 @@ h1 {
 	text-shadow: 0 0 5px black;
 	font-size: 1.9em;
 }
+.inferencelabel {
+	color:gray;
+}
 
 #maincontainer {
 	margin: 30px auto;
@@ -165,7 +168,7 @@ a:hover {
 .b2 {
 	font-family: 'Satisfy', cursive;
 	font-size: 1.2em;
-	background: gray;
+	background: black;
 	color: #ffe88e;
 	text-shadow: 0 0 2px black;
 	border: none;
