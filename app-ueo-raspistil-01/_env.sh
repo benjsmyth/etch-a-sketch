@@ -9,8 +9,6 @@ export requestFile="request.json"
 
 export callContentType="Content-Type: application/json"
 
-echo "Current Service host is : $callhost"
-
 
 export resulthtml=results.html
 

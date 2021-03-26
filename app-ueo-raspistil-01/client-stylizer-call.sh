@@ -3,7 +3,7 @@
 
 # vars
 source _env.sh
-
+./envinfo.sh
 
 ## Picasso
 export modelinfo="Picasse v02 - iteration X"

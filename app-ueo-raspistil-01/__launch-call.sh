@@ -23,10 +23,10 @@ curl --header  "$callContentType"  --request POST   --data @$requestFile $callur
 echo "Calling post scripting: $nodepostscripting"
 echo "  It will convert: $responseFile to $responseImage and generate HTML in : $resulthtml"
 
-echo "node $nodepostscripting  $responseFile $responseImage --html  >> $resulthtml"
+echo "$nodepostscripting  $responseFile $responseImage --html  >> $resulthtml"
 
 echo "<hr><h2>$modelinfo</h2>" >> $resulthtml
-node $nodepostscripting  $responseFile $responseImage --html  >> $resulthtml
+$nodepostscripting  $responseFile $responseImage --html  >> $resulthtml
 
 # cleanup
 #rm $responseFile
