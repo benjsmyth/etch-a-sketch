@@ -8,8 +8,30 @@
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900|Satisfy" rel="stylesheet">
 	<script src="script.js" type="text/javascript" async></script>
 	
-	<script type="text/javascript">
+	<style rel="stylesheet" type="text/css">
+.filll {
+	position:  absolute;
 
+	width:75px;
+	height:600px;
+	color:blueviolet;
+	left:auto;
+	top:50px;
+	background-color: black;
+}
+.fillr {
+	position:  absolute;
+
+	width:75px;
+	height:600px;
+	color:black;
+	right:621px;
+	
+	top:50px;
+	background-color:black;
+}
+	</style>
+	<script type="text/javascript">
 
 </script>
 </head>
@@ -39,23 +61,26 @@
 		</div>
 	</td>
 <td>
+
+	<div class="filll"> </div>
 	<div id="maincontainer2">
 		<div id="top2">
 			<button id="hover2"> </button>
 			<button id="header2" class="b2">
 				<h1 id="resultlabel" class="inferencelabel">Inference</h1></button>
-			<button id="drag2"> </button>
+				<button id="drag2"> </button>
+			</div>
+			<div id="canvaswrapper2">
+				
+				<div id="result"></div>
+				
+			</div>
+			<div id="bottombuttons2">
+				<br>
+			</div>
 		</div>
-		<div id="canvaswrapper2">
-			
-			<div id="result"></div>
-		 
-		</div>
-		<div id="bottombuttons2">
-		 <br>
-		</div>
-	</div>
-</td>
+		<div class="fillr"> </div>
+	</td>
 </tr></table>
 	
 
@@ -91,6 +116,13 @@
 
 var debug = false;
 
+if (autorefreshing)
+	while (autorefreshing) {
+		
+		setTimeout(() => { 
+			renderimg();
+		},1500);
+	}
 			
 setTimeout(() => { 
 	// mouseHoverDefault(this);
