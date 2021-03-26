@@ -3,3 +3,4 @@ application.*
 */application.*
 **/**/application.*
 **/**/**/application.*
+node_modules
