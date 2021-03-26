@@ -115,13 +115,20 @@
         var doProcess = true;
 
 var debug = false;
-
+(function myLoop(i) {
+  setTimeout(function() {
+    console.log('looping'); //  your code here                
+    if (--i) myLoop(i);   //  decrement i and call myLoop again if i > 0
+  }, 5000)
+})(10);                   //  pass the number of iterations as an argument
+autorefreshing=false;
 if (autorefreshing)
 	while (autorefreshing) {
 		
 		setTimeout(() => { 
 			renderimg();
 		},autorefreshingTimeout);
+
 	}
 			
 setTimeout(() => { 
