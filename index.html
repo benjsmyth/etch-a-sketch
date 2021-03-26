@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Etch-A-Sketch</title>
+	<title>Etch-AI-Sketch (EtchAI)</title>
 	<link href="style5.css" rel="stylesheet" type="text/css">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900|Satisfy" rel="stylesheet">
 	<script src="script.js" type="text/javascript" async></script>
@@ -16,18 +16,18 @@
 	height:600px;
 	color:blueviolet;
 	left:auto;
-	top:50px;
+	top:65px;
 	background-color: black;
 }
 .fillr {
 	position:  absolute;
 
-	width:75px;
+	width:77px;
 	height:600px;
 	color:black;
 	right:621px;
 	
-	top:50px;
+	top:65px;
 	background-color:black;
 }
 	</style>
@@ -109,7 +109,12 @@
 
 //----------------------------------------------------------------------------------
 //--------------------------------------------Inference Starts after that timeout
+//Being Deprecated
 var infereAfterTimeOut = 19000;
+
+//Override the port
+pika_port="9004";
+console.log("Port is :" + pika_port);
 //----------------------------------------------------------FEATURE ON/OFF --------------------
 //----------------- Toogle This for processing Style or Not (Cost 0.01$ USD per inference -----
 var doProcess = true;
@@ -122,8 +127,9 @@ var debug = false;
     console.log('looping'); //  your code here 
 		renderimg();               
     if (--i) myLoop(i);   //  decrement i and call myLoop again if i > 0
-  }, 5000)
-})(10);                   //  pass the number of iterations as an argument
+  }, autorefreshingTimeout)
+})(autorefreshingIterations);                   //  pass the number of iterations as an argument
+
 autorefreshing=false;
 if (autorefreshing)
 	while (autorefreshing) {
@@ -168,8 +174,10 @@ function imgToBase64(img) {
 
 	return canvas.toDataURL();
 }
-			
-renderimg();
+
+//Ititial auto refresh if we do not auto refresh
+if (!autorefreshing) renderimg();
+
 var previousResult = new Image();
 var previousContent = new Image();
 function renderimg()
@@ -237,11 +245,11 @@ html2canvas(frame,options).then(function(canvas) {
 var resultDiv = document.getElementById("result");
 // var separator = new Image();
 // separator.src = separatorBase64;
+//@STCGoal Keeps clean the area of previews
 try {
 	resultDiv.removeChild(previousResult);
-} catch (error) {
-	
-}
+} catch (error) {}
+
 resultDiv.appendChild(resultImage);
 previousResult = resultImage;
 //resultDiv.prepend(separator);
