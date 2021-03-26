@@ -6,4 +6,5 @@ var pika_port="9002";
 var pika_url="http://orko.guillaumeisabelle.com:"+pika_port+"/stylize";
 var autorefreshing = true;
 var autorefreshingTimeout = 3000;
+var autorefreshingIterations = 25;
 */
