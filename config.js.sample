@@ -3,8 +3,10 @@ var pika_url = "https://SUBDOMAINHERE.hosted-models.runwayml.cloud/v1/";
 //new settings
 /*
 var pika_port="9002";
-var pika_url="http://orko.guillaumeisabelle.com:"+pika_port+"/stylize";
+var pika_host = "orko.guillaumeisabelle.com";
 var autorefreshing = true;
-var autorefreshingTimeout = 3000;
+var autorefreshingTimeout = 2000;
 var autorefreshingIterations = 25;
+
+var pika_url="http://" + pika_host + ":"+pika_port+"/stylize";
 */

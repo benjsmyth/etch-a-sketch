@@ -77,6 +77,12 @@
 			</div>
 			<div id="bottombuttons2">
 				<br>
+				
+				<button onclick="setPainter(9000)"> Picasso </button> - 
+				<button onclick="setPainter(9002)"> v3-165ik </button> -  
+				<button onclick="setPainter(9003)"> v3-030ik </button> |
+				<button onclick="setPainter(9001)"> Kandinsky </button> - 
+				<button onclick="setPainter(9004)"> Dali </button> 
 			</div>
 		</div>
 		<div class="fillr"> </div>
@@ -112,9 +118,9 @@
 //Being Deprecated
 var infereAfterTimeOut = 19000;
 
-//Override the port
-pika_port="9004";
-console.log("Port is :" + pika_port);
+//Override the default port
+setPainter(9004);
+
 //----------------------------------------------------------FEATURE ON/OFF --------------------
 //----------------- Toogle This for processing Style or Not (Cost 0.01$ USD per inference -----
 var doProcess = true;
@@ -183,7 +189,7 @@ var previousContent = new Image();
 function renderimg()
 {
 	
-	console.log("RENDER the whole thing!"); 
+	console.log("Started rendering..."); 
 	
 	var htmlIdSource = "canvaswrapper";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
 	var frame = document.getElementById(htmlIdSource);
@@ -220,10 +226,13 @@ html2canvas(frame,options).then(function(canvas) {
 		// canvas.toDataURL();
 	 
 	if (doProcess){
-		console.log("Fetching " + pika_url  + " starting");
+
+	if (debug)	console.log("Fetching " + pika_url  + " starting");
+
 		var o = new Object();
 		o.contentImage = enc64;
 		var jsonString = JSON.stringify(o);
+
 	if (debug)	console.log("Sending stringified :" + jsonString);
 
 		(async () => {
@@ -267,8 +276,22 @@ previousResult = resultImage;
 
 
 
-	console.log("ending the whole thing");
+	console.log("...Rendering done");
 
+}
+
+function setPainter(port)
+{
+	var oldPort = pika_port;
+	this.pika_port = port;
+	console.log("Port changed from : " + oldPort + " to: " + pika_port);
+	updatedContext();
+}
+
+function updatedContext()
+{
+	pika_url="http://" + pika_host + ":"+pika_port+"/stylize";
+	console.log("Service URL now:" + pika_url);
 }
 </script>
  
