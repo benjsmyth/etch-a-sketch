@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Etch-A-Sketch</title>
-	<link href="style.css" rel="stylesheet" type="text/css">
+	<link href="style4.css" rel="stylesheet" type="text/css">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900|Satisfy" rel="stylesheet">
 	<script src="script.js" type="text/javascript" async></script>
 	
@@ -100,7 +100,9 @@ setTimeout(() => {
        return canvas.toDataURL();
 			}
 			
-			
+renderimg();
+var previousResult = new Image();
+var previousContent;
 function renderimg()
 {
 	
@@ -109,24 +111,31 @@ function renderimg()
 	var htmlIdSource = "canvaswrapper";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
 	var frame = document.getElementById(htmlIdSource);
 var rect = frame.getBoundingClientRect();
-	var WHFixOffset = 150;
+	var WHFixOffset = 140;
 var fixWidth = rect.width +WHFixOffset;
 var fixHeight = rect.height +WHFixOffset;
 var options = {
-	scrollX: 80,
+	scrollX: 0,
 		scrollY:  77,
-		width: fixWidth + 25,
-		height: fixHeight
+		width: fixWidth + 25-100,
+		height: fixHeight -70
 };
+// options = {
+// 	scrollX: 0,
+// 		scrollY:  77,
+// 		height:  rect.height +100
+// };
 
 html2canvas(frame,options).then(function(canvas) {
 	//if (debug) 
 	document.body.appendChild(canvas);
 
-	
+	//console.log("The canvas lib has a toDataURL method to encode in base64");
+	//console.log(canvas.toDataURL());
 //	resultDiv.appendChild(canvas);
 
-		var enc64 = imgToBase64(canvas);
+		var enc64 = canvas.toDataURL();
+		//imgToBase64(canvas);
 	 
 	if (doProcess){
 		console.log("Fetching " + pika_url  + " starting");
@@ -148,14 +157,20 @@ html2canvas(frame,options).then(function(canvas) {
 
  if (debug) console.log(content.stylizedImage);
  
-			var image = new Image();
-			image.src= content.stylizedImage;
+			var resultImage = new Image();
+			resultImage.src= content.stylizedImage;
 
 var resultDiv = document.getElementById("result");
 var separator = new Image();
 separator.src = separatorBase64;
-resultDiv.prepend(image);
-resultDiv.prepend(separator);
+try {
+	resultDiv.removeChild(previousResult);
+} catch (error) {
+	
+}
+resultDiv.appendChild(resultImage);
+previousResult = resultImage;
+//resultDiv.prepend(separator);
 		//	document.body.replaceChild(image);
 })();
 /*
