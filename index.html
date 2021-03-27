@@ -32,7 +32,7 @@
 }
 	</style>
 	<script type="text/javascript">
-
+var currentSizeNumber = -1;
 </script>
 </head>
 
@@ -51,12 +51,13 @@
 				</div>
 			</div>
 			<div id="bottombuttons">
-				<button id="clear">Clear</button>
-				<button id="default">Black</button>
-				<button id="transparent">Gray</button>
+				<button id="refraish" onclick="refraish()"><img src="http://simpleicon.com/wp-content/uploads/refresh.svg" width="25" height="25" title="Restart Auto Refresh"></button>
+				<button id="clear"><img src="http://img.jgwill.com/ico/channel-mode-off.ico" width="25" height="25" title="Clear the canvas"></button>
+				<button id="default" style="color: gray;background-color: white;"><img src="http://img.jgwill.com/ico/paint-52.png" title="Paint with Black" width="25" height="25"></button>
+				<button id="transparent" style="color: gray;background-color: gray;"><img src="./img/paint-gray-52.png" title="Paint with Gray" width="25" height="25"></button>
 				<button id="colorized">Color</button>
 				<button id="resize">Size</button>
-				<button onclick="renderimg()"> Render</button>
+				<button id="renderimg" onclick="renderimg()"> Render</button>
 			</div>
 		</div>
 	</td>
@@ -67,22 +68,29 @@
 		<div id="top2">
 			<button id="hover2"> </button>
 			<button id="header2" class="b2">
-				<h1 id="resultlabel" class="inferencelabel">Inference</h1></button>
-				<button id="drag2"> </button>
+				<h1 id="resultlabel" class="inferencelabel">Inferencing</h1></button>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<button id="cpainter" class="b2"> 123</button>	
+				&nbsp;&nbsp;
+				<button id="header2" class="b2">
+				<h2 id="resultlabel" class="inferencelabel">Style</h2></button>
 			</div>
 			<div id="canvaswrapper2">
 				
 				<div id="result"></div>
 				
 			</div>
-			<div id="bottombuttons2">
+			<div id="bottombuttons2" class="b2">
 				<br>
-				
-				<button onclick="setPainter(9000)"> Picasso </button> - 
-				<button onclick="setPainter(9002)"> v3-165ik </button> -  
-				<button onclick="setPainter(9003)"> v3-030ik </button> |
-				<button onclick="setPainter(9001)"> Kandinsky </button> - 
-				<button onclick="setPainter(9004)"> Dali </button> 
+				<div>
+
+					<button onclick="setPainter(9000)" class="b2"> Picasso </button> 
+					<br> Variations: 
+					<button onclick="setPainter(9002)" class="b2">  3.165</button> -  
+					<button onclick="setPainter(9003)" class="b2"> 3.030 </button> &nbsp;
+				</div>&nbsp;&nbsp;
+					<button onclick="setPainter(9001)" class="b2"> Kandinsky </button>&nbsp;&nbsp; 
+				<button onclick="setPainter(9004)" class="b2"> Dali </button> 
 			</div>
 		</div>
 		<div class="fillr"> </div>
@@ -125,18 +133,28 @@ setPainter(9004);
 //----------------- Toogle This for processing Style or Not (Cost 0.01$ USD per inference -----
 var doProcess = true;
 
-console.log(pika_url);
-
 var debug = false;
-(function myLoop(i) {
-  setTimeout(function() {
-    console.log('looping'); //  your code here 
-		renderimg();               
-    if (--i) myLoop(i);   //  decrement i and call myLoop again if i > 0
-  }, autorefreshingTimeout)
-})(autorefreshingIterations);                   //  pass the number of iterations as an argument
+
+var countLoop = 0;
+looping();
+function looping()
+{
+
+	(function myLoop(i) {
+		setTimeout(function() {
+			console.log('looping:' + countLoop); //  your code here 
+			renderimg();     
+			countLoop++;          
+			if (--i) myLoop(i);   //  decrement i and call myLoop again if i > 0
+			else console.log("Loop auto refresh TimedOut");
+		}, getRefreshRateRelativeToSize())
+	})(autorefreshingIterations);                   //  pass the number of iterations as an argument
+}
+	
 
 autorefreshing=false;
+//------------------------------
+//DEPRECATING
 if (autorefreshing)
 	while (autorefreshing) {
 		
@@ -145,19 +163,35 @@ if (autorefreshing)
 		},autorefreshingTimeout);
 
 	}
-			
-setTimeout(() => { 
-	// mouseHoverDefault(this);
-	// changeDefaultButton();
-	var hoverHandler = document.getElementById("hover");
-	hoverHandler.click();
-	var defaultHandler = document.getElementById("default");
-	defaultHandler.click();
-	hoverHandler.releasePointerCapture();
-	defaultHandler.releasePointerCapture();
-},333);
+//DEPRECATED			
+//------------------------------
+
+etchLoadWhenStarting();
+function etchLoadWhenStarting()
+{
+	activateDefaultDrawOptions();
+	etchLoaded();
+}
 
 
+
+
+function activateDefaultDrawOptions()
+{
+
+	setTimeout(() => { 
+		// mouseHoverDefault(this);
+		// changeDefaultButton();
+		var hoverHandler = document.getElementById("hover");
+		hoverHandler.click();
+		var defaultHandler = document.getElementById("default");
+		defaultHandler.click();
+		hoverHandler.releasePointerCapture();
+		defaultHandler.releasePointerCapture();
+	},333);
+	
+}
+	
 setTimeout(() => { 
 	console.log("Starting the whole thing BYPASSED in this by the button RENDER!"); 
 
@@ -203,29 +237,29 @@ function renderimg()
 	// 	width: fixWidth + 25-100,
 	// 	height: fixHeight -70
 	// };
-var options = {
-	scrollX: 0,
-		scrollY:  100
-};
- //options = {};
+	var options = {
+		scrollX: 0,
+			scrollY:  100
+	};
+	//options = {};
 
-html2canvas(frame,options).then(function(canvas) {
-	//if (debug) 
-	try {
-			document.body.removeChild(previousContent);
-	} catch (error) {	}
+	html2canvas(frame,options).then(function(canvas) {
+		//if (debug) 
+		try {
+				document.body.removeChild(previousContent);
+		} catch (error) {	}
 
-	document.body.appendChild(canvas);
-	previousContent = canvas;
-	//console.log("The canvas lib has a toDataURL method to encode in base64");
-	//console.log(canvas.toDataURL());
-//	resultDiv.appendChild(canvas);
+		document.body.appendChild(canvas);
+		previousContent = canvas;
+		//console.log("The canvas lib has a toDataURL method to encode in base64");
+		//console.log(canvas.toDataURL());
+	//	resultDiv.appendChild(canvas);
 
-		var enc64 = 
-		imgToBase64(canvas);
-		// canvas.toDataURL();
-	 
-	if (doProcess){
+			var enc64 = 
+			imgToBase64(canvas);
+			// canvas.toDataURL();
+		
+
 
 	if (debug)	console.log("Fetching " + pika_url  + " starting");
 
@@ -235,42 +269,41 @@ html2canvas(frame,options).then(function(canvas) {
 
 	if (debug)	console.log("Sending stringified :" + jsonString);
 
-		(async () => {
-  const rawResponse = await fetch(pika_url, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({contentImage: enc64})
-  });
-  const content = await rawResponse.json();
+	(async () => {
+			
+		const rawResponse = await fetch(pika_url, {
+			method: 'POST',
+			headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({contentImage: enc64})
+	});
 
- if (debug) console.log(content.stylizedImage);
- 
-			var resultImage = new Image();
-			resultImage.src= content.stylizedImage;
+	const content = await rawResponse.json();
 
-var resultDiv = document.getElementById("result");
-// var separator = new Image();
-// separator.src = separatorBase64;
-//@STCGoal Keeps clean the area of previews
-try {
-	resultDiv.removeChild(previousResult);
-} catch (error) {}
+	if (debug) console.log(content.stylizedImage);
+	
+	var resultImage = new Image();
 
-resultDiv.appendChild(resultImage);
-previousResult = resultImage;
-//resultDiv.prepend(separator);
-		//	document.body.replaceChild(image);
-})();
+	resultImage.src= content.stylizedImage;
+
+	var resultDiv = document.getElementById("result");
+	// var separator = new Image();
+	// separator.src = separatorBase64;
+	//@STCGoal Keeps clean the area of previews
+	try {
+		resultDiv.removeChild(previousResult);
+	} catch (error) {}
+
+	resultDiv.appendChild(resultImage);
+	previousResult = resultImage;
+	//resultDiv.prepend(separator);
+			//	document.body.replaceChild(image);
+	})();
 
 
-	}
-	else {
-		console.log("-------- DISABLED WARNING-----");
-		console.log("-- Processing style is disabled, set doProcess = true to enable");
-	}
+	
 
 	});
 
@@ -279,19 +312,100 @@ previousResult = resultImage;
 	console.log("...Rendering done");
 
 }
+//runs when we just loaded (few ms)
+function etchLoaded(){ 
+	etchResized();
+}
+function etchResized()
+{
+	currentSizeNumber = resizeNumber;
+	
+}
 
+function refraish()
+{
+	//@STCGoal Startup of the refresh sequence again
+	countLoop= 0;
+//	activateDefaultDrawOptions();
+	looping();
+	alert("Auto refresh restarted");
+	
+}
+function setUI(painterLabel)
+{
+	var cpainter = document.getElementById("cpainter");
+	cpainter.innerText = painterLabel;
+	console.log("Current Size: " + currentSizeNumber);
+}
 function setPainter(port)
 {
 	var oldPort = pika_port;
 	this.pika_port = port;
 	console.log("Port changed from : " + oldPort + " to: " + pika_port);
 	updatedContext();
+	renderimg();
+	switch (port) {
+		case 9000:
+			setUI("Picasso");
+			break;
+		case 9002:
+			setUI("Picasso var 3.165");
+			break;
+		case 9003:
+			setUI("Picasso var 3.030");
+			break;
+		case 9001:
+			setUI("Kandinsky var 1.210");
+			break;
+		case 9004:
+			setUI("Dali var 1.300");
+			break;
+	
+		default:
+			setUI("---");
+			break;
+	}
 }
 
 function updatedContext()
 {
 	pika_url="http://" + pika_host + ":"+pika_port+"/stylize";
 	console.log("Service URL now:" + pika_url);
+}
+
+function getRefreshRateRelativeToSize()
+{
+	if (currentSizeNumber == -1) return autorefreshingTimeout;
+	else 
+{
+	if (currentSizeNumber > 50)
+		return autorefreshingTimeout + (currentSizeNumber * 75);
+	if (currentSizeNumber > 45)
+		return autorefreshingTimeout + (currentSizeNumber * 60);
+	if (currentSizeNumber > 40)
+		return autorefreshingTimeout + (currentSizeNumber * 49);
+	if (currentSizeNumber > 35)
+		return autorefreshingTimeout + (currentSizeNumber * 42);
+	if (currentSizeNumber > 30)
+		return autorefreshingTimeout + (currentSizeNumber * 35);
+	if (currentSizeNumber > 25)
+		return autorefreshingTimeout + (currentSizeNumber * 22);
+	if (currentSizeNumber > 20)
+		return autorefreshingTimeout + (currentSizeNumber * 14);
+	if (currentSizeNumber > 17)
+		return autorefreshingTimeout + (currentSizeNumber * 8);
+	if (currentSizeNumber > 12)
+		return autorefreshingTimeout ;
+	if (currentSizeNumber > 10)
+		return autorefreshingTimeout* 0.9;
+	if (currentSizeNumber > 8)
+		return autorefreshingTimeout* 0.8;
+	if (currentSizeNumber > 7)
+		return autorefreshingTimeout* 0.75;
+
+ }
+ return autorefreshingTimeout;
+	//Example if we
 }
 </script>
  

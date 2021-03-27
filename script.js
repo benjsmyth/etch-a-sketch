@@ -376,6 +376,11 @@ function resizeGrid() {
 	setTimeout(() => {
 		resizeNumber = String(parseInt(prompt('Please enter how many grids and columns you would like. The maximum number allowed is 60.')));
 		var boxesArray = Array.from(boxes);
+		try {			
+			etchResized();
+		} catch (error) {
+			console.log("Tried to ran : etchResized();" + error);
+		}
 
 		if (resizeNumber <= 60 && resizeNumber > 0) {
 			for (let i = 0; i < boxesArray.length; i++) {
