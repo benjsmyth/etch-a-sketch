@@ -52,7 +52,7 @@ var currentSizeNumber = -1;
 				<button id="header"><h1>Etch-A-Sketch</h1></button>
 				<button id="drag">Drag</button>
 			</div>
-			<div id="canvaswrapper">
+			<div id="canvaswrapper"  onmousemove="probablyDrawing()">
 				
 				<div id="gridcontainer">
 				</div>
@@ -150,7 +150,11 @@ function looping()
 	(function myLoop(i) {
 		setTimeout(function() {
 			console.log('looping:' + countLoop); //  your code here 
-			renderimg();     
+
+			if (moved)
+				renderimg();  
+			moved = false;
+
 			countLoop++;          
 			if (--i) myLoop(i);   //  decrement i and call myLoop again if i > 0
 			else console.log("Loop auto refresh TimedOut");
@@ -193,9 +197,16 @@ function activateDefaultDrawOptions()
 		hoverHandler.click();
 		var defaultHandler = document.getElementById("default");
 		defaultHandler.click();
-		hoverHandler.releasePointerCapture();
-		defaultHandler.releasePointerCapture();
-	},333);
+		try {
+		hoverHandler.click();
+			hoverHandler.releasePointerCapture();
+		} catch (error) {}
+		try {
+		defaultHandler.click();
+			defaultHandler.releasePointerCapture();
+		} catch (error) {}
+
+	},444);
 	
 }
 	
@@ -325,7 +336,9 @@ function etchLoaded(){
 }
 function etchResized()
 {
-	currentSizeNumber = resizeNumber;
+	try {
+		currentSizeNumber = resizeNumber;
+	} catch (error) {	}
 	
 }
 
@@ -413,6 +426,12 @@ function getRefreshRateRelativeToSize()
  }
  return autorefreshingTimeout;
 	//Example if we
+}
+var moved = true;
+//@STCGoal Refresh only if we moved
+function probablyDrawing()
+{
+	moved = true;
 }
 </script>
  
