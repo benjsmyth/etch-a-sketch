@@ -152,7 +152,14 @@ function looping()
 			console.log('looping:' + countLoop); //  your code here 
 
 			if (moved)
-				renderimg();  
+				{
+					if (!initialMouseOverDone)
+					{
+						activateDefaultDrawOptions();
+						initialMouseOverDone = true;
+					}
+					console.log("Movement detected");
+					renderimg();  }
 			moved = false;
 
 			countLoop++;          
@@ -185,7 +192,7 @@ function etchLoadWhenStarting()
 }
 
 
-
+var initialMouseOverDone = false;
 
 function activateDefaultDrawOptions()
 {
@@ -206,7 +213,7 @@ function activateDefaultDrawOptions()
 			defaultHandler.releasePointerCapture();
 		} catch (error) {}
 
-	},444);
+	},222);
 	
 }
 	
