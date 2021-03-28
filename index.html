@@ -40,6 +40,15 @@
 	</style>
 	<script type="text/javascript">
 var currentSizeNumber = -1;
+
+var moved = true;
+//@STCGoal Refresh only if we moved
+function probablyDrawing()
+{
+	moved = true;
+}
+
+
 </script>
 </head>
 
@@ -98,10 +107,12 @@ var currentSizeNumber = -1;
 					<button onclick="setPainter(9006)" class="b2"> 3.075 </button> &nbsp;-  
 					<button onclick="setPainter(9005)" class="b2"> 3.225 </button> &nbsp;
 				</div>&nbsp;&nbsp;
+				<div>
 					<button onclick="setPainter(9001)" class="b2"> Kandinsky </button>&nbsp;&nbsp; 
-				<button onclick="setPainter(9004)" class="b2"> Dali </button> &nbsp;&nbsp;
-				<br>
-				<button onclick="setPainter(9007)" class="b2"> Cezanne</button> 
+					<button onclick="setPainter(9004)" class="b2"> Dali </button> &nbsp;&nbsp;
+					<br>
+					<button onclick="setPainter(9007)" class="b2"> Cezanne</button> 
+				</div>
 			</div>
 		</div>
 		<!-- <div class="fillr"> </div> -->
@@ -460,12 +471,7 @@ function getRefreshRateRelativeToSize()
  return autorefreshingTimeout;
 	//Example if we
 }
-var moved = true;
-//@STCGoal Refresh only if we moved
-function probablyDrawing()
-{
-	moved = true;
-}
+
 </script>
  
 
