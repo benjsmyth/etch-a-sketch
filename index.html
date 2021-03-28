@@ -94,10 +94,14 @@ var currentSizeNumber = -1;
 					<button onclick="setPainter(9000)" class="b2"> Picasso </button> 
 					<br> Variations: 
 					<button onclick="setPainter(9002)" class="b2">  3.165</button> -  
-					<button onclick="setPainter(9003)" class="b2"> 3.030 </button> &nbsp;
+					<button onclick="setPainter(9003)" class="b2"> 3.030 </button> &nbsp;-  
+					<button onclick="setPainter(9006)" class="b2"> 3.075 </button> &nbsp;-  
+					<button onclick="setPainter(9005)" class="b2"> 3.225 </button> &nbsp;
 				</div>&nbsp;&nbsp;
 					<button onclick="setPainter(9001)" class="b2"> Kandinsky </button>&nbsp;&nbsp; 
 				<button onclick="setPainter(9004)" class="b2"> Dali </button> 
+				<br>
+				<button onclick="setPainter(9007)" class="b2"> Cezanne Vo </button> 
 			</div>
 		</div>
 		<!-- <div class="fillr"> </div> -->
@@ -139,6 +143,8 @@ setPainter(9004);
 //----------------------------------------------------------FEATURE ON/OFF --------------------
 //----------------- Toogle This for processing Style or Not (Cost 0.01$ USD per inference -----
 var doProcess = true;
+
+var showCurrentImageInBody = true;//false bug the process
 
 var debug = false;
 
@@ -269,29 +275,36 @@ function renderimg()
 	//options = {};
 
 	html2canvas(frame,options).then(function(canvas) {
-		//if (debug) 
-		try {
+		
+		if (showCurrentImageInBody)
+		{
+			//if (debug) 
+			try {
 				document.body.removeChild(previousContent);
-		} catch (error) {	}
-
-		document.body.appendChild(canvas);
-		previousContent = canvas;
+			} catch (error) {	}
+			
+			document.body.appendChild(canvas);
+			previousContent = canvas;
+			
+			
+			
+		}
 		//console.log("The canvas lib has a toDataURL method to encode in base64");
 		//console.log(canvas.toDataURL());
-	//	resultDiv.appendChild(canvas);
-
-			var enc64 = 
-			imgToBase64(canvas);
-			// canvas.toDataURL();
+		//	resultDiv.appendChild(canvas);
 		
-
-
-	if (debug)	console.log("Fetching " + pika_url  + " starting");
-
+		
+				var enc64 = 
+					imgToBase64(canvas);
+					// canvas.toDataURL();
+		
+		
+		if (debug)	console.log("Fetching " + pika_url  + " starting");
+		
 		var o = new Object();
 		o.contentImage = enc64;
 		var jsonString = JSON.stringify(o);
-
+		
 	if (debug)	console.log("Sending stringified :" + jsonString);
 
 	(async () => {
@@ -364,6 +377,8 @@ function setUI(painterLabel)
 	cpainter.innerText = painterLabel;
 	console.log("Current Size: " + currentSizeNumber);
 }
+
+/** */
 function setPainter(port)
 {
 	var oldPort = pika_port;
@@ -381,6 +396,17 @@ function setPainter(port)
 		case 9003:
 			setUI("Picasso var 3.030");
 			break;
+		case 9005:
+			setUI("Picasso var 3.225");
+			break;
+		case 9006:
+			setUI("Picasso var 3.075");
+			break;
+		case 9007:
+                        setUI("Cezanne Vo");
+                        break;
+
+
 		case 9001:
 			setUI("Kandinsky var 1.210");
 			break;
