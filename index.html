@@ -12,8 +12,8 @@
 .filll {
 	position:  absolute;
 
-	width:75px;
-	height:600px;
+	width:70px;
+	height:555px;
 	color:blueviolet;
 	left:auto;
 	top:65px;
@@ -23,15 +23,15 @@
 	/* object-fit: cover;
   width:230px;
   height:230px; */
-	width: 570px;
-	height: 520px;
+	width: 595px;
+	height: 540px;
 	overflow: hidden;
 }
 .fillr {
 
 	width:77px;
 	height:600px;
-	color:black;
+	color:magenta;
 	right:621px;
 	
 	/* top:65px; */
@@ -79,12 +79,12 @@ function probablyDrawing()
 	</td>
 <td>
 
-	<div class="filll"> </div>
+	 <div class="filll"> </div> 
 	<div id="maincontainer2">
 		<div id="top2">
 			<button id="hover2"> </button>
 			<button id="header2" class="b2">
-				<h1 id="resultlabel" class="inferencelabel">Inferencing</h1></button>
+				<h2 id="resultlabel" class="inferencelabel">Inferencing</h2></button>
 				&nbsp;&nbsp;&nbsp;&nbsp;
 				<button id="cpainter" class="b2"> 123</button>	
 				&nbsp;&nbsp;
@@ -100,12 +100,14 @@ function probablyDrawing()
 				<br>
 				<div>
 
-					<button onclick="setPainter(9000)" class="b2"> Picasso </button> 
-					<br> Variations: 
-					<button onclick="setPainter(9002)" class="b2">  3.165</button> -  
-					<button onclick="setPainter(9003)" class="b2"> 3.030 </button> &nbsp;-  
-					<button onclick="setPainter(9006)" class="b2"> 3.075 </button> &nbsp;-  
-					<button onclick="setPainter(9005)" class="b2"> 3.225 </button> &nbsp;
+					<button onclick="setPainter(9000)" class="b2"> Picasso </button>&nbsp; &nbsp;
+				 Var: 	
+					<button onclick="setPainter(9003)" class="b2">  3.030</button> -  
+					<button onclick="setPainter(9006)" class="b2"> 3.075 </button> &nbsp;<br>-  
+					<button onclick="setPainter(9002)" class="b2"> 3.165 </button> &nbsp;-  
+					<button onclick="setPainter(9009)" class="b2"> 3.180 </button> &nbsp;-  
+					<button onclick="setPainter(9005)" class="b2"> 3.225 </button> &nbsp;-  
+					<button onclick="setPainter(9008)" class="b2"> 4.120 </button> &nbsp;
 				</div>&nbsp;&nbsp;
 				<div>
 					<button onclick="setPainter(9001)" class="b2"> Kandinsky </button>&nbsp;&nbsp; 
@@ -410,12 +412,18 @@ function setPainter(port)
 		case 9005:
 			setUI("Picasso var 3.225");
 			break;
+		case 9009:
+			setUI("Picasso var 3.180");
+			break;
 		case 9006:
 			setUI("Picasso var 3.075");
 			break;
 		case 9007:
-                        setUI("Cezanne Vo");
-                        break;
+			setUI("Cezanne Vo");
+			break;
+		case 9008:
+			setUI("Picasso var 4.120");
+			break;
 
 
 		case 9001:
