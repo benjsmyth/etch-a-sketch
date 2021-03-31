@@ -13,7 +13,7 @@
 	position:  absolute;
 
 	width:70px;
-	height:555px;
+	height:698px;
 	color:blueviolet;
 	left:auto;
 	top:65px;
@@ -22,10 +22,13 @@
 #result {
 	/* object-fit: cover;
   width:230px;
-  height:230px; */
-	width: 595px;
-	height: 540px;
-	overflow: hidden;
+  height:230px;  position: relative;
+  */
+ 
+  left:-23px;
+	width: 715px;
+	height: 635px;
+	 overflow: hidden; /**/
 }
 .fillr {
 
@@ -91,11 +94,7 @@ function probablyDrawing()
 				<button id="header2" class="b2">
 				<h2 id="resultlabel" class="inferencelabel">Style</h2></button>
 			</div>
-			<div id="canvaswrapper2">
-				
-				<div id="result"></div>
-				
-			</div>
+		
 			<div id="bottombuttons2" class="b2">
 				<br>
 				<div>
@@ -116,8 +115,14 @@ function probablyDrawing()
 					<button onclick="setPainter(9011)" class="b2"> Van-Gogh </button> &nbsp;&nbsp;
 					<br>
 					<button onclick="setPainter(9007)" class="b2"> Cezanne</button>  &nbsp;
-					<button onclick="setPainter(9012)" class="b2"> vo.165</button> 
+					<button onclick="setPainter(9012)" class="b2"> vo.165</button> &nbsp;
+					<button onclick="setPainter(9013)" class="b2"> vo.180</button> 
 				</div>
+			</div>
+			<div id="canvaswrapper2">
+				
+				<div id="result"></div>
+				
 			</div>
 		</div>
 		<!-- <div class="fillr"> </div> -->
@@ -436,21 +441,27 @@ function 	setCurrentlyInferingLabel(port)
 		case 9010:
 			setUI("Picasso Vo");
 			break;
-		case 9011:
-			setUI("Van-Gogh Vo");
-			break;
-		case 9012:
-			setUI("Cezanne Vo.165ik");
-			break;
 		case 9006:
 			setUI("Picasso var 3.075");
-			break;
-		case 9007:
-			setUI("Cezanne Vo");
 			break;
 		case 9008:
 			setUI("Picasso var 4.120");
 			break;
+		//VAN GOGH
+		case 9011:
+			setUI("Van-Gogh Vo");
+			break;
+		//CEZANNE
+		case 9007:
+			setUI("Cezanne Vo");
+			break;
+		case 9012:
+			setUI("Cezanne Vo.165ik");
+			break;
+		case 9013:
+			setUI("Cezanne Vo.180ik");
+			break;
+			
 
 
 		case 9001:
@@ -478,17 +489,17 @@ function getRefreshRateRelativeToSize()
 	else 
 {
 	if (currentSizeNumber > 50)
-		return autorefreshingTimeout + (currentSizeNumber * 75);
+		return autorefreshingTimeout + (currentSizeNumber * 85);
 	if (currentSizeNumber > 45)
-		return autorefreshingTimeout + (currentSizeNumber * 60);
+		return autorefreshingTimeout + (currentSizeNumber * 69);
 	if (currentSizeNumber > 40)
-		return autorefreshingTimeout + (currentSizeNumber * 49);
+		return autorefreshingTimeout + (currentSizeNumber * 58);
 	if (currentSizeNumber > 35)
-		return autorefreshingTimeout + (currentSizeNumber * 42);
+		return autorefreshingTimeout + (currentSizeNumber * 47);
 	if (currentSizeNumber > 30)
-		return autorefreshingTimeout + (currentSizeNumber * 35);
+		return autorefreshingTimeout + (currentSizeNumber * 41);
 	if (currentSizeNumber > 25)
-		return autorefreshingTimeout + (currentSizeNumber * 22);
+		return autorefreshingTimeout + (currentSizeNumber * 26);
 	if (currentSizeNumber > 20)
 		return autorefreshingTimeout + (currentSizeNumber * 14);
 	if (currentSizeNumber > 17)
