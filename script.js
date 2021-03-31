@@ -463,23 +463,23 @@ function resetAll() {
 // Event listeners for changing button style.
 try {
 	
-headerButton.addEventListener('click', changeHeaderButton);
-hoverButton.addEventListener('click', changeHoverButton);
-dragButton.addEventListener('click', changeDragButton);
-clearButton.addEventListener('click', changeClearButton);
-defaultButton.addEventListener('click', changeDefaultButton);
-transparentButton.addEventListener('click', changeTransparentButton);
-colorizedButton.addEventListener('click', changeColorizedButton);
+	headerButton.addEventListener('click', changeHeaderButton);
+	hoverButton.addEventListener('click', changeHoverButton);
+	dragButton.addEventListener('click', changeDragButton);
+	clearButton.addEventListener('click', changeClearButton);
+	defaultButton.addEventListener('click', changeDefaultButton);
+	transparentButton.addEventListener('click', changeTransparentButton);
+	colorizedButton.addEventListener('click', changeColorizedButton);
 
-// Event listeners for selecting button modes.
-headerButton.addEventListener('click', resetAll);
-hoverButton.addEventListener('click', checkSelected);
-dragButton.addEventListener('click', checkSelected);
-clearButton.addEventListener('click', clearGrid);
-defaultButton.addEventListener('click', checkSelected);
-transparentButton.addEventListener('click', checkSelected);
-colorizedButton.addEventListener('click', checkSelected);
-resizeButton.addEventListener('click', resizeGrid);
+	// Event listeners for selecting button modes.
+	headerButton.addEventListener('click', resetAll);
+	hoverButton.addEventListener('click', checkSelected);
+	dragButton.addEventListener('click', checkSelected);
+	clearButton.addEventListener('click', clearGrid);
+	defaultButton.addEventListener('click', checkSelected);
+	transparentButton.addEventListener('click', checkSelected);
+	colorizedButton.addEventListener('click', checkSelected);
+	resizeButton.addEventListener('click', resizeGrid);
 
 
 } catch (error) {
@@ -504,5 +504,5 @@ resizeButton.addEventListener('click', resizeGrid);
 		transparentButton.addEventListener('click', checkSelected);
 		colorizedButton.addEventListener('click', checkSelected);
 		resizeButton.addEventListener('click', resizeGrid);
-	},800);
+	},1555);
 }	

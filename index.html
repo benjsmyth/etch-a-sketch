@@ -99,15 +99,15 @@ function probablyDrawing()
 				<br>
 				<div>
 
-					<button onclick="setPainter(9000)" class="b2"> Picasso </button>&nbsp;<button onclick="setPainter(9010)" class="b2"> Vo </button> &nbsp;
-					<button onclick="setPainter(9003)" class="b2"> 3.030</button> -  
-					<button onclick="setPainter(9006)" class="b2"> 3.075 </button> &nbsp;
-					<button onclick="setPainter(9002)" class="b2"> 3.165 </button> &nbsp;-  
-					<br>-  
-					<button onclick="setPainter(9009)" class="b2"> 3.180 </button> &nbsp;-  
-					<button onclick="setPainter(9005)" class="b2"> 3.225 </button> &nbsp;-  
-					<button onclick="setPainter(9008)" class="b2"> 4.120 </button> &nbsp;-  
-					<button onclick="setCompoPainter(9002,9003)" class="b2"> c3165030 </button> &nbsp;
+					<button onclick="setPainter(9000)" class="b2"> Picasso </button>&nbsp;<button onclick="setPainter(9010)" class="b2 b3"> Vo </button> &nbsp;
+					<button onclick="setPainter(9003)" class="b2 b3"> 3.030</button>/  
+					<button onclick="setPainter(9006)" class="b2 b3"> 3.075 </button> /
+					<button onclick="setPainter(9002)" class="b2 b3"> 3.165 </button> 
+					<br>
+					<button onclick="setPainter(9009)" class="b2 b3"> 3.180 </button> /  
+					<button onclick="setPainter(9005)" class="b2 b3"> 3.225 </button> /  
+					<button onclick="setPainter(9008)" class="b2 b3"> 4.120 </button> &nbsp;-  
+					<button onclick="setCompoPainter(9002,9003)" class="b2 b3"> c3165030 </button> &nbsp;
 				</div>&nbsp;&nbsp;
 				<div>
 					<button onclick="setPainter(9001)" class="b2"> Kandinsky </button>&nbsp;&nbsp; 
@@ -115,8 +115,8 @@ function probablyDrawing()
 					<button onclick="setPainter(9011)" class="b2"> Van-Gogh </button> &nbsp;&nbsp;
 					<br>
 					<button onclick="setPainter(9007)" class="b2"> Cezanne</button>  &nbsp;
-					<button onclick="setPainter(9012)" class="b2"> vo.165</button> &nbsp;
-					<button onclick="setPainter(9013)" class="b2"> vo.180</button> 
+					<button onclick="setPainter(9012)" class="b2 b3"> vo.165</button> &nbsp;
+					<button onclick="setPainter(9013)" class="b2 b3"> vo.180</button> 
 				</div>
 			</div>
 			<div id="canvaswrapper2">
@@ -205,18 +205,8 @@ function looping()
 	
 
 autorefreshing=false;
-//------------------------------
-//DEPRECATING
-if (autorefreshing)
-	while (autorefreshing) {
-		
-		setTimeout(() => { 
-			renderimg();
-		},autorefreshingTimeout);
 
-	}
-//DEPRECATED			
-//------------------------------
+
 
 etchLoadWhenStarting();
 function etchLoadWhenStarting()
@@ -406,15 +396,20 @@ function setUI(painterLabel)
 	console.log("Current Size: " + currentSizeNumber);
 }
 
+var startingApp = true;
 /** */
 function setPainter(port)
 {
+	featCompoRendering = false;
 	var oldPort = pika_port;
 	this.pika_port = port;
 	console.log("Port changed from : " + oldPort + " to: " + pika_port);
 	updatedContext();
-	renderimg();
 	setCurrentlyInferingLabel(port);
+	if (!startingApp)
+	renderimg();
+	startingApp = false;
+	
 	
 }
 function 	setCurrentlyInferingLabel(port)
@@ -479,10 +474,15 @@ function 	setCurrentlyInferingLabel(port)
 
 function updatedContext()
 {
-	pika_url="http://" + pika_host + ":"+pika_port+"/stylize";
+	pika_url=getstylizeCallUrl(pika_port);
 	console.log("Service URL now:" + pika_url);
 }
 
+function getstylizeCallUrl(port)
+{
+	return "http://" + pika_host + ":"+port+"/stylize";
+	 
+}
 function getRefreshRateRelativeToSize()
 {
 	if (currentSizeNumber == -1) return autorefreshingTimeout;
@@ -524,11 +524,13 @@ function setCompoPainter(port1,port2)
 {
 	featCompoPort1 = port1;
 	featCompoPort2 = port2;
+	featCompoRendering = true;
 	
 	console.log("Port compo from : " + port1 + " to: " + port2);
 	
 	setCurrentlyInferingLabel(port1 + "" + port2);
 
+	console.log("Compo rendering activated");
 }
 
 
@@ -536,7 +538,9 @@ function compoRenderingWF()
 {
 	//executed by the loop
 	console.log("Composite Rendering WF Processing...")
-	renderASTCompo(featCompoPort1,featCompoPort2);
+//	renderASTCompo(featCompoPort1,featCompoPort2);
+
+	renderimgComposite();
 }
 
 function renderASTCompo(port1,port2)
@@ -670,6 +674,136 @@ function astGetInference(contentImageRequest,serviceURL,targetHTMLID,previousRes
 		console.log("...Rendering done");
 	
 	
+}
+
+
+
+
+
+
+//A copy of the rendertmp for composite (PREVIOUS Function require more reflections)
+
+function renderimgComposite()
+{
+	
+	console.log("Composite rendering started..."); 
+	
+	var htmlIdSource = "canvaswrapper";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
+	var frame = document.getElementById(htmlIdSource);
+	// var rect = frame.getBoundingClientRect();
+	// var WHFixOffset = 140;
+	// var fixWidth = rect.width +WHFixOffset;
+	// var fixHeight = rect.height +WHFixOffset;
+	// var options = {
+	// scrollX: 0,
+	// 	scrollY:  100,
+	// 	width: fixWidth + 25-100,
+	// 	height: fixHeight -70
+	// };
+	var options = {
+		scrollX: 0,
+			scrollY:  100
+	};
+	//options = {};
+
+	html2canvas(frame,options).then(function(canvas) {
+		
+		if (showCurrentImageInBody)
+		{
+			//if (debug) 
+			try {
+				document.body.removeChild(previousContent);
+			} catch (error) {	}
+			
+			document.body.appendChild(canvas);
+			previousContent = canvas;
+			
+			
+			
+		}
+		//console.log("The canvas lib has a toDataURL method to encode in base64");
+		//console.log(canvas.toDataURL());
+		//	resultDiv.appendChild(canvas);
+		
+		
+				var enc64 = 
+					imgToBase64(canvas);
+					// canvas.toDataURL();
+		
+		
+		if (debug)	console.log("Fetching " + pika_url  + " starting");
+		
+		var o = new Object();
+		o.contentImage = enc64;
+		var jsonString = JSON.stringify(o);
+		
+	if (debug)	console.log("Sending stringified :" + jsonString);
+
+	(async () => {
+			
+		const rawResponse = await fetch(pika_url, {
+			method: 'POST',
+			headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(o)
+	});
+
+	const content = await rawResponse.json();
+
+	if (debug) console.log(content.stylizedImage);
+
+	var o2 = new Object();
+	o2.contentImage = content.stylizedImage; // using previous result as new content image for the second request...
+
+	
+	(async () => {
+			
+		const rawResponse2 = await fetch(pika_url, {
+			method: 'POST',
+			headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(o2)
+	});
+
+	const content2 = await rawResponse2.json();
+
+	if (debug) console.log(content2.stylizedImage);
+
+
+
+	var resultImage = new Image();
+
+	resultImage.src= content2.stylizedImage;
+
+	var resultDiv = document.getElementById("result");
+	// var separator = new Image();
+	// separator.src = separatorBase64;
+	//@STCGoal Keeps clean the area of previews
+	try {
+		resultDiv.removeChild(previousResult);
+	} catch (error) {}
+
+	resultDiv.appendChild(resultImage);
+	previousResult = resultImage;
+	//resultDiv.prepend(separator);
+			//	document.body.replaceChild(image);
+	})();
+
+
+	
+
+	});
+
+
+
+	});
+
+	console.log("...Rendering done");
+
 }
 </script>
  
