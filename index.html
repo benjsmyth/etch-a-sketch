@@ -107,7 +107,8 @@ function probablyDrawing()
 					<button onclick="setPainter(9002)" class="b2"> 3.165 </button> &nbsp;-  
 					<button onclick="setPainter(9009)" class="b2"> 3.180 </button> &nbsp;-  
 					<button onclick="setPainter(9005)" class="b2"> 3.225 </button> &nbsp;-  
-					<button onclick="setPainter(9008)" class="b2"> 4.120 </button> &nbsp;
+					<button onclick="setPainter(9008)" class="b2"> 4.120 </button> &nbsp;-  
+					<button onclick="setCompoPainter(9002,9003)" class="b2"> c3165030 </button> &nbsp;
 				</div>&nbsp;&nbsp;
 				<div>
 					<button onclick="setPainter(9001)" class="b2"> Kandinsky </button>&nbsp;&nbsp; 
@@ -156,6 +157,9 @@ setPainter(9004);
 //----------------------------------------------------------FEATURE ON/OFF --------------------
 //----------------- Toogle This for processing Style or Not (Cost 0.01$ USD per inference -----
 var doProcess = true;
+var featCompoRendering = false;  //feature altering behaviour to compose image with two model
+var featCompoPort1 = 9002; //default 1: 3.165
+var featCompoPort2 = 9003; //default 2: 3.03
 
 var showCurrentImageInBody = true;//false bug the process
 
@@ -172,13 +176,17 @@ function looping()
 
 			if (moved)
 				{
-					if (!initialMouseOverDone)
+					if (!initialMouseOverDone) //required to run first so we can draw right away
 					{
 						activateDefaultDrawOptions();
 						initialMouseOverDone = true;
 					}
 					console.log("Movement detected");
-					renderimg();  }
+
+					//Rendering Type ?
+					if (!featCompoRendering)					renderimg();  //normal (1 model)
+					else compoRenderingWF();
+				}
 			moved = false;
 
 			countLoop++;          
@@ -328,7 +336,7 @@ function renderimg()
 			'Accept': 'application/json',
 			'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({contentImage: enc64})
+			body: JSON.stringify(o)
 	});
 
 	const content = await rawResponse.json();
@@ -399,7 +407,16 @@ function setPainter(port)
 	console.log("Port changed from : " + oldPort + " to: " + pika_port);
 	updatedContext();
 	renderimg();
+	setCurrentlyInferingLabel(port);
+	
+}
+function 	setCurrentlyInferingLabel(port)
+{
+
 	switch (port) {
+		case 90029003:
+			setUI("Compo3165030");
+			break;
 		case 9000:
 			setUI("Picasso");
 			break;
@@ -480,6 +497,159 @@ function getRefreshRateRelativeToSize()
 	//Example if we
 }
 
+
+/** */
+function setCompoPainter(port1,port2)
+{
+	featCompoPort1 = port1;
+	featCompoPort2 = port2;
+	
+	console.log("Port compo from : " + port1 + " to: " + port2);
+	
+	setCurrentlyInferingLabel(port1 + "" + port2);
+
+}
+
+
+function compoRenderingWF()
+{
+	//executed by the loop
+	console.log("Composite Rendering WF Processing...")
+	renderASTCompo(featCompoPort1,featCompoPort2);
+}
+
+function renderASTCompo(port1,port2)
+{
+
+	var imgIteration1 = new Image();
+
+
+	this.pika_port = port;
+	updatedContext();
+	// code call for iteration 1
+	var content1Request = getCurrentCanvasAsContentImageRequest();
+	
+	//@STCGoal Desired end Result: a result we call back
+
+	var imgIteration2 = new Image();
+}
+//SHOULD BE CALLABLE AND GET SAME RESULT AS renderimg()
+function renderimgV2()
+{
+	var contentImageRequest = getCurrentCanvasAsContentImageRequest();
+	updatedContext();
+	astGetInference(contentImageRequest,)
+}
+
+//
+function getCurrentCanvasAsContentImageRequest()
+{
+
+	var htmlIdSource = "canvaswrapper";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
+	var frame = document.getElementById(htmlIdSource);
+	// var rect = frame.getBoundingClientRect();
+	// var WHFixOffset = 140;
+	// var fixWidth = rect.width +WHFixOffset;
+	// var fixHeight = rect.height +WHFixOffset;
+	// var options = {
+	// scrollX: 0,
+	// 	scrollY:  100,
+	// 	width: fixWidth + 25-100,
+	// 	height: fixHeight -70
+	// };
+	var options = {
+		scrollX: 0,
+			scrollY:  100
+	};
+	//options = {};
+
+	html2canvas(frame,options).then(function(canvas) {
+		
+		if (showCurrentImageInBody)
+		{
+			//if (debug) 
+			try {
+				document.body.removeChild(previousContent);
+			} catch (error) {	}
+			
+			document.body.appendChild(canvas);
+			previousContent = canvas;
+			
+			
+			
+		}
+		//console.log("The canvas lib has a toDataURL method to encode in base64");
+		//console.log(canvas.toDataURL());
+		//	resultDiv.appendChild(canvas);
+		
+		
+				var enc64 = 
+					imgToBase64(canvas);
+					// canvas.toDataURL();
+		
+		
+		if (debug)	console.log("Fetching " + pika_url  + " starting");
+		
+		var o = new Object();
+		o.contentImage = enc64;
+
+		return o;
+});
+}
+
+function astGetInference(contentImageRequest,serviceURL,targetHTMLID,previousResultToCLean)
+{
+	//@TODO 
+	
+	(async () => {
+			
+			const rawResponse = await fetch(serviceURL, {
+				method: 'POST',
+				headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(contentImageRequest)
+		});
+	
+		const content = await rawResponse.json();
+	
+		if (debug) console.log(content.stylizedImage);
+		
+		var resultImage = new Image();
+	
+		resultImage.src= content.stylizedImage;
+	
+
+
+//--------WHAT WILL IT RETURNS ??
+
+
+		var resultDiv = document.getElementById(targetHTMLID);
+		// var separator = new Image();
+		// separator.src = separatorBase64;
+		//@STCGoal Keeps clean the area of previews
+		try {
+			resultDiv.removeChild(previousResultToCLean);
+		} catch (error) {}
+	
+		resultDiv.appendChild(resultImage);
+		previousResultToCLean = resultImage;
+		//resultDiv.prepend(separator);
+				//	document.body.replaceChild(image);
+		})();
+	
+	
+		
+	
+		
+	
+	
+	
+		console.log("...Rendering done");
+	
+	
+}
 </script>
  
 
