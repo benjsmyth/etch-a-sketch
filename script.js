@@ -487,6 +487,9 @@ try {
 
 	setTimeout(function() {
 			
+		try {
+			
+	
 		headerButton.addEventListener('click', changeHeaderButton);
 		hoverButton.addEventListener('click', changeHoverButton);
 		dragButton.addEventListener('click', changeDragButton);
@@ -504,5 +507,9 @@ try {
 		transparentButton.addEventListener('click', checkSelected);
 		colorizedButton.addEventListener('click', checkSelected);
 		resizeButton.addEventListener('click', resizeGrid);
-	},1555);
+	} catch (error) {
+			
+	}
+	
+	},111);
 }	

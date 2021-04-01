@@ -174,3 +174,13 @@ a:hover {
 	border: none;
 	transition: background 200ms ease-in-out, box-shadow 200ms ease-in;
 }
+
+.b3 {
+	font-family: 'Satisfy', cursive;
+	font-size: 0.97em;
+	background: black;
+	color: #fad87b;
+	text-shadow: 0 0 2px black;
+	border: none;
+	transition: background 200ms ease-in-out, box-shadow 200ms ease-in;
+}
