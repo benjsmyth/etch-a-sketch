@@ -158,8 +158,6 @@ function probablyDrawing()
 //Being Deprecated
 var infereAfterTimeOut = 19000;
 
-//Override the default port
-setPainter(9004);
 
 //----------------------------------------------------------FEATURE ON/OFF --------------------
 //----------------- Toogle This for processing Style or Not (Cost 0.01$ USD per inference -----
@@ -173,7 +171,14 @@ var showCurrentImageInBody = true;//false bug the process
 var debug = false;
 
 var countLoop = 0;
-looping();
+var initialWaitBeforeStartingLoop = 2111;
+
+setTimeout(function() {
+	//Override the default port
+	setPainter(9004);
+	looping();
+},initialWaitBeforeStartingLoop);
+
 function looping()
 {
 
@@ -191,21 +196,27 @@ function looping()
 					console.log("Movement detected");
 
 					//Rendering Type ?
-					if (!featCompoRendering)					renderimg();  //normal (1 model)
-					else compoRenderingWF();
+					if (!featCompoRendering)				{
+						renderimg();  //normal (1 model)
+						loopingWaitFactor = 1;
+						}
+					else {
+						loopingWaitFactor = 4;
+						compoRenderingWF();}
 				}
 			moved = false;
 
 			countLoop++;          
 			if (--i) myLoop(i);   //  decrement i and call myLoop again if i > 0
 			else console.log("Loop auto refresh TimedOut");
-		}, getRefreshRateRelativeToSize())
-	})(autorefreshingIterations);                   //  pass the number of iterations as an argument
+		}, getRefreshRateRelativeToSize() * loopingWaitFactor )
+	})(autorefreshingIterations );                   //  pass the number of iterations as an argument
 }
 	
 
 autorefreshing=false;
 
+var loopingWaitFactor = 1;
 
 
 etchLoadWhenStarting();
@@ -752,7 +763,8 @@ function renderimgComposite()
 
 	const content = await rawResponse.json();
 
-	if (debug) console.log(content.stylizedImage);
+	//if (debug) 
+	console.log(content.stylizedImage);
 
 	var o2 = new Object();
 	o2.contentImage = content.stylizedImage; // using previous result as new content image for the second request...
@@ -771,7 +783,8 @@ function renderimgComposite()
 
 	const content2 = await rawResponse2.json();
 
-	if (debug) console.log(content2.stylizedImage);
+	//if (debug) 
+	console.log(content2.stylizedImage);
 
 
 
