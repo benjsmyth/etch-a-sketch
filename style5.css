@@ -17,6 +17,13 @@ h1 {
 	text-shadow: 0 0 5px black;
 	font-size: 1.9em;
 }
+
+.h1big {
+	font-family: 'Satisfy', cursive;
+	color: #511153;
+	text-shadow: 0 0 5px black;
+	font-size: 2.6em;
+}
 .inferencelabel {
 	color:gray;
 }
@@ -142,9 +149,9 @@ a:hover {
 
 
 #maincontainer2 {
-	margin: 30px auto;
-	width: 755px;
-	height: 744px;
+	margin: 22px auto;
+	width: 994px;
+	height: 959px;
 	text-align: center;
 	background: black;
 	border-radius: 20px;
