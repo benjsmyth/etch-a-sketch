@@ -12,9 +12,9 @@
 .filll {
 	position:  absolute;
 
-	width:70px;
-	height:698px;
-	color:blueviolet;
+	width:1px;
+	height:1px;
+	color:black;
 	left:auto;
 	top:65px;
 	background-color: black;
@@ -24,10 +24,10 @@
   width:230px;
   height:230px;  position: relative;
   */
- 
-  left:-23px;
-	width: 715px;
-	height: 635px;
+ position: relative;
+  left:58px;
+	width: 864px;
+	height: 832px;
 	 overflow: hidden; /**/
 }
 .fillr {
@@ -136,12 +136,13 @@ function probablyDrawing()
 <br>
 <button id="doubleInferenceModeButton" class="b3" onclick="doubleInferenceModeToogle()">Double Inference Mode Innactive</button>
 <hr>
+
 <br>&nbsp;
 <br>&nbsp;
 <br>&nbsp;
-<br>&nbsp;
+<!-- <br>&nbsp;
 <button class="b2" onclick="grabresultpresentationgrid()">Grab Result Grid as Image</button>
-<br>&nbsp;
+<br>&nbsp; -->
 
 <hr>
 <br>
@@ -149,7 +150,11 @@ function probablyDrawing()
 <div id="resultpresentationgrid">
 <table id="resultpresentationgridtable">
 	<tr>
-		<td><h2 id="currentPainterLabelText">CURRENT PAINTER LABEL</h2></td>
+		<td>
+			<font size=+2>
+
+				<h1 id="currentPainterLabelText">CURRENT PAINTER LABEL</h1></td>
+			</font>
 		<td></td>
 	</tr>
 	<tr>
@@ -337,6 +342,58 @@ var previousContent = new Image();
 var presentationContentDiv = document.getElementById("presentationContentDiv");
 var presentationResultDiv = document.getElementById("presentationResultDiv");
 
+
+
+
+//
+function SnapShotCroped(div,formatOutput,myCallback){
+html2canvas(document.body, { 
+  //html2canvas([div],{
+    onrendered:function(canvas){
+    //get entire div snapshot
+        var context = canvas.getContext('2d');//context from originalCanvas
+
+        var tmpCanvas = document.createElement('canvas');
+            tmpCanvas.width = canvas.width;
+            tmpCanvas.height = canvas.height;
+        var context2 = canvas.getContext('2d');//context from tmpCanvas
+
+        var imageObj = new Image();
+
+            imageObj.onload = function() {
+                //setup: draw cropped image
+                var sourceX = 150;
+                var sourceY = 400;
+                var sourceWidth = 1085;
+                var sourceHeight = 838;
+                var destWidth = sourceWidth;
+                var destHeight = sourceHeight;
+                var destX = canvas.width / 2 - destWidth / 2;
+                var destY = canvas.height / 2 - destHeight / 2;
+
+                context2.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
+                var data = context2.getImageData(sourceX, sourceY, sourceWidth, sourceHeight);
+
+                context.clearRect(0, 0, canvas.width, canvas.height);//clear originalCanvas
+                canvas.width = sourceWidth;
+                canvas.height = sourceHeight;
+
+                context2.putImageData(data,0,0);
+
+                myCallback(canvas.toDataURL(formatOutput));
+
+                context.clearRect(0, 0,  sourceWidth, sourceHeight);
+                context2.clearRect(0, 0, sourceWidth, sourceHeight);
+                data = null;
+                tmpCanvas = null;
+                canvas = null;
+                imageObj = null;
+            };
+        imageObj.src = tmpCanvas.toDataURL("image/png");
+    }
+});
+}
+//
 //<canvas id="canvas"></canvas>
 function renderimg()
 {
@@ -345,7 +402,12 @@ function renderimg()
 	
 	var htmlIdSource = "canvaswrapper";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
 	var frame = document.getElementById(htmlIdSource);
-	// var rect = frame.getBoundingClientRect();
+
+	// SnapShotCroped(htmlIdSource,"",function(canvas){
+	// 	document.body.appendChild(canvas);
+	// });
+
+	 var rect = frame.getBoundingClientRect();
 	// var WHFixOffset = 140;
 	// var fixWidth = rect.width +WHFixOffset;
 	// var fixHeight = rect.height +WHFixOffset;
@@ -357,7 +419,9 @@ function renderimg()
 	// };
 	var options = {
 		scrollX: 0,
-			scrollY:  100
+			scrollY:  100,
+			x: 55,
+			width:rect.width -99
 	};
 	//options = {};
 
@@ -374,9 +438,12 @@ function renderimg()
 		//console.log(canvas.toDataURL());
 		//	resultDiv.appendChild(canvas);
 		
-		
 		var enc64 = 
 				imgToBase64(canvas);
+
+				
+
+		
 				var currentContent = new Image();
 				currentContent.src = enc64;
 

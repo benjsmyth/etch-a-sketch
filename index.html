@@ -40,6 +40,16 @@
 	/* top:65px; */
 	background-color:black;
 }
+
+.resultpresentationgrid {
+	width: 100%;
+	
+}
+.presenter
+{
+	max-width: 910px;
+	max-height: 555px;
+}
 	</style>
 	<script type="text/javascript">
 var currentSizeNumber = -1;
@@ -146,22 +156,25 @@ function probablyDrawing()
 <hr>
 <br>
 <br>
-<div id="resultpresentationgrid">
+<div id="resultpresentationgrid" class="resultpresentationgrid">
 <table id="resultpresentationgridtable">
 	<tr>
 		<td><h2 id="currentPainterLabelText">CURRENT PAINTER LABEL</h2></td>
+		<td>&nbsp;</td>
 		<td></td>
 	</tr>
 	<tr>
 		<th><h2>Content</h2></th>
+		<th></th>
 		<th><h2>Stylized</h2></th>
 	</tr>
 	<tr>
 		<td>
-			<div id="presentationContentDiv"></div>
+			<div id="presentationContentDiv" class="presenter"></div>
 		</td>
+		<td></td>
 		<td>
-			<div id="presentationResultDiv"></div>
+			<div id="presentationResultDiv" class="presenter"></div>
 		</td>
 	</tr>
 </table>
@@ -374,9 +387,12 @@ function renderimg()
 		//console.log(canvas.toDataURL());
 		//	resultDiv.appendChild(canvas);
 		
+		var ctx = canvas.getContext('2d');
 		
 		var enc64 = 
-				imgToBase64(canvas);
+				imgToBase64(canvas
+							
+				);
 				var currentContent = new Image();
 				currentContent.src = enc64;
 
