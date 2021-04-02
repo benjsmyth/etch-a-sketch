@@ -114,6 +114,7 @@ function probablyDrawing()
 					<button onclick="setPainter(9004)" class="b2"> Dali </button> &nbsp;&nbsp;
 					<button onclick="setPainter(9011)" class="b2"> Van-Gogh </button> &nbsp;&nbsp;
 					<br>
+					<button onclick="setPainter(9014)" class="b2"> Monet </button> &nbsp;&nbsp;
 					<button onclick="setPainter(9007)" class="b2"> Cezanne</button>  &nbsp;
 					<button onclick="setPainter(9012)" class="b2 b3"> vo.165</button> &nbsp;
 					<button onclick="setPainter(9013)" class="b2 b3"> vo.180</button> 
@@ -133,6 +134,7 @@ function probablyDrawing()
 	
 
 <br>
+<button id="doubleInferenceModeButton" class="b3" onclick="doubleInferenceModeToogle()">Double Inference Mode Innactive</button>
 <hr>
 
   <!-- @STCGoal Capture Canvas from an HTML Elements -->
@@ -278,8 +280,25 @@ function imgToBase64(img) {
 //Ititial auto refresh if we do not auto refresh
 if (!autorefreshing) renderimg();
 
+var currentResultBase64;
+
+var doubleInferenceMode = false;
+function doubleInferenceModeToogle()
+{
+	doubleInferenceMode = !doubleInferenceMode;
+
+	var b = document.getElementById("doubleInferenceModeButton");
+	if (doubleInferenceMode)
+	b.innerText = "Double Inference Mode Active";
+	else 
+	b.innerText = "Double Inference Mode Innactive";
+}
+
 var previousResult = new Image();
 var previousContent = new Image();
+
+
+
 function renderimg()
 {
 	
@@ -323,8 +342,18 @@ function renderimg()
 		//	resultDiv.appendChild(canvas);
 		
 		
-				var enc64 = 
-					imgToBase64(canvas);
+		var enc64 = 
+				imgToBase64(canvas);
+
+		
+		//Tring to do double inference if the mode was activated
+		if (doubleInferenceMode)  {
+			enc64 = currentResultBase64; 
+			setPainter(9003);
+			autorefreshingIterations =5050;
+
+		}
+		//we reuse the last result
 					// canvas.toDataURL();
 		
 		
@@ -354,6 +383,8 @@ function renderimg()
 	var resultImage = new Image();
 
 	resultImage.src= content.stylizedImage;
+
+	currentResultBase64 = content.stylizedImage;
 
 	var resultDiv = document.getElementById("result");
 	// var separator = new Image();
@@ -468,6 +499,9 @@ function 	setCurrentlyInferingLabel(port)
 			setUI("Cezanne Vo.180ik");
 			break;
 			
+		case 9014:
+			setUI("Monet Vd");
+			break;
 
 
 		case 9001:
