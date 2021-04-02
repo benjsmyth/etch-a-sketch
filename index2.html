@@ -136,6 +136,41 @@ function probablyDrawing()
 <br>
 <button id="doubleInferenceModeButton" class="b3" onclick="doubleInferenceModeToogle()">Double Inference Mode Innactive</button>
 <hr>
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<button class="b2" onclick="grabresultpresentationgrid()">Grab Result Grid as Image</button>
+<br>&nbsp;
+
+<hr>
+<br>
+<br>
+<div id="resultpresentationgrid">
+<table id="resultpresentationgridtable">
+	<tr>
+		<td><h2 id="currentPainterLabelText">CURRENT PAINTER LABEL</h2></td>
+		<td></td>
+	</tr>
+	<tr>
+		<th><h2>Content</h2></th>
+		<th><h2>Stylized</h2></th>
+	</tr>
+	<tr>
+		<td>
+			<div id="presentationContentDiv"></div>
+		</td>
+		<td>
+			<div id="presentationResultDiv"></div>
+		</td>
+	</tr>
+</table>
+</canvas>
+<br>
+<br>
+<br>
+<hr>
+
 
   <!-- @STCGoal Capture Canvas from an HTML Elements -->
  <script type="text/javascript" src="/node_modules/html2canvas/dist/html2canvas.js"></script>
@@ -175,9 +210,10 @@ var debug = false;
 var countLoop = 0;
 var initialWaitBeforeStartingLoop = 2111;
 
+var _cnf_defaultPainterPort = 9012;
 setTimeout(function() {
 	//Override the default port
-	setPainter(9004);
+	setPainter(_cnf_defaultPainterPort);
 	looping();
 },initialWaitBeforeStartingLoop);
 
@@ -192,7 +228,7 @@ function looping()
 				{
 					if (!initialMouseOverDone) //required to run first so we can draw right away
 					{
-						activateDefaultDrawOptions();
+						//activateDefaultDrawOptions();
 						initialMouseOverDone = true;
 					}
 					console.log("Movement detected");
@@ -295,10 +331,13 @@ function doubleInferenceModeToogle()
 }
 
 var previousResult = new Image();
+var previousPresentationResult = new Image();
 var previousContent = new Image();
 
+var presentationContentDiv = document.getElementById("presentationContentDiv");
+var presentationResultDiv = document.getElementById("presentationResultDiv");
 
-
+//<canvas id="canvas"></canvas>
 function renderimg()
 {
 	
@@ -326,13 +365,7 @@ function renderimg()
 		
 		if (showCurrentImageInBody)
 		{
-			//if (debug) 
-			try {
-				document.body.removeChild(previousContent);
-			} catch (error) {	}
-			
-			document.body.appendChild(canvas);
-			previousContent = canvas;
+		
 			
 			
 			
@@ -344,8 +377,18 @@ function renderimg()
 		
 		var enc64 = 
 				imgToBase64(canvas);
+				var currentContent = new Image();
+				currentContent.src = enc64;
 
+			try {
+				presentationContentDiv.removeChild(previousContent);
+			} catch (error) { }
+			
+			presentationContentDiv.appendChild(currentContent);
 		
+			//document.body.appendChild(canvas);
+			previousContent = currentContent;
+			
 		//Tring to do double inference if the mode was activated
 		if (doubleInferenceMode)  {
 			enc64 = currentResultBase64; 
@@ -381,8 +424,10 @@ function renderimg()
 	if (debug) console.log(content.stylizedImage);
 	
 	var resultImage = new Image();
+	var resultPresentationImage = new Image();
 
 	resultImage.src= content.stylizedImage;
+	resultPresentationImage.src= content.stylizedImage;
 
 	currentResultBase64 = content.stylizedImage;
 
@@ -395,7 +440,22 @@ function renderimg()
 	} catch (error) {}
 
 	resultDiv.appendChild(resultImage);
+
 	previousResult = resultImage;
+
+
+
+	//-------------------------------------
+	
+	try {
+		presentationResultDiv.removeChild(previousPresentationResult);
+	} catch (error) { }
+
+	presentationResultDiv.appendChild(resultPresentationImage);
+
+	previousPresentationResult = resultPresentationImage;
+
+	currentPainterLabelText.innerText = currentPainterLabel;
 	//resultDiv.prepend(separator);
 			//	document.body.replaceChild(image);
 	})();
@@ -431,11 +491,15 @@ function refraish()
 	alert("Auto refresh restarted");
 	
 }
+var currentPainterLabel ;
+var currentPainterLabelText = document.getElementById("currentPainterLabelText");
+
 function setUI(painterLabel)
 {
 	var cpainter = document.getElementById("cpainter");
 	cpainter.innerText = painterLabel;
 	console.log("Current Size: " + currentSizeNumber);
+	currentPainterLabel = painterLabel;
 }
 
 var startingApp = true;
@@ -850,6 +914,48 @@ function renderimgComposite()
 	});
 
 	console.log("...Rendering done");
+
+}
+
+
+
+//-----------------------------------------------------------------
+//------------- Presentation grid for Content and Stylization     -
+
+var previouspresentationGridImage ;
+
+function grabresultpresentationgrid()
+{
+	//append to the doc a capture of eth contentResult table
+	var resultpresentationgrid = document.getElementById("resultpresentationgrid");
+
+	
+	var options = {
+		
+		
+	};
+	//options = {};
+
+	html2canvas(resultpresentationgrid).then(function(canvas) {
+		
+		
+		//document.body.appendChild(canvas);
+
+		
+		var enc64 = 
+				imgToBase64(canvas);
+
+		
+		var presentationGridImage = new Image();
+		presentationGridImage.src = enc64;
+
+		try {
+			document.body.removeChild(previouspresentationGridImage);
+		} catch (error) {	}
+		document.body.appendChild(presentationGridImage);
+
+		previouspresentationGridImage = presentationGridImage;
+	});
 
 }
 </script>
