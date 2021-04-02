@@ -429,6 +429,60 @@ function resizeGrid() {
 	setTimeout(() => {resizeButton.classList.remove('focused')}, 250);
 }
 
+
+//initial resize
+resizeGridInit();
+function resizeGridInit() {
+	//resizeButton.classList.add('focused');
+
+	setTimeout(() => {
+		resizeNumber = 33; //initial size
+		
+		var boxesArray = Array.from(boxes);
+		try {			
+			etchResized();
+		} catch (error) {
+			console.log("Tried to ran : etchResized();" + error);
+		}
+
+		if (resizeNumber <= 60 && resizeNumber > 0) {
+			for (let i = 0; i < boxesArray.length; i++) {
+				gridcontainer.removeChild(document.querySelector('.box'));
+			}
+
+			var newBox = document.createElement('div');
+			newBox.classList.add('box');
+			newBox.style.height = String(512 / Number(resizeNumber)) + 'px';
+			newBox.style.width = String(512 / Number(resizeNumber)) + 'px';
+			newBox.style.opacity = '0.1';
+			newBox.style.border = '1px solid black';
+
+			for (let i = 0; i < (resizeNumber * resizeNumber); i++) {
+				gridcontainer.appendChild(newBox.cloneNode());
+			}
+
+			checkSelected();		
+		}
+
+		else if (resizeNumber <= 0 || resizeNumber > 60) {
+			return;
+		}
+
+		else if (resizeNumber === null || resizeNumber === undefined) {
+			return;
+		}
+	}, 250);
+
+	setTimeout(() => {resizeButton.classList.remove('focused')}, 250);
+}
+
+
+
+
+
+
+
+
 // Function for resetting entire grid.
 function resetAll() {
 	clearGrid();
