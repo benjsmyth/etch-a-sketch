@@ -12,9 +12,9 @@
 .filll {
 	position:  absolute;
 
-	width:70px;
-	height:698px;
-	color:blueviolet;
+	width:1px;
+	height:1px;
+	color:black;
 	left:auto;
 	top:65px;
 	background-color: black;
@@ -24,10 +24,10 @@
   width:230px;
   height:230px;  position: relative;
   */
- 
-  left:-23px;
-	width: 715px;
-	height: 635px;
+ position: relative;
+  left:58px;
+	width: 864px;
+	height: 832px;
 	 overflow: hidden; /**/
 }
 .fillr {
@@ -39,16 +39,6 @@
 	
 	/* top:65px; */
 	background-color:black;
-}
-
-.resultpresentationgrid {
-	width: 100%;
-	
-}
-.presenter
-{
-	max-width: 910px;
-	max-height: 555px;
 }
 	</style>
 	<script type="text/javascript">
@@ -146,35 +136,37 @@ function probablyDrawing()
 <br>
 <button id="doubleInferenceModeButton" class="b3" onclick="doubleInferenceModeToogle()">Double Inference Mode Innactive</button>
 <hr>
+
 <br>&nbsp;
 <br>&nbsp;
 <br>&nbsp;
-<br>&nbsp;
+<!-- <br>&nbsp;
 <button class="b2" onclick="grabresultpresentationgrid()">Grab Result Grid as Image</button>
-<br>&nbsp;
+<br>&nbsp; -->
 
 <hr>
 <br>
 <br>
-<div id="resultpresentationgrid" class="resultpresentationgrid">
+<div id="resultpresentationgrid">
 <table id="resultpresentationgridtable">
 	<tr>
-		<td><h2 id="currentPainterLabelText">CURRENT PAINTER LABEL</h2></td>
-		<td>&nbsp;</td>
+		<td>
+			<font size=+2>
+
+				<h1 id="currentPainterLabelText">CURRENT PAINTER LABEL</h1></td>
+			</font>
 		<td></td>
 	</tr>
 	<tr>
 		<th><h2>Content</h2></th>
-		<th></th>
 		<th><h2>Stylized</h2></th>
 	</tr>
 	<tr>
 		<td>
-			<div id="presentationContentDiv" class="presenter"></div>
+			<div id="presentationContentDiv"></div>
 		</td>
-		<td></td>
 		<td>
-			<div id="presentationResultDiv" class="presenter"></div>
+			<div id="presentationResultDiv"></div>
 		</td>
 	</tr>
 </table>
@@ -350,6 +342,9 @@ var previousContent = new Image();
 var presentationContentDiv = document.getElementById("presentationContentDiv");
 var presentationResultDiv = document.getElementById("presentationResultDiv");
 
+
+
+//
 //<canvas id="canvas"></canvas>
 function renderimg()
 {
@@ -358,19 +353,19 @@ function renderimg()
 	
 	var htmlIdSource = "canvaswrapper";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
 	var frame = document.getElementById(htmlIdSource);
-	// var rect = frame.getBoundingClientRect();
-	// var WHFixOffset = 140;
-	// var fixWidth = rect.width +WHFixOffset;
-	// var fixHeight = rect.height +WHFixOffset;
-	// var options = {
-	// scrollX: 0,
-	// 	scrollY:  100,
-	// 	width: fixWidth + 25-100,
-	// 	height: fixHeight -70
-	// };
+
+	// SnapShotCroped(htmlIdSource,"",function(canvas){
+	// 	document.body.appendChild(canvas);
+	// });
+
+	 var rect = frame.getBoundingClientRect();
+
+	 
 	var options = {
 		scrollX: 0,
-			scrollY:  100
+			scrollY:  100,
+			x: 55,
+			width:rect.width -99
 	};
 	//options = {};
 
@@ -387,12 +382,12 @@ function renderimg()
 		//console.log(canvas.toDataURL());
 		//	resultDiv.appendChild(canvas);
 		
-		var ctx = canvas.getContext('2d');
-		
 		var enc64 = 
-				imgToBase64(canvas
-							
-				);
+				imgToBase64(canvas);
+
+				
+
+		
 				var currentContent = new Image();
 				currentContent.src = enc64;
 
@@ -980,16 +975,6 @@ function grabresultpresentationgrid()
 
 <!-- 
 	
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
 <br>
 <br>
 		<footer id="footer" style="font-size: smaller;">
