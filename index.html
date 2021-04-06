@@ -56,6 +56,9 @@ function probablyDrawing()
 </head>
 
 <body>
+	<br>
+		   <hr>
+
 	<table><tr><td valign=top>
 
 		<div id="maincontainer">
@@ -70,13 +73,21 @@ function probablyDrawing()
 				</div>
 			</div>
 			<div id="bottombuttons">
-				<button id="refraish" onclick="refraish()"><img src="http://simpleicon.com/wp-content/uploads/refresh.svg" width="25" height="25" title="Restart Auto Refresh"></button>
-				<button id="clear"><img src="./img/channel-mode-off.ico" width="25" height="25" title="Clear the canvas"></button>
-				<button id="default" style="color: gray;background-color: white;"><img src="./img/paint-52.png" title="Paint with Black" width="25" height="25"></button>
-				<button id="transparent" style="color: gray;background-color: gray;"><img src="./img/paint-gray-52.png" title="Paint with Gray" width="25" height="25"></button>
-				<button id="colorized">Color</button>
-				<button id="resize">Size</button>
-				<button id="renderimg" onclick="renderimg()"> Render</button>
+				<button id="refraish" onclick="refraish()"><img src="./img/timer.jpg"  class="buttonicon" title="Restart Auto Refresh"></button>
+				<button id="clear"><img src="./img/channel-mode-off.ico" 
+					title="Clear the canvas"></button>
+				<button id="default" style="color: gray;background-color: white;max-width: 55px;"><img src="./img/paint-52.png" title="Paint with Black"
+					></button>
+				<button id="transparent" style="color: gray;background-color: gray;max-width: 53px;"><img src="./img/paint-gray-52.png" title="Paint with Gray"></button>
+				
+				<button id="colorized" style="min-width: 73px;"> <input type="color" id="coloring" name="coloring"
+					value="#e66465" onchange="setColoring()" onclick="refreshColoring()" 
+					style="min-height: 55px;min-width:61px;"></button> 
+				
+				<button id="resize" style="max-width: 52px;"><img src="./img/resize.png" class="buttonicon"></button>
+				<button id="renderimg" onclick="renderimg()" style="max-width: 52px;min-width: 43px;"> 
+				<img src="./img/render.jpg" class="buttonicon"></button>
+				<!--  -->
 			</div>
 		</div>
 	</td>

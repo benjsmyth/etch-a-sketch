@@ -1,3 +1,33 @@
+var coloringOpacity = '1';
+var paintingDefaultColor = '#2c2d2d'; //@STCGoal Color of the default hover painting
+var transparentColor = '#2c2d2d'; //TRANSPARENT COLOR
+var cursorOnDrawing = 'crosshair';//'pointer'
+var boxStyleBorder = '1px solid gray';
+var boxStyleBorder = 'none';
+
+
+var hueColor = getColoring();
+function setColoring()
+{
+	changeColorizedButton();
+	refreshColoring();
+}
+function refreshColoring()
+{
+	hueColor = getColoring();
+	console.log("hue changed:" + hueColor);
+}
+function getColoring()
+{
+	var coloring = document.getElementById("coloring");
+	//console.log(coloring.value);
+	//hueColor = coloring.value;
+	return coloring.value;
+}
+
+
+
+
 // Variable for grid container element.
 const gridcontainer = document.getElementById('gridcontainer');
 
@@ -11,6 +41,7 @@ box.style.height = '32px';
 box.style.width = '32px';
 box.style.opacity = '0.1';
 box.style.border = '1px solid gray';
+//box.style.border = 'none';
 
 // Variables for buttons.
 const headerButton = document.getElementById('header');
@@ -93,11 +124,12 @@ function changeClearButton() {
 // Variable for event handler.
 const e = (e) => {};
 
+
 // Function for default + hover.
 function mouseHoverDefault(e) {
 	e.target.style.border = 'none';
 	e.target.style.opacity = '1';
-	e.target.style.background = '#2c2d2d';
+	e.target.style.background = paintingDefaultColor;
 }
 
 // Functions for default + drag.
@@ -110,7 +142,7 @@ function mouseDragDefaultUp(e) {
 function mouseDragDefault(e) {
 	e.target.style.border = 'none';
 	e.target.style.opacity = '1';
-	e.target.style.background = '#2c2d2d';
+	e.target.style.background = paintingDefaultColor;//
 	for (i = 0; i < boxes.length; i++) {
     	boxes[i].addEventListener('mouseover', mouseHoverDefault);
 	}
@@ -122,14 +154,14 @@ function mouseDragDefault(e) {
 // Function for transparent + hover.
 function mouseHoverTransparent(e) {
 	e.target.style.border = 'none';
-	e.target.style.background = '#2c2d2d'; 
+	e.target.style.background = transparentColor; 
 	e.target.style.opacity = String(Number(e.target.style.opacity) + 0.1);
 }
 
 // Functions for transparent + drag.
 function mouseDragTransparentUp(e) {
 	e.target.style.border = 'none';
-	e.target.style.background = '#2c2d2d';		
+	e.target.style.background = transparentColor;		
  	for (i = 0; i < boxes.length; i++) {
     	boxes[i].removeEventListener('mouseover', mouseHoverTransparent);
 	} 
@@ -137,7 +169,7 @@ function mouseDragTransparentUp(e) {
 
 function mouseDragTransparent(e) {
 	e.target.style.border = 'none';
-	e.target.style.background = '#2c2d2d'; 
+	e.target.style.background = transparentColor; 
 	e.target.style.opacity = String(Number(e.target.style.opacity) + 0.1);
 	for (i = 0; i < boxes.length; i++) {
     	boxes[i].addEventListener('mouseover', mouseHoverTransparent);
@@ -149,29 +181,31 @@ function mouseDragTransparent(e) {
 
 // Function for colorized + hover.
 function mouseHoverColorized(e) {
+	refreshColoring();
 	const hue = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
 	e.target.style.border = 'none';
-	e.target.style.background = hue;
-	e.target.style.opacity = '0.5';
+	e.target.style.background = hueColor;
+	e.target.style.opacity = coloringOpacity;
 }
 
 // Functions for colorized + drag.
 function mouseDragColorizedUp(e) {
+	refreshColoring();
 	const hue = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
 	e.target.style.border = 'none';
 
-	e.target.style.background = hue; 
-	e.target.style.opacity = '0.5';
+	e.target.style.background = hueColor; 
+	e.target.style.opacity = coloringOpacity;
  	for (i = 0; i < boxes.length; i++) {
     	boxes[i].removeEventListener('mouseover', mouseHoverColorized);
     }
 }
-
 function mouseDragColorized(e) {
+	refreshColoring();
 	const hue = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
 	e.target.style.border = 'none';
-	e.target.style.background = hue;
-	e.target.style.opacity = '0.5';
+	e.target.style.background = hueColor;
+	e.target.style.opacity = coloringOpacity;
 	for (i = 0; i < boxes.length; i++) {
     	boxes[i].addEventListener('mouseover', mouseHoverColorized);
 	}
@@ -275,10 +309,9 @@ function removeDragColorized() {
 // Checks what buttons have been selected, then chooses the corresponding function.
 function checkSelected() {
 	const selectedButtons = Array.from(document.querySelectorAll('.focused'));
-
 	// Code to run for hover + default.
 	if (selectedButtons.includes(document.querySelector('button#hover.focused')) && selectedButtons.includes(document.querySelector('button#default.focused'))) {
-		gridcontainer.style.cursor = 'pointer';
+		gridcontainer.style.cursor = cursorOnDrawing;
 
 		removeHoverTransparent();
 		removeHoverColorized();

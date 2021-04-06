@@ -191,3 +191,16 @@ a:hover {
 	border: none;
 	transition: background 200ms ease-in-out, box-shadow 200ms ease-in;
 }
+
+
+.box {
+	/* border:none; */
+}
+
+.buttonicon
+{
+	min-width: 32px;
+	min-height: 30px;
+	max-width: 41px;
+	max-height: 41px;
+}
