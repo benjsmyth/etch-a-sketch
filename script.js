@@ -327,7 +327,7 @@ function checkSelected() {
 
 	// Code to run for drag + default.
 	else if (selectedButtons.includes(document.querySelector('button#drag.focused')) && selectedButtons.includes(document.querySelector('button#default.focused'))) {
-		gridcontainer.style.cursor = 'pointer';
+		gridcontainer.style.cursor = cursorOnDrawing;
 
 		removeDragTransparent();
 		removeDragTransparentUp();
@@ -342,7 +342,7 @@ function checkSelected() {
 
 		// Code to run for hover + transparent.
 	else if (selectedButtons.includes(document.querySelector('button#hover.focused')) && selectedButtons.includes(document.querySelector('button#transparent.focused'))) {
-		gridcontainer.style.cursor = 'pointer';
+		gridcontainer.style.cursor = cursorOnDrawing;
 
 		removeHoverDefault();
 		removeHoverColorized();
@@ -358,7 +358,7 @@ function checkSelected() {
 
 		// Code to run for drag + transparent.
 	else if (selectedButtons.includes(document.querySelector('button#drag.focused')) && selectedButtons.includes(document.querySelector('button#transparent.focused'))) {
-		gridcontainer.style.cursor = 'pointer';
+		gridcontainer.style.cursor = cursorOnDrawing;
 
 		removeDragDefault();
 		removeDragDefaultUp();
@@ -373,7 +373,7 @@ function checkSelected() {
 
 		// Code to run for hover + colorized.
 	else if (selectedButtons.includes(document.querySelector('button#hover.focused')) && selectedButtons.includes(document.querySelector('button#colorized.focused'))) {
-		gridcontainer.style.cursor = 'pointer';
+		gridcontainer.style.cursor = cursorOnDrawing;
 
 		removeHoverDefault();
 		removeHoverTransparent();
@@ -389,7 +389,7 @@ function checkSelected() {
 
 		// Code to run for drag + colorized.
 	else if (selectedButtons.includes(document.querySelector('button#drag.focused')) && selectedButtons.includes(document.querySelector('button#colorized.focused'))) {
-		gridcontainer.style.cursor = 'pointer';
+		gridcontainer.style.cursor = cursorOnDrawing;
 
 		removeDragDefault();
 		removeDragDefaultUp();
@@ -544,7 +544,7 @@ function resetAll() {
 		gridcontainer.appendChild(box.cloneNode());
 	}
 
-	gridcontainer.style.cursor = 'default';
+	gridcontainer.style.cursor = cursorOnDrawing;
 }
 
 // Event listeners for changing button style.
