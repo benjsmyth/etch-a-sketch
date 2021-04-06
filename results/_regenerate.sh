@@ -14,7 +14,7 @@ cp $dropdir/$fpattern* .
 # Fixing naming
 for f in *png *jpg *jpeg
 do
-        ff=$(echo $f | tr " " "_" | tr "jpeg" "jpg")
+        ff=$(echo $f | tr " " "_")
 	echo "Processing: $f into "
 	echo "...$ff"
 
