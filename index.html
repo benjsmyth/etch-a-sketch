@@ -6,6 +6,23 @@
 	<title>Etch-AI-Sketch (EtchAI)</title>
 	<link href="style5.css" rel="stylesheet" type="text/css">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900|Satisfy" rel="stylesheet">
+	<!-- Integrating JQuery-->
+	
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script>
+		$( function() {
+		  $( "#menu" ).menu();
+		} );
+		</script>
+		<style>
+		.ui-menu { width: 150px; }
+		</style>
+
+<!-- End JQuery -->
+
 	<script src="script.js" type="text/javascript" async></script>
 	
 	<style rel="stylesheet" type="text/css">
@@ -40,6 +57,20 @@
 	/* top:65px; */
 	background-color:black;
 }
+
+/* Override JQuery menu */
+.ui-menu {
+	width: 70px;
+}
+.ui-menu-etch-ul
+{
+	width: 170px;
+	text-align: left;
+}
+.ui-menu-icon{
+	min-width: 10px;
+	max-width: 15px;
+}
 	</style>
 	<script type="text/javascript">
 var currentSizeNumber = -1;
@@ -63,9 +94,13 @@ function probablyDrawing()
 
 		<div id="maincontainer">
 			<div id="top">
-				<button id="hover">Hover</button>
+				<button id="hover">
+					<!-- <img src="./img/drag.png"> -->
+					Hover</button>
 				<button id="header"><h1>Etch-A-Sketch</h1></button>
-				<button id="drag">Drag</button>
+				<button id="drag"><img src="./img/click.png">
+					Drag
+				</button>
 			</div>
 			<div id="canvaswrapper"  onmousemove="probablyDrawing()">
 				
@@ -73,9 +108,9 @@ function probablyDrawing()
 				</div>
 			</div>
 			<div id="bottombuttons">
-				<button id="refraish" onclick="refraish()"><img src="./img/timer.jpg"  class="buttonicon" title="Restart Auto Refresh"></button>
-				<button id="clear"><img src="./img/channel-mode-off.ico" 
-					title="Clear the canvas"></button>
+				<!-- <button id="restartAutoRefresh" onclick="restartAutoRefresh()"><img src="./img/timer.jpg"  class="buttonicon" title="Restart Auto Refresh"></button> -->
+				<!-- <button id="clear"><img src="./img/channel-mode-off.ico" 
+					title="Clear the canvas"></button> -->
 				<button id="default" style="color: gray;background-color: white;max-width: 55px;"><img src="./img/paint-52.png" title="Paint with Black"
 					></button>
 				<button id="transparent" style="color: gray;background-color: gray;max-width: 53px;"><img src="./img/paint-gray-52.png" title="Paint with Gray"></button>
@@ -84,13 +119,37 @@ function probablyDrawing()
 					value="#e66465" onchange="setColoring()" onclick="refreshColoring()" 
 					style="min-height: 55px;min-width:61px;"></button> 
 				
-				<button id="resize" style="max-width: 52px;"><img src="./img/resize.png" class="buttonicon"></button>
-				<button id="renderimg" onclick="renderimg()" style="max-width: 52px;min-width: 43px;"> 
-				<img src="./img/render.jpg" class="buttonicon"></button>
+				<button id="resize" style="max-width: 54px;"><img src="./img/resize.png" class="buttonicon"></button>
+				<button id="renderimg" onclick="renderimg()" style="max-width: 65px;min-width: 50px;"> 
+				<img src="./img/render.jpg" class="buttonicon2" width="65" height="45" ></button>
+				&nbsp;
+				&nbsp;
 				<!--  -->
-			</div>
+					&nbsp;
+				&nbsp;	&nbsp;
+				&nbsp;	&nbsp;
+				&nbsp;&nbsp;
+				&nbsp;&nbsp;
+				&nbsp;&nbsp;
+			<!--  JQuery Menu -->
+				<div class="buttonicon">
+					
+					<ul id="menu" >
+						<li><div style="max-width: 55px;"><img src="./img/menu.png"></div>
+							<ul class="ui-menu-etch-ul">
+								<li class="ui-state-disabled"><div>---ETCH-AI---</div></li>
+								<li><div id="clear"><img src="./img/channel-mode-off.ico" 
+									 class="ui-menu-icon"> &nbsp;&nbsp; Clear canvas</div></li>
+								<!-- <li><div onclick="refreshRender">Refresh Render</div></li> -->
+								<li><div onclick="restartAutoRefresh()"><img src="./img/timer.jpg" class="ui-menu-icon">&nbsp;&nbsp;Restart Refresh</div></li>
+							</ul>
+						</ul>
+					</div>
+					<!-- End menu -->
+
 		</div>
-	</td>
+	</div>
+</td>
 <td>
 
 	 <div class="filll"> </div> 
@@ -140,8 +199,6 @@ function probablyDrawing()
 		<!-- <div class="fillr"> </div> -->
 	</td>
 </tr></table>
-	
-
 	
 <!--
 <br>
@@ -505,7 +562,7 @@ function etchResized()
 	
 }
 
-function refraish()
+function restartAutoRefresh()
 {
 	//@STCGoal Startup of the refresh sequence again
 	countLoop= 0;
@@ -980,6 +1037,12 @@ function grabresultpresentationgrid()
 		previouspresentationGridImage = presentationGridImage;
 	});
 
+}
+
+
+function refreshRender()
+{
+	renderimg();
 }
 </script>
  
