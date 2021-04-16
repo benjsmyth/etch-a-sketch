@@ -47,7 +47,7 @@ else // Lets do the work
 
     //encode_base64_v2(imgFile, target);
     try {
-        encode_base64_v3(imgFile, target);
+        encode_base64_v3_to_JSONRequestFile(imgFile, target);
         console.log("filje: " + target + " should have been created");
     } catch (error) {
         console.log("something went wrong: " );
@@ -56,15 +56,17 @@ else // Lets do the work
 
     
 }
+
 /**
+ * Encode an image file into base64 JSON request file 
  * @param  {string} filename
  * @param  {string} targetJsonFile
  */
-function encode_base64_v3(filename, targetJsonFile) {
+function encode_base64_v3_to_JSONRequestFile(filename, targetJsonFile) {
     var base64Raw = fs.readFileSync(filename, 'base64');
 
     var base64 = base64Raw;
-    var ext = path.extname(imgFile).replace(".", "");
+    var ext = path.extname(filename).replace(".", "");
     if (ext == "jpg" || ext == "JPG" || ext == "JPEG") ext = "jpeg";
     if (ext == "pneg" || ext == "PNG" || ext == "Png") ext = "png";
 
