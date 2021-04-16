@@ -203,4 +203,14 @@ a:hover {
 	min-height: 30px;
 	max-width: 41px;
 	max-height: 41px;
+	padding-top: 5px;
+}
+
+.buttonicon2
+{
+	padding-top: 5px;
+	/* min-width: 32px;
+	min-height: 30px;
+	max-width: 41px;
+	max-height: 41px; */
 }
