@@ -58,7 +58,7 @@ export nodeimg2stylizationrequest="gia-ast-img2stylize-request"
 
 # Loads an ENV for the current host if exist
 hostenvfile="_henv_$HOSTNAME.sh"
-if [ -f $hostenvfile ]; then
+if [ -f $DIR/$hostenvfile ]; then
      source $DIR/$hostenvfile
 else
     echo " $DIR/$hostenvfile does not exist, create it if you require to define specific to platform variable or overwrite some."
