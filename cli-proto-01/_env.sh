@@ -59,9 +59,9 @@ export nodeimg2stylizationrequest="gia-ast-img2stylize-request"
 # Loads an ENV for the current host if exist
 hostenvfile="_henv_$HOSTNAME.sh"
 if [ -f $hostenvfile ]; then
-     source $hostenvfile
+     source $DIR/$hostenvfile
 else
-    echo " ./$hostenvfile does not exist, create it if you require to define specific to platform variable or overwrite some."
+    echo " $DIR/$hostenvfile does not exist, create it if you require to define specific to platform variable or overwrite some."
 fi
 
 echo "Current Service host is : $callhost"
