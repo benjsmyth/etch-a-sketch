@@ -171,11 +171,13 @@ function probablyDrawing()
 					<button onclick="setPainter(9000)" class="b2"> Picasso </button>&nbsp;<button onclick="setPainter(9010)" class="b2 b3"> Vo </button> &nbsp;
 					<button onclick="setPainter(9003)" class="b2 b3"> 3.030</button>/  
 					<button onclick="setPainter(9006)" class="b2 b3"> 3.075 </button> /
+					<button onclick="setPainter(9031)" class="b2 b3"> 3.120 </button> /
 					<button onclick="setPainter(9002)" class="b2 b3"> 3.165 </button> 
 					<br>
 					<button onclick="setPainter(9009)" class="b2 b3"> 3.180 </button> /  
 					<button onclick="setPainter(9005)" class="b2 b3"> 3.225 </button> /  
-					<button onclick="setPainter(9008)" class="b2 b3"> 4.120 </button> &nbsp;-  
+					<button onclick="setPainter(9008)" class="b2 b3"> 4.120 </button> /  
+					<button onclick="setPainter(9030)" class="b2 b3"> 5.150 </button> &nbsp;-  
 					<button onclick="alert('not implemented yet');return;setCompoPainter(9002,9003)" class="b2 b3"> c3165030 </button> &nbsp;
 				</div>&nbsp;&nbsp;
 				<div>
@@ -597,6 +599,7 @@ function setPainter(port)
 	
 	
 }
+var jgwillPicassoModelName = "Picawill";
 function 	setCurrentlyInferingLabel(port)
 {
 
@@ -608,24 +611,30 @@ function 	setCurrentlyInferingLabel(port)
 			setUI("Picasso");
 			break;
 		case 9002:
-			setUI("Picasso var 3.165");
+			setUI(jgwillPicassoModelName + " var 3.165");
 			break;
 		case 9003:
-			setUI("Picasso var 3.030");
+			setUI(jgwillPicassoModelName + " var 3.030");
+			break;
+		case 9031:
+			setUI(jgwillPicassoModelName + " var 3.120");
 			break;
 		case 9005:
-			setUI("Picasso var 3.225");
+			setUI(jgwillPicassoModelName + " var 3.225");
 			break;
 		case 9009:
-			setUI("Picasso var 3.180");
+			setUI(jgwillPicassoModelName + " var 3.180");
 		case 9010:
 			setUI("Picasso Vo");
 			break;
 		case 9006:
-			setUI("Picasso var 3.075");
+			setUI(jgwillPicassoModelName + " var 3.075");
 			break;
 		case 9008:
-			setUI("Picasso var 4.120");
+			setUI(jgwillPicassoModelName + " var 4.120");
+			break;
+		case 9030:
+			setUI(jgwillPicassoModelName + " var 5.150");
 			break;
 		//VAN GOGH
 		case 9011:
