@@ -14,6 +14,7 @@ export resultFileTarget=$resultFileTargetBase$callport.$ext_target
 
 ## DEBUG STUFF
 echo "Calling the server port: $callport"
+echo "Calling the server : $callurl"
 #echo "RequestFile: $requestFile"
 #echo "CallURL: $callurl"
 #echo "Output Responses: $responseFile"

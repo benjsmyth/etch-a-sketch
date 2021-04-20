@@ -44,7 +44,7 @@ export requestFile="$TMP/request.json"
 
 export callContentType="Content-Type: application/json"
 
-echo "Current Service host is : $callhost"
+#echo "Current Service host is : $callhost"
 
 
 
@@ -63,3 +63,6 @@ if [ -f $hostenvfile ]; then
 else
     echo " ./$hostenvfile does not exist, create it if you require to define specific to platform variable or overwrite some."
 fi
+
+echo "Current Service host is : $callhost"
+
