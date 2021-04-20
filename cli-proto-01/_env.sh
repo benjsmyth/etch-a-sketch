@@ -5,7 +5,9 @@ export modelid=30
 
 export callhost="as.guillaumeisabelle.com"
 export callhost="orko.guillaumeisabelle.com"
-export callhost="compai.guillaumeisabelle.com"
+#export callhost="compai.guillaumeisabelle.com"
+#export callhost="gaia.guillaumeisabelle.com"
+
 export callprotocol="http"
 export ext_target=jpg
 
