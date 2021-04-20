@@ -36,6 +36,7 @@ $nodepostscripting  $responseFile $responseImage --html  >> $resulthtml
 # Moving result in CDIR
 echo "Moving result into target : $resultFileTarget"
 mv $responseImage $resultFileTarget
+rm -f $responseFile $requestFile
 
 # cleanup
 #rm $responseFile
