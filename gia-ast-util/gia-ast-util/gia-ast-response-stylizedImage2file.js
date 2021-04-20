@@ -1,3 +1,4 @@
+#!/bin/env node
 'use strict';
 // node v8.11.3
 const Buffer = require('safer-buffer').Buffer;
