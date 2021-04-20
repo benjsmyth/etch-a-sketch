@@ -55,3 +55,11 @@ echo "Current Service host is : $callhost"
 export nodepostscripting="gia-ast-response-stylizedImage2file"
 export node_util_cat_contentImage="gia-ast-cat-contentImage"
 export nodeimg2stylizationrequest="gia-ast-img2stylize-request"
+
+# Loads an ENV for the current host if exist
+hostenvfile="_henv_$HOSTNAME.sh"
+if [ -f $hostenvfile ]; then
+    . ./$hostenvfile
+else
+    echo " ./$hostenvfile does not exist, create it if you require to define specific to platform variable or overwrite some."
+fi
