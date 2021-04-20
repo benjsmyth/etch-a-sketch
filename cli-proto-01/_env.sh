@@ -47,6 +47,11 @@ echo "Current Service host is : $callhost"
 
 
 # Scripting we call
-export nodepostscripting="node $DIR/util_decode_base64_to_html_tag.js"
-export node_util_cat_contentImage="node $DIR/util_cat_contentImage_json.js"
-export nodeimg2stylizationrequest="node $DIR/img2stylizationRequest.js"
+# export nodepostscripting="node $DIR/util_decode_base64_to_html_tag.js"
+# export node_util_cat_contentImage="node $DIR/util_cat_contentImage_json.js"
+# export nodeimg2stylizationrequest="node $DIR/img2stylizationRequest.js"
+
+# Using npmjs ClI : npm i gia-ast-util --g
+export nodepostscripting="gia-ast-response-stylizedImage2file"
+export node_util_cat_contentImage="gia-ast-cat-contentImage"
+export nodeimg2stylizationrequest="gia-ast-img2stylize-request"
