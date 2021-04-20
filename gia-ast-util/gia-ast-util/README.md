@@ -1,30 +1,38 @@
-# Cross Platform Neural Encement
+# Cross Platform AST Util
 
-CLI wrapper for Image Neurally Enhanced using containerized infrastructure
-
-Vision: A Neural Enhancement for images encapsulated into a docker container and wrapped for multiplatform by nodeJS
+CLI wrapper for AST Util
 
 
 # Run from directory where all your files are
 ```sh
-gia-ne fileToEnhance.jpg
-# It will start the docker container in bg to do its work
+gia-ast-cat-contentImage request.json
+
+# generated a request.json
+gia-ast-img2stylize-request sample.jpg request.json
+
+#from a response, create a file
+gia-ast-response-stylizedImage2file response.json mystylizedresult.jpg
+
 ```
 # Install
 
 ```sh
-npm i gia-ne --g
-docker pull guillaumeai/ne
+npm i gia-ast-util --g
+
 ```
 
 # Dependencies
 
-* Docker
+* NODEJS
 
 
 ----
 
 # Further research
 
-* Use this project as a model to build Command Wrapper for Containerized infrastructure
+* One wrapper for all
+
+>gia-ast-util img2request sample.jpg request.json
+>gia-ast-util catcontentimage request.json
+>gia-ast-util stylized2file result.json myresult.jpg
 
