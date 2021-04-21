@@ -2,11 +2,17 @@
 
 export resultSuffix='__stylize__'
 export modelid=30
+# Current ports of available models on the hosts
+export ports="51 52 53 54 55 56"
 
-export callhost="as.guillaumeisabelle.com"
-export callhost="orko.guillaumeisabelle.com"
+#export callhost="as.guillaumeisabelle.com"
+#export callhost="orko.guillaumeisabelle.com"
 #export callhost="compai.guillaumeisabelle.com"
 #export callhost="gaia.guillaumeisabelle.com"
+export callhostB="orko.guillaumeisabelle.com"
+export callhostA="gaia.guillaumeisabelle.com"
+#Average time for infering with those hosts
+export astiaDistributedAverageSwitchTimeframe=8
 
 export callprotocol="http"
 export ext_target=jpg
@@ -39,7 +45,7 @@ echo $contentimagefileBasename
 export resulthtml="$TMP/results.html"
 
 
-export requestFile="$TMP/request.json"
+#export requestFile="$TMP/request.json"
 #export requestFile="request-0014.json"
 
 export callContentType="Content-Type: application/json"

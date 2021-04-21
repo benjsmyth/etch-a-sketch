@@ -4,6 +4,8 @@
 # Prep context
 
 export responseBase=response$callport
+export requestBase=request$callport
+export requestFile="$TMP/$requestBase.json"
 
 export callurl="$callprotocol://$callhost:$callport/$callmethod"
 export responseFile="$TMP/$responseBase.json"
@@ -13,7 +15,7 @@ export resultFileTarget=$resultFileTargetBase$callport.$ext_target
 
 
 ## DEBUG STUFF
-echo "Calling the server port: $callport"
+#echo "Calling the server port: $callport"
 echo "Calling the server : $callurl"
 #echo "RequestFile: $requestFile"
 #echo "CallURL: $callurl"
@@ -22,7 +24,10 @@ echo "Calling the server : $callurl"
 #echo curl --header  \"$callContentType\"  --request POST   --data @$requestFile $callurl --output $responseFile
 
 # Call the modeling service
-curl --header  "$callContentType"  --request POST   --data @$requestFile $callurl --output $responseFile
+curl --header  "$callContentType"  --request POST   --data @$requestFile $callurl --output $responseFile --silent
+
+#--suppress-connect-headers
+
 
 # Post process response
 echo "Calling post scripting: $nodepostscripting"
