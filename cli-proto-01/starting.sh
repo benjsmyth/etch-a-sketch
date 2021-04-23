@@ -3,13 +3,13 @@
 #source _env.sh
 
 #
-echo "Creating the request file using contentimage: $contentimagefile"
+#echo "Creating the request file using contentimage: $contentimagefile"
 #sleep 1
 $nodeimg2stylizationrequest $contentimagefile $requestFile
 
 
 ## Browsing
-echo "Initializing: $resulthtml"
+#echo "Initializing: $resulthtml"
 
 
 echo "<hr>$(date)<hr>" >> $resulthtml

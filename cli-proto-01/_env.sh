@@ -12,7 +12,7 @@ export ports="51 52 53 54 55 56"
 export callhostB="orko.guillaumeisabelle.com"
 export callhostA="gaia.guillaumeisabelle.com"
 #Average time for infering with those hosts
-export astiaDistributedAverageSwitchTimeframe=8
+export astiaDistributedAverageSwitchTimeframe=9
 
 export callprotocol="http"
 export ext_target=jpg
@@ -31,6 +31,10 @@ else
    export modelid=$2
 fi
 export callport=$callportbase$modelid
+
+
+export requestBase=request$callport
+export requestFile="$TMP/$requestBase.json"
 
 
 

@@ -4,8 +4,8 @@
 # Prep context
 
 export responseBase=response$callport
-export requestBase=request$callport
-export requestFile="$TMP/$requestBase.json"
+#export requestBase=request$callport
+#export requestFile="$TMP/$requestBase.json"
 
 export callurl="$callprotocol://$callhost:$callport/$callmethod"
 export responseFile="$TMP/$responseBase.json"
@@ -30,16 +30,16 @@ curl --header  "$callContentType"  --request POST   --data @$requestFile $callur
 
 
 # Post process response
-echo "Calling post scripting: $nodepostscripting"
+#echo "Calling post scripting: $nodepostscripting"
 #echo "  It will convert: $responseFile to $responseImage and generate HTML in : $resulthtml"
 
-echo "$nodepostscripting  $responseFile $responseImage --html  >> $resulthtml"
+#echo "$nodepostscripting  $responseFile $responseImage --html  >> $resulthtml"
 
 echo "<hr><h2>$modelinfo</h2>" >> $resulthtml
 $nodepostscripting  $responseFile $responseImage --html  >> $resulthtml
 
 # Moving result in CDIR
-echo "Moving result into target : $resultFileTarget"
+echo "Result file created : $resultFileTarget"
 mv $responseImage $resultFileTarget
 rm -f $responseFile $requestFile
 
