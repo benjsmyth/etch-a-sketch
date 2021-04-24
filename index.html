@@ -140,7 +140,10 @@ function probablyDrawing()
 								<li><div id="clear"><img src="./img/channel-mode-off.ico" 
 									 class="ui-menu-icon"> &nbsp;&nbsp; Clear canvas</div></li>
 								<!-- <li><div onclick="refreshRender">Refresh Render</div></li> -->
+								<li class="ui-state-disabled"><div>--------</div></li>
 								<li><div onclick="restartAutoRefresh()"><img src="./img/timer.jpg" class="ui-menu-icon">&nbsp;&nbsp;Restart Refresh</div></li>
+								<li class="ui-state-disabled"><div>--------</div></li>
+								<li><div onclick="toogleRefreshOnMouseMoved()"><img src="./img/timer.jpg" class="ui-menu-icon">&nbsp;&nbsp;Toogle Refresh Mouse Moved</div></li>
 							</ul>
 						</ul>
 					</div>
@@ -173,22 +176,37 @@ function probablyDrawing()
 					<button onclick="setPainter(9006)" class="b2 b3"> 3.075 </button> /
 					<button onclick="setPainter(9031)" class="b2 b3"> 3.120 </button> /
 					<button onclick="setPainter(9002)" class="b2 b3"> 3.165 </button> 
-					<br>
+					
 					<button onclick="setPainter(9009)" class="b2 b3"> 3.180 </button> /  
 					<button onclick="setPainter(9005)" class="b2 b3"> 3.225 </button> /  
 					<button onclick="setPainter(9008)" class="b2 b3"> 4.120 </button> /  
-					<button onclick="setPainter(9030)" class="b2 b3"> 5.150 </button> &nbsp;-  
+					<button onclick="setPainter(9030)" class="b2 b3"> 5.150 </button> &nbsp;---COMPO:  
+					<button onclick="setPainter(9051)" class="b2 b3">51 </button> &nbsp;-  
+					<button onclick="setPainter(9052)" class="b2 b3">52 </button> &nbsp;-  
+					<button onclick="setPainter(9053)" class="b2 b3">53 </button> &nbsp;-  
+					<button onclick="setPainter(9054)" class="b2 b3">54 </button> &nbsp;-  
+					<button onclick="setPainter(9055)" class="b2 b3">55 </button> &nbsp;-  
+					<button onclick="setPainter(9056)" class="b2 b3">56 </button> &nbsp;-  
 					<button onclick="alert('not implemented yet');return;setCompoPainter(9002,9003)" class="b2 b3"> c3165030 </button> &nbsp;
 				</div>&nbsp;&nbsp;
 				<div>
 					<button onclick="setPainter(9001)" class="b2"> Kandinsky </button>&nbsp;&nbsp; 
 					<button onclick="setPainter(9004)" class="b2"> Dali </button> &nbsp;&nbsp;
-					<button onclick="setPainter(9011)" class="b2"> Van-Gogh </button> &nbsp;&nbsp;
+					<button onclick="setPainter(9011)" class="b2">Van-Gogh  </button> &nbsp;&nbsp;
+					<button onclick="setPainter(9041)" class="b2"> El-Greco </button> &nbsp;&nbsp;
+					<button onclick="setPainter(9042)" class="b2"> Gauguin </button> &nbsp;&nbsp;
+					
+					<button onclick="setPainter(9043)" class="b2"> Kirchner </button> &nbsp;&nbsp;
 					<br>
 					<button onclick="setPainter(9014)" class="b2"> Monet </button> &nbsp;&nbsp;
 					<button onclick="setPainter(9007)" class="b2"> Cezanne</button>  &nbsp;
 					<button onclick="setPainter(9012)" class="b2 b3"> vo.165</button> &nbsp;
-					<button onclick="setPainter(9013)" class="b2 b3"> vo.180</button> 
+					<button onclick="setPainter(9013)" class="b2 b3"> vo.180</button>  &nbsp;&nbsp;
+					<button onclick="setPainter(9044)" class="b2"> Morisot </button> &nbsp;&nbsp;
+					<button onclick="setPainter(9045)" class="b2"> Munch </button> &nbsp;&nbsp;
+					<button onclick="setPainter(9046)" class="b2"> Peploe </button> &nbsp;&nbsp;
+					<button onclick="setPainter(9047)" class="b2"> Pollock </button> &nbsp;&nbsp;
+					<button onclick="setPainter(9048)" class="b2"> Roerich </button> &nbsp;&nbsp;
 				</div>
 			</div>
 			<div id="canvaswrapper2">
@@ -310,7 +328,8 @@ function looping()
 
 					//Rendering Type ?
 					if (!featCompoRendering)				{
-						renderimg();  //normal (1 model)
+						if (refreshOnMouseMoved || refreshButtonPressed) //we refresh if refresh on mouse move is active or the render button was pressed
+							renderimg();  //normal (1 model)
 						loopingWaitFactor = 1;
 						}
 					else {
@@ -328,6 +347,8 @@ function looping()
 	
 
 autorefreshing=false;
+var refreshOnMouseMoved = false;
+var refreshButtonPressed = false;
 
 var loopingWaitFactor = 1;
 
@@ -365,6 +386,7 @@ function activateDefaultDrawOptions()
 	
 }
 	
+//@TODO DELETE
 setTimeout(() => { 
 	console.log("Starting the whole thing BYPASSED in this by the button RENDER!"); 
 
@@ -663,8 +685,33 @@ function 	setCurrentlyInferingLabel(port)
 			setUI("Dali var 1.300");
 			break;
 	
+		case 9041:
+			setUI("El-Greco");
+			break;
+		case 9042:
+			setUI("Gauguin");
+			break;
+		case 9043:
+			setUI("Kirchner");
+			break;
+		case 9044:
+			setUI("Morisot");
+			break;
+		case 9045:
+			setUI("Munch");
+			break;
+		case 9046:
+			setUI("Peploe");
+			break;
+		case 9047:
+			setUI("Pollock");
+			break;
+		case 9048:
+			setUI("Roerich");
+			break;
+	
 		default:
-			setUI("---");
+			setUI("---" +  port + "---");
 			break;
 	}
 }
@@ -1051,6 +1098,12 @@ function grabresultpresentationgrid()
 function refreshRender()
 {
 	renderimg();
+}
+
+function toogleRefreshOnMouseMoved()
+{
+	refreshOnMouseMoved = !refreshOnMouseMoved;
+	console.log("refreshOnMouseMoved is now:"+ refreshOnMouseMoved);
 }
 </script>
  
