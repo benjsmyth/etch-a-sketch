@@ -10,8 +10,21 @@
 	
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
-	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="/node_modules/jquery/dist/jquery.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+	<!-- Cloudinary -->
+	<script src="/node_modules/cloudinary-jquery/cloudinary-jquery.js"></script>
+<script src="/node_modules/jquery-ui/ui/widget.js"></script>
+
+<script src="/node_modules/jquery.iframe-transport/jquery.iframe-transport.js"></script>
+
+<script src="/node_modules/jquery-file-upload/js/jquery.uploadfile.js"></script>
+	
+<script src="/node_modules/cloudinary-jquery-file-upload/cloudinary-jquery-file-upload.js"></script>
+
+
+<!-- END Cloudinary -->
 	<script>
 		$( function() {
 		  $( "#menu" ).menu();
@@ -27,31 +40,26 @@
 	
 	<!-- Upload feature  -->
 	<script type="text/javascript">
-		$(document).ready(function (e) {
-			 $('#upload').on('click', function () {
-				  var file_data = $('#file').prop('files')[0];
-				  var form_data = new FormData();
-				  form_data.append('file', file_data);
-				  var testConvert = imgToBase64(file_data);
-				  console.log(testConvert);
-
-				  $.ajax({
-						url: 'http://localhost/ci/index.php/welcome/upload', // point to server-side controller method
-						dataType: 'text', // what to expect back from the server
+	$("form").submit(function (event) {
+            
+				var formData = new FormData($(this));
+		  		console.log(formData);
+				  
+				$.ajax({
+						url: url,
+						type: 'POST',
+						data: formData,
+						async: false,
+						success: function (data) {
+							 //success callback
+							 console.log(data);
+						},
 						cache: false,
 						contentType: false,
-						processData: false,
-						data: form_data,
-						type: 'post',
-						success: function (response) {
-							 $('#msg').html(response); // display success response from the server
-						},
-						error: function (response) {
-							 $('#msg').html(response); // display error response from the server
-						}
-				  });
-			 });
-		});
+						processData: false
+					  });
+		  
+			  });
   </script>
 
 	<style rel="stylesheet" type="text/css">
@@ -119,11 +127,12 @@ function probablyDrawing()
 <body>
 
 	<!-- Upload -->
-	<p id="msg"></p>
-
-	<input type="file" id="file" name="file" multiple />
-	<button id="upload">Upload</button>
-
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
+	<form action="#" method="GET" role="form" enctype="multipart/form-data">
+	 <input type="text" placeholder="Name" name="name">
+	 <input type="file" name="img" multiple>
+	  <button type="submit">Submit </button>
+	</form>
 	<br>
 	<hr>
 
