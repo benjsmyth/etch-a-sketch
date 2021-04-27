@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Etch-AI-Sketch (EtchAI)</title>
+	<link href="style5.css" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900|Satisfy" rel="stylesheet">
+	<!-- Integrating JQuery-->
+	
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script>
+		$( function() {
+		  $( "#menu" ).menu();
+		} );
+		</script>
+		<style>
+		.ui-menu { width: 150px; }
+		</style>
+
+<!-- End JQuery -->
+
+	<script src="script.js" type="text/javascript" async></script>
+	
+	<style rel="stylesheet" type="text/css">
+.filll {
+	position:  absolute;
+
+	width:1px;
+	height:1px;
+	color:black;
+	left:auto;
+	top:65px;
+	background-color: black;
+}
+#result {
+	/* object-fit: cover;
+  width:230px;
+  height:230px;  position: relative;
+  */
+ position: relative;
+  left:58px;
+	width: 864px;
+	height: 832px;
+	 overflow: hidden; /**/
+}
+.fillr {
+
+	width:77px;
+	height:600px;
+	color:magenta;
+	right:621px;
+	
+	/* top:65px; */
+	background-color:black;
+}
+
+/* Override JQuery menu */
+.ui-menu {
+	width: 70px;
+}
+.ui-menu-etch-ul
+{
+	width: 170px;
+	text-align: left;
+}
+.ui-menu-icon{
+	min-width: 10px;
+	max-width: 15px;
+}
+	</style>
+	<script type="text/javascript">
+var currentSizeNumber = -1;
+
+var moved = true;
+//@STCGoal Refresh only if we moved
+function probablyDrawing()
+{
+	moved = true;
+}
+
+
+</script>
+</head>
+
+<body>
+
+	<table><tr><td valign=top>
+
+		<div id="maincontainer">
+			<div id="top">
+				<button id="hover">
+					<!-- <img src="./img/drag.png"> -->
+					Hover</button>
+				<button id="header"><h1>Etch-A-Sketch</h1></button>
+				<button id="drag"><img src="./img/click.png">
+					Drag
+				</button>
+			</div>
+			<div id="canvaswrapper"  onmousemove="probablyDrawing()">
+				
+				<div id="gridcontainer">
+				</div>
+			</div>
+			<div id="bottombuttons">
+				<!-- <button id="restartAutoRefresh" onclick="restartAutoRefresh()"><img src="./img/timer.jpg"  class="buttonicon" title="Restart Auto Refresh"></button> -->
+				<!-- <button id="clear"><img src="./img/channel-mode-off.ico" 
+					title="Clear the canvas"></button> -->
+				<button id="default" style="color: gray;background-color: white;max-width: 55px;"><img src="./img/paint-52.png" title="Paint with Black"
+					></button>
+				<button id="transparent" style="color: gray;background-color: gray;max-width: 53px;"><img src="./img/paint-gray-52.png" title="Paint with Gray"></button>
+				
+				<button id="colorized" style="min-width: 73px;"> <input type="color" id="coloring" name="coloring"
+					value="#e66465" onchange="setColoring()" onclick="refreshColoring()" 
+					style="min-height: 55px;min-width:61px;"></button> 
+				
+				<button id="resize" style="max-width: 54px;"><img src="./img/resize.png" class="buttonicon"></button>
+				<button id="renderimg" onclick="renderimg()" style="max-width: 65px;min-width: 50px;"> 
+				<img src="./img/render.jpg" class="buttonicon2" width="65" height="45" ></button>
+				&nbsp;
+				&nbsp;
+				<!--  -->
+					&nbsp;
+				&nbsp;	&nbsp;
+				&nbsp;	&nbsp;
+				&nbsp;&nbsp;
+				&nbsp;&nbsp;
+				&nbsp;&nbsp;
+				
+			<!--  JQuery Menu -->
+				<div class="buttonicon">
+					
+					<ul id="menu" >
+						<li><div style="max-width: 55px;"><img src="./img/menu.png"></div>
+							<ul class="ui-menu-etch-ul">
+								<li class="ui-state-disabled"><div>---ETCH-AI---</div></li>
+								<li><div id="clear"><img src="./img/channel-mode-off.ico" 
+									 class="ui-menu-icon"> &nbsp;&nbsp; Clear canvas</div></li>
+								<!-- <li><div onclick="refreshRender">Refresh Render</div></li> -->
+								<li class="ui-state-disabled"><div>--------</div></li>
+								<li><div onclick="restartAutoRefresh()"><img src="./img/timer.jpg" class="ui-menu-icon">&nbsp;&nbsp;Restart Refresh</div></li>
+								<li class="ui-state-disabled"><div>--------</div></li>
+								<li><div onclick="toogleRefreshOnMouseMoved()"><img src="./img/timer.jpg" class="ui-menu-icon">&nbsp;&nbsp;Toogle Refresh Mouse Moved</div></li>
+							</ul>
+						</ul>
+					</div>
+					<!-- End menu -->
+
+		</div>
+	</div>
+</td>
+<td>
+
+	 <div class="filll"> </div> 
+	<div id="maincontainer2">
+		<div id="top2">
+			<button id="hover2"> </button>
+			<button id="header2" class="b2">
+				<h2 id="resultlabel" class="inferencelabel">Inferencing</h2></button>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<button id="cpainter" class="b2"> 123</button>	
+				&nbsp;&nbsp;
+				<button id="header2" class="b2">
+				<h2 id="resultlabel" class="inferencelabel">Style</h2></button>
+			</div>
+		
+			<div id="bottombuttons2" class="b2">
+				<br>
+				<div>
+
+					<button onclick="setPainter(9000)" class="b2"> Picasso </button>&nbsp;<button onclick="setPainter(9010)" class="b2 b3"> Vo </button> &nbsp;
+					<button onclick="setPainter(9003)" class="b2 b3"> 3.030</button>/  
+					<button onclick="setPainter(9006)" class="b2 b3"> 3.075 </button> /
+					<button onclick="setPainter(9031)" class="b2 b3"> 3.120 </button> /
+					<button onclick="setPainter(9002)" class="b2 b3"> 3.165 </button> 
+					
+					<button onclick="setPainter(9009)" class="b2 b3"> 3.180 </button> /  
+					<button onclick="setPainter(9005)" class="b2 b3"> 3.225 </button> /  
+					<button onclick="setPainter(9008)" class="b2 b3"> 4.120 </button> /  
+					<button onclick="setPainter(9030)" class="b2 b3"> 5.150 </button> &nbsp;---COMPO:  
+					<button onclick="setPainter(9051)" class="b2 b3">51 </button> &nbsp;-  
+					<button onclick="setPainter(9052)" class="b2 b3">52 </button> &nbsp;-  
+					<button onclick="setPainter(9053)" class="b2 b3">53 </button> &nbsp;-  
+					<button onclick="setPainter(9054)" class="b2 b3">54 </button> &nbsp;-  
+					<button onclick="setPainter(9055)" class="b2 b3">55 </button> &nbsp;-  
+					<button onclick="setPainter(9056)" class="b2 b3">56 </button> &nbsp;-  
+					<button onclick="alert('not implemented yet');return;setCompoPainter(9002,9003)" class="b2 b3"> c3165030 </button> &nbsp;
+				</div>&nbsp;&nbsp;
+				<div>
+					<button onclick="setPainter(9001)" class="b2"> Kandinsky </button>&nbsp;&nbsp; 
+					<button onclick="setPainter(9004)" class="b2"> Dali </button> &nbsp;&nbsp;
+					<button onclick="setPainter(9011)" class="b2">Van-Gogh  </button> &nbsp;&nbsp;
+					<button onclick="setPainter(9041)" class="b2"> El-Greco </button> &nbsp;&nbsp;
+					<button onclick="setPainter(9042)" class="b2"> Gauguin </button> &nbsp;&nbsp;
+					
+					<button onclick="setPainter(9043)" class="b2"> Kirchner </button> &nbsp;&nbsp;
+					<br>
+					<button onclick="setPainter(9014)" class="b2"> Monet </button> &nbsp;&nbsp;
+					<button onclick="setPainter(9007)" class="b2"> Cezanne</button>  &nbsp;
+					<button onclick="setPainter(9012)" class="b2 b3"> vo.165</button> &nbsp;
+					<button onclick="setPainter(9013)" class="b2 b3"> vo.180</button>  &nbsp;&nbsp;
+					<button onclick="setPainter(9044)" class="b2"> Morisot </button> &nbsp;&nbsp;
+					<button onclick="setPainter(9045)" class="b2"> Munch </button> &nbsp;&nbsp;
+					<button onclick="setPainter(9046)" class="b2"> Peploe </button> &nbsp;&nbsp;
+					<button onclick="setPainter(9047)" class="b2"> Pollock </button> &nbsp;&nbsp;
+					<button onclick="setPainter(9048)" class="b2"> Roerich </button> &nbsp;&nbsp;
+				</div>
+			</div>
+			<div id="canvaswrapper2">
+				
+				<div id="result"></div>
+				
+			</div>
+		</div>
+		<!-- <div class="fillr"> </div> -->
+	</td>
+</tr></table>
+	
+<!--
+<br>
+<button id="doubleInferenceModeButton" class="b3" onclick="doubleInferenceModeToogle()">Double Inference Mode Innactive</button>
+-- DISABLED -->
+<hr>
+
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<!-- <br>&nbsp;
+<button class="b2" onclick="grabresultpresentationgrid()">Grab Result Grid as Image</button>
+<br>&nbsp; -->
+
+<hr>
+<br>
+<br>
+<div id="resultpresentationgrid">
+<table id="resultpresentationgridtable">
+	<tr>
+		<td>
+			<font size=+2>
+
+				<h1 id="currentPainterLabelText">CURRENT PAINTER LABEL</h1></td>
+			</font>
+		<td></td>
+	</tr>
+	<tr>
+		<th><h2>Content</h2></th>
+		<th><h2>Stylized</h2></th>
+	</tr>
+	<tr>
+		<td>
+			<div id="presentationContentDiv"></div>
+		</td>
+		<td>
+			<div id="presentationResultDiv"></div>
+		</td>
+	</tr>
+</table>
+</canvas>
+<br>
+<br>
+<br>
+<hr>
+
+
+  <!-- @STCGoal Capture Canvas from an HTML Elements -->
+ <script type="text/javascript" src="/node_modules/html2canvas/dist/html2canvas.js"></script>
+ 
+
+ <!-- @STCGoal So we dont publish on the web our config like pika_token -->
+ <script type="text/javascript" src="/config.js"></script>
+
+
+ <!-- @STCGoal Render Stylistic inferences via hosted AI model -->
+
+ 
+
+ <!-- <script type="text/javascript" src="/node_modules/html2canvas/dist/html2canvas.js"></script>
+  -->
+
+<!-- @STCGoal Logic doing all the work -->
+<script type="text/javascript">
+
+//----------------------------------------------------------------------------------
+//--------------------------------------------Inference Starts after that timeout
+//Being Deprecated
+var infereAfterTimeOut = 19000;
+
+
+//----------------------------------------------------------FEATURE ON/OFF --------------------
+//----------------- Toogle This for processing Style or Not (Cost 0.01$ USD per inference -----
+var doProcess = true;
+var featCompoRendering = false;  //feature altering behaviour to compose image with two model
+var featCompoPort1 = 9002; //default 1: 3.165
+var featCompoPort2 = 9003; //default 2: 3.03
+
+var showCurrentImageInBody = true;//false bug the process
+
+var debug = false;
+
+var countLoop = 0;
+var initialWaitBeforeStartingLoop = 2111;
+
+var _cnf_defaultPainterPort = 9012;
+setTimeout(function() {
+	//Override the default port
+	setPainter(_cnf_defaultPainterPort);
+	looping();
+},initialWaitBeforeStartingLoop);
+
+function looping()
+{
+
+	(function myLoop(i) {
+		setTimeout(function() {
+			console.log('looping:' + countLoop); //  your code here 
+
+			if (moved)
+				{
+					if (!initialMouseOverDone) //required to run first so we can draw right away
+					{
+						//activateDefaultDrawOptions();
+						initialMouseOverDone = true;
+					}
+					console.log("Movement detected");
+
+					//Rendering Type ?
+					if (!featCompoRendering)				{
+						if (refreshOnMouseMoved || refreshButtonPressed) //we refresh if refresh on mouse move is active or the render button was pressed
+							renderimg();  //normal (1 model)
+						loopingWaitFactor = 1;
+						}
+					else {
+						loopingWaitFactor = 4;
+						compoRenderingWF();}
+				}
+			moved = false;
+
+			countLoop++;          
+			if (--i) myLoop(i);   //  decrement i and call myLoop again if i > 0
+			else console.log("Loop auto refresh TimedOut");
+		}, getRefreshRateRelativeToSize() * loopingWaitFactor )
+	})(autorefreshingIterations );                   //  pass the number of iterations as an argument
+}
+	
+
+autorefreshing=false;
+var refreshOnMouseMoved = false;
+var refreshButtonPressed = false;
+
+var loopingWaitFactor = 1;
+
+
+etchLoadWhenStarting();
+function etchLoadWhenStarting()
+{
+	activateDefaultDrawOptions();
+	etchLoaded();
+}
+
+
+var initialMouseOverDone = false;
+
+function activateDefaultDrawOptions()
+{
+
+	setTimeout(() => { 
+		// mouseHoverDefault(this);
+		// changeDefaultButton();
+		var hoverHandler = document.getElementById("hover");
+		hoverHandler.click();
+		var defaultHandler = document.getElementById("default");
+		defaultHandler.click();
+		try {
+		hoverHandler.click();
+			hoverHandler.releasePointerCapture();
+		} catch (error) {}
+		try {
+		defaultHandler.click();
+			defaultHandler.releasePointerCapture();
+		} catch (error) {}
+
+	},222);
+	
+}
+	
+//@TODO DELETE
+setTimeout(() => { 
+	console.log("Starting the whole thing BYPASSED in this by the button RENDER!"); 
+
+
+				
+}, infereAfterTimeOut);
+
+//----------------------------------------------
+
+function imgToBase64(img) {
+	const canvas = document.createElement('canvas');
+	const ctx = canvas.getContext('2d');
+	canvas.width = img.width;
+	canvas.height = img.height;
+
+	// I think this won't work inside the function from the console
+	img.crossOrigin = 'anonymous';
+
+	ctx.drawImage(img, 0, 0);
+
+	return canvas.toDataURL();
+}
+
+//Ititial auto refresh if we do not auto refresh
+if (!autorefreshing) renderimg();
+
+var currentResultBase64;
+
+var doubleInferenceMode = false;
+function doubleInferenceModeToogle()
+{
+	doubleInferenceMode = !doubleInferenceMode;
+
+	var b = document.getElementById("doubleInferenceModeButton");
+	if (doubleInferenceMode)
+	b.innerText = "Double Inference Mode Active";
+	else 
+	b.innerText = "Double Inference Mode Innactive";
+}
+
+var previousResult = new Image();
+var previousPresentationResult = new Image();
+var previousContent = new Image();
+
+var presentationContentDiv = document.getElementById("presentationContentDiv");
+var presentationResultDiv = document.getElementById("presentationResultDiv");
+
+
+
+//
+//<canvas id="canvas"></canvas>
+function renderimg()
+{
+	
+	console.log("Started rendering..."); 
+	
+	var htmlIdSource = "canvaswrapper";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
+	var frame = document.getElementById(htmlIdSource);
+
+	// SnapShotCroped(htmlIdSource,"",function(canvas){
+	// 	document.body.appendChild(canvas);
+	// });
+
+	 var rect = frame.getBoundingClientRect();
+
+	 
+	var options = {
+		scrollX: 0,
+			scrollY:  100,
+			x: 55,
+			width:rect.width -99
+	};
+	//options = {};
+
+	html2canvas(frame,options).then(function(canvas) {
+		
+		if (showCurrentImageInBody)
+		{
+		
+			
+			
+			
+		}
+		//console.log("The canvas lib has a toDataURL method to encode in base64");
+		//console.log(canvas.toDataURL());
+		//	resultDiv.appendChild(canvas);
+		
+		var enc64 = 
+				imgToBase64(canvas);
+
+				
+
+		
+				var currentContent = new Image();
+				currentContent.src = enc64;
+
+			try {
+				presentationContentDiv.removeChild(previousContent);
+			} catch (error) { }
+			
+			presentationContentDiv.appendChild(currentContent);
+		
+			//document.body.appendChild(canvas);
+			previousContent = currentContent;
+			
+		//Tring to do double inference if the mode was activated
+		if (doubleInferenceMode)  {
+			enc64 = currentResultBase64; 
+			setPainter(9003);
+			autorefreshingIterations =5050;
+
+		}
+		//we reuse the last result
+					// canvas.toDataURL();
+		
+		
+		if (debug)	console.log("Fetching " + pika_url  + " starting");
+		
+		var o = new Object();
+		o.contentImage = enc64;
+		var jsonString = JSON.stringify(o);
+		
+	if (debug)	console.log("Sending stringified :" + jsonString);
+
+	(async () => {
+			
+		const rawResponse = await fetch(pika_url, {
+			method: 'POST',
+			headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(o)
+	});
+
+	const content = await rawResponse.json();
+
+	if (debug) console.log(content.stylizedImage);
+	
+	var resultImage = new Image();
+	var resultPresentationImage = new Image();
+
+	resultImage.src= content.stylizedImage;
+	resultPresentationImage.src= content.stylizedImage;
+
+	currentResultBase64 = content.stylizedImage;
+
+	var resultDiv = document.getElementById("result");
+	// var separator = new Image();
+	// separator.src = separatorBase64;
+	//@STCGoal Keeps clean the area of previews
+	try {
+		resultDiv.removeChild(previousResult);
+	} catch (error) {}
+
+	resultDiv.appendChild(resultImage);
+
+	previousResult = resultImage;
+
+
+
+	//-------------------------------------
+	
+	try {
+		presentationResultDiv.removeChild(previousPresentationResult);
+	} catch (error) { }
+
+	presentationResultDiv.appendChild(resultPresentationImage);
+
+	previousPresentationResult = resultPresentationImage;
+
+	currentPainterLabelText.innerText = currentPainterLabel;
+	//resultDiv.prepend(separator);
+			//	document.body.replaceChild(image);
+	})();
+
+
+	
+
+	});
+
+
+
+	console.log("...Rendering done");
+
+}
+//runs when we just loaded (few ms)
+function etchLoaded(){ 
+	etchResized();
+}
+function etchResized()
+{
+	try {
+		currentSizeNumber = resizeNumber;
+	} catch (error) {	}
+	
+}
+
+function restartAutoRefresh()
+{
+	//@STCGoal Startup of the refresh sequence again
+	countLoop= 0;
+//	activateDefaultDrawOptions();
+	looping();
+	alert("Auto refresh restarted");
+	
+}
+var currentPainterLabel ;
+var currentPainterLabelText = document.getElementById("currentPainterLabelText");
+
+function setUI(painterLabel)
+{
+	var cpainter = document.getElementById("cpainter");
+	cpainter.innerText = painterLabel;
+	console.log("Current Size: " + currentSizeNumber);
+	currentPainterLabel = painterLabel;
+}
+
+var startingApp = true;
+/** */
+function setPainter(port)
+{
+	featCompoRendering = false;
+	var oldPort = pika_port;
+	this.pika_port = port;
+	console.log("Port changed from : " + oldPort + " to: " + pika_port);
+	updatedContext();
+	setCurrentlyInferingLabel(port);
+	if (!startingApp)
+	renderimg();
+	startingApp = false;
+	
+	
+}
+var jgwillPicassoModelName = "Picawill";
+function 	setCurrentlyInferingLabel(port)
+{
+
+	switch (port) {
+		case 90029003:
+			setUI("Compo3165030");
+			break;
+		case 9000:
+			setUI("Picasso");
+			break;
+		case 9002:
+			setUI(jgwillPicassoModelName + " var 3.165");
+			break;
+		case 9003:
+			setUI(jgwillPicassoModelName + " var 3.030");
+			break;
+		case 9031:
+			setUI(jgwillPicassoModelName + " var 3.120");
+			break;
+		case 9005:
+			setUI(jgwillPicassoModelName + " var 3.225");
+			break;
+		case 9009:
+			setUI(jgwillPicassoModelName + " var 3.180");
+		case 9010:
+			setUI("Picasso Vo");
+			break;
+		case 9006:
+			setUI(jgwillPicassoModelName + " var 3.075");
+			break;
+		case 9008:
+			setUI(jgwillPicassoModelName + " var 4.120");
+			break;
+		case 9030:
+			setUI(jgwillPicassoModelName + " var 5.150");
+			break;
+		//VAN GOGH
+		case 9011:
+			setUI("Van-Gogh Vo");
+			break;
+		//CEZANNE
+		case 9007:
+			setUI("Cezanne Vo");
+			break;
+		case 9012:
+			setUI("Cezanne Vo.165ik");
+			break;
+		case 9013:
+			setUI("Cezanne Vo.180ik");
+			break;
+			
+		case 9014:
+			setUI("Monet Vd");
+			break;
+
+
+		case 9001:
+			setUI("Kandinsky var 1.210");
+			break;
+		case 9004:
+			setUI("Dali var 1.300");
+			break;
+	
+		case 9041:
+			setUI("El-Greco");
+			break;
+		case 9042:
+			setUI("Gauguin");
+			break;
+		case 9043:
+			setUI("Kirchner");
+			break;
+		case 9044:
+			setUI("Morisot");
+			break;
+		case 9045:
+			setUI("Munch");
+			break;
+		case 9046:
+			setUI("Peploe");
+			break;
+		case 9047:
+			setUI("Pollock");
+			break;
+		case 9048:
+			setUI("Roerich");
+			break;
+	
+		default:
+			setUI("---" +  port + "---");
+			break;
+	}
+}
+
+function updatedContext()
+{
+	pika_url=getstylizeCallUrl(pika_port);
+	console.log("Service URL now:" + pika_url);
+}
+
+function getstylizeCallUrl(port)
+{
+	return "http://" + pika_host + ":"+port+"/stylize";
+	 
+}
+function getRefreshRateRelativeToSize()
+{
+	if (currentSizeNumber == -1) return autorefreshingTimeout;
+	else 
+{
+	if (currentSizeNumber > 50)
+		return autorefreshingTimeout + (currentSizeNumber * 85);
+	if (currentSizeNumber > 45)
+		return autorefreshingTimeout + (currentSizeNumber * 69);
+	if (currentSizeNumber > 40)
+		return autorefreshingTimeout + (currentSizeNumber * 58);
+	if (currentSizeNumber > 35)
+		return autorefreshingTimeout + (currentSizeNumber * 47);
+	if (currentSizeNumber > 30)
+		return autorefreshingTimeout + (currentSizeNumber * 41);
+	if (currentSizeNumber > 25)
+		return autorefreshingTimeout + (currentSizeNumber * 26);
+	if (currentSizeNumber > 20)
+		return autorefreshingTimeout + (currentSizeNumber * 14);
+	if (currentSizeNumber > 17)
+		return autorefreshingTimeout + (currentSizeNumber * 8);
+	if (currentSizeNumber > 12)
+		return autorefreshingTimeout ;
+	if (currentSizeNumber > 10)
+		return autorefreshingTimeout* 0.9;
+	if (currentSizeNumber > 8)
+		return autorefreshingTimeout* 0.8;
+	if (currentSizeNumber > 7)
+		return autorefreshingTimeout* 0.75;
+
+ }
+ return autorefreshingTimeout;
+	//Example if we
+}
+
+
+/** */
+function setCompoPainter(port1,port2)
+{
+	featCompoPort1 = port1;
+	featCompoPort2 = port2;
+	featCompoRendering = true;
+	
+	console.log("Port compo from : " + port1 + " to: " + port2);
+	
+	setCurrentlyInferingLabel(port1 + "" + port2);
+
+	console.log("Compo rendering activated");
+}
+
+
+function compoRenderingWF()
+{
+	//executed by the loop
+	console.log("Composite Rendering WF Processing...")
+//	renderASTCompo(featCompoPort1,featCompoPort2);
+
+	renderimgComposite();
+}
+
+function renderASTCompo(port1,port2)
+{
+
+	var imgIteration1 = new Image();
+
+
+	this.pika_port = port;
+	updatedContext();
+	// code call for iteration 1
+	var content1Request = getCurrentCanvasAsContentImageRequest();
+	
+	//@STCGoal Desired end Result: a result we call back
+
+	var imgIteration2 = new Image();
+}
+//SHOULD BE CALLABLE AND GET SAME RESULT AS renderimg()
+function renderimgV2()
+{
+	var contentImageRequest = getCurrentCanvasAsContentImageRequest();
+	updatedContext();
+	astGetInference(contentImageRequest,)
+}
+
+//
+function getCurrentCanvasAsContentImageRequest()
+{
+
+	var htmlIdSource = "canvaswrapper";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
+	var frame = document.getElementById(htmlIdSource);
+	// var rect = frame.getBoundingClientRect();
+	// var WHFixOffset = 140;
+	// var fixWidth = rect.width +WHFixOffset;
+	// var fixHeight = rect.height +WHFixOffset;
+	// var options = {
+	// scrollX: 0,
+	// 	scrollY:  100,
+	// 	width: fixWidth + 25-100,
+	// 	height: fixHeight -70
+	// };
+	var options = {
+		scrollX: 0,
+			scrollY:  100
+	};
+	//options = {};
+
+	html2canvas(frame,options).then(function(canvas) {
+		
+		if (showCurrentImageInBody)
+		{
+			//if (debug) 
+			try {
+				document.body.removeChild(previousContent);
+			} catch (error) {	}
+			
+			document.body.appendChild(canvas);
+			previousContent = canvas;
+			
+			
+			
+		}
+		//console.log("The canvas lib has a toDataURL method to encode in base64");
+		//console.log(canvas.toDataURL());
+		//	resultDiv.appendChild(canvas);
+		
+		
+				var enc64 = 
+					imgToBase64(canvas);
+					// canvas.toDataURL();
+		
+		
+		if (debug)	console.log("Fetching " + pika_url  + " starting");
+		
+		var o = new Object();
+		o.contentImage = enc64;
+
+		return o;
+});
+}
+
+function astGetInference(contentImageRequest,serviceURL,targetHTMLID,previousResultToCLean)
+{
+	//@TODO 
+	
+	(async () => {
+			
+			const rawResponse = await fetch(serviceURL, {
+				method: 'POST',
+				headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(contentImageRequest)
+		});
+	
+		const content = await rawResponse.json();
+	
+		if (debug) console.log(content.stylizedImage);
+		
+		var resultImage = new Image();
+	
+		resultImage.src= content.stylizedImage;
+	
+
+
+//--------WHAT WILL IT RETURNS ??
+
+
+		var resultDiv = document.getElementById(targetHTMLID);
+		// var separator = new Image();
+		// separator.src = separatorBase64;
+		//@STCGoal Keeps clean the area of previews
+		try {
+			resultDiv.removeChild(previousResultToCLean);
+		} catch (error) {}
+	
+		resultDiv.appendChild(resultImage);
+		previousResultToCLean = resultImage;
+		//resultDiv.prepend(separator);
+				//	document.body.replaceChild(image);
+		})();
+	
+	
+		
+	
+		
+	
+	
+	
+		console.log("...Rendering done");
+	
+	
+}
+
+
+
+
+
+
+//A copy of the rendertmp for composite (PREVIOUS Function require more reflections)
+
+function renderimgComposite()
+{
+	
+	console.log("Composite rendering started..."); 
+	
+	var htmlIdSource = "canvaswrapper";// the html id that we capture, convert as image and send to the Pika agent which will send us back our stylized image.
+	var frame = document.getElementById(htmlIdSource);
+	// var rect = frame.getBoundingClientRect();
+	// var WHFixOffset = 140;
+	// var fixWidth = rect.width +WHFixOffset;
+	// var fixHeight = rect.height +WHFixOffset;
+	// var options = {
+	// scrollX: 0,
+	// 	scrollY:  100,
+	// 	width: fixWidth + 25-100,
+	// 	height: fixHeight -70
+	// };
+	var options = {
+		scrollX: 0,
+			scrollY:  100
+	};
+	//options = {};
+
+	html2canvas(frame,options).then(function(canvas) {
+		
+		if (showCurrentImageInBody)
+		{
+			//if (debug) 
+			try {
+				document.body.removeChild(previousContent);
+			} catch (error) {	}
+			
+			document.body.appendChild(canvas);
+			previousContent = canvas;
+			
+			
+			
+		}
+		//console.log("The canvas lib has a toDataURL method to encode in base64");
+		//console.log(canvas.toDataURL());
+		//	resultDiv.appendChild(canvas);
+		
+		
+				var enc64 = 
+					imgToBase64(canvas);
+					// canvas.toDataURL();
+		
+		
+		if (debug)	console.log("Fetching " + pika_url  + " starting");
+		
+		var o = new Object();
+		o.contentImage = enc64;
+		var jsonString = JSON.stringify(o);
+		
+	if (debug)	console.log("Sending stringified :" + jsonString);
+
+	(async () => {
+			
+		const rawResponse = await fetch(pika_url, {
+			method: 'POST',
+			headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(o)
+	});
+
+	const content = await rawResponse.json();
+
+	//if (debug) 
+	console.log(content.stylizedImage);
+
+	var o2 = new Object();
+	o2.contentImage = content.stylizedImage; // using previous result as new content image for the second request...
+
+	
+	(async () => {
+			
+		const rawResponse2 = await fetch(pika_url, {
+			method: 'POST',
+			headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(o2)
+	});
+
+	const content2 = await rawResponse2.json();
+
+	//if (debug) 
+	console.log(content2.stylizedImage);
+
+
+
+	var resultImage = new Image();
+
+	resultImage.src= content2.stylizedImage;
+
+	var resultDiv = document.getElementById("result");
+	// var separator = new Image();
+	// separator.src = separatorBase64;
+	//@STCGoal Keeps clean the area of previews
+	try {
+		resultDiv.removeChild(previousResult);
+	} catch (error) {}
+
+	resultDiv.appendChild(resultImage);
+	previousResult = resultImage;
+	//resultDiv.prepend(separator);
+			//	document.body.replaceChild(image);
+	})();
+
+
+	
+
+	});
+
+
+
+	});
+
+	console.log("...Rendering done");
+
+}
+
+
+
+//-----------------------------------------------------------------
+//------------- Presentation grid for Content and Stylization     -
+
+var previouspresentationGridImage ;
+
+function grabresultpresentationgrid()
+{
+	//append to the doc a capture of eth contentResult table
+	var resultpresentationgrid = document.getElementById("resultpresentationgrid");
+
+	
+	var options = {
+		
+		
+	};
+	//options = {};
+
+	html2canvas(resultpresentationgrid).then(function(canvas) {
+		
+		
+		//document.body.appendChild(canvas);
+
+		
+		var enc64 = 
+				imgToBase64(canvas);
+
+		
+		var presentationGridImage = new Image();
+		presentationGridImage.src = enc64;
+
+		try {
+			document.body.removeChild(previouspresentationGridImage);
+		} catch (error) {	}
+		document.body.appendChild(presentationGridImage);
+
+		previouspresentationGridImage = presentationGridImage;
+	});
+
+}
+
+
+function refreshRender()
+{
+	renderimg();
+}
+
+function toogleRefreshOnMouseMoved()
+{
+	refreshOnMouseMoved = !refreshOnMouseMoved;
+	console.log("refreshOnMouseMoved is now:"+ refreshOnMouseMoved);
+}
+</script>
+ 
+
+
+<!-- 
+	
+<br>
+<br>
+		<footer id="footer" style="font-size: smaller;">
+		<p id="codedby">Etch a Sketch Coded by Ben Smyth, &copy; 2018.</p>
+		<p id="codedby2">EtchAI Coded by Guillaume D.Isabelle, &copy; 2021.</p>
+		<p id="visitmefork"><a href="https://github.com/GuillaumeAI/x__etch-a-sketch__210224" target="_blank">Visit EtchAI forked project author (Guillaume D.I)</a></p>
+		<p id="visitme"><a href="https://github.com/benjsmyth" target="_blank">Visit ETch a Sketch project author (Benjsmyth) on Github!</a></p>
+	</footer> -->
+
+
+</body>
+
+</html>
