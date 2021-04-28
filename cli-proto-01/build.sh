@@ -1,5 +1,15 @@
 #!/bin/bash
 
+
+if [ "$2" == "" ]; then
+	echo "-------------------------------------------"
+	echo "----- NOT ENOUGH Arguments ----------------"
+	echo "CMD [sourceImgFile] [modelId(51,01,99)] "
+	echo "-------------------------------------------"
+	exit 1
+fi
+
+
 export CDIR=$(pwd)
 export DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
