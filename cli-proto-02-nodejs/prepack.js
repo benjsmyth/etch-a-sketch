@@ -5,7 +5,7 @@ var json = fs.readFileSync("package.json");
 var data = JSON.parse(json);
 var mainScript = "gia-ast.js";
 fs.copyFileSync(mainScript,mainScript+".prepublish");
-var script = fs.readFileSync(mainScript).replace("VERSIONFLAG",data.version);
+var script = fs.readFileSync(mainScript);
 
-fs.writeFileSync(mainScript,script);
+fs.writeFileSync(mainScript,script.replace("VERSIONFLAG",data.version));
 
