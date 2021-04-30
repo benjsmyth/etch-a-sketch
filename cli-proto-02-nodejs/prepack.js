@@ -11,7 +11,7 @@ try {
 
    fs.writeFileSync(mainScript,script.replace("VERSIONFLAG",data.version));
 
-   console.log("Version file: " = data.version + " was created");
+   console.log("Version file: " + data.version + " was created");
 
 } catch (error) {
    console.log("Error backing up file and versionning the file");
