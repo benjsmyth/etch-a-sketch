@@ -20,6 +20,13 @@ var args = process.argv.slice(2);
 
 var config = null;
 
+const envListHelp = `
+export asthostname="orko.guillaumeisabelle.com"
+export astoutsuffix="__stylized__"
+astportbase=90
+astcallprotocol="http"
+astcallmethod="/stylize"
+`;
 try {
   config = require('./config');
   
@@ -28,21 +35,31 @@ try {
   console.log("Read from ENV VAR");
   try {
     config = new Object();
-    config.hostname = process.env.asthostname;
-    config.outsuffix = process.env.astoutsuffix;
-    config.portbase = process.env.astportbase;
-    config.callprotocol = process.env.astcallprotocol;
-    config.callmethod = process.env.astcallmethod;
+    var envErr = 0;
+    if (process.env.asthostname)
+      config.hostname = process.env.asthostname;
+    else envErr++;
+    if (process.env.astoutsuffix)
+      config.outsuffix = process.env.astoutsuffix;
+    else envErr++;
+    if ( process.env.astportbase)
+      config.portbase = process.env.astportbase;
+    else envErr++;
+    if (process.env.astcallprotocol)
+      config.callprotocol = process.env.astcallprotocol;
+    else envErr++;
+    if (process.env.astcallmethod)    
+      config.callmethod = process.env.astcallmethod;
+    else envErr++;
+
+    if (envErr > 0) {
+      console.log("Env require setup");
+      console.log(envListHelp);
+    }
     
   } catch (error) {
     console.error("Require config.js or env var to be set");
-    console.log(`
-    export asthostname="orko.guillaumeisabelle.com"
-    export astoutsuffix="__stylized__"
-    astportbase=90
-    astcallprotocol="http"
-    astcallmethod="/stylize"
-    `);
+    console.log(envListHelp);
     process.exit(1);
 
   }
