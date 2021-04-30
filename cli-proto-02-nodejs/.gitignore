@@ -2,3 +2,4 @@ node_modules
 yarn.lock
 config.js
 *.prepublish
+*__stylize__*
