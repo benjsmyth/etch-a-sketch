@@ -1,7 +1,11 @@
 #!/bin/bash
 
-
-if [ "$2" == "" ]; then
+showhelp=0
+export showresult=0
+if [ "$1" == "" ]; then	showhelp=1; fi
+if [ "$2" == "" ]; then	showhelp=1; fi
+if [ "$3" == "--feh" ]; then echo "we will show result";	export showresult=1; fi
+if [ "$showhelp" == "1" ]; then
 	echo "-------------------------------------------"
 	echo "----- NOT ENOUGH Arguments ----------------"
 	echo "CMD [sourceImgFile] [modelId(51,01,99)] "

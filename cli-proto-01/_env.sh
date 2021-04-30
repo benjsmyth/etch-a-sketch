@@ -13,7 +13,7 @@ export callhostB="orko.guillaumeisabelle.com"
 export callhostA="gaia.guillaumeisabelle.com"
 #Average time for infering with those hosts
 export astiaDistributedAverageSwitchTimeframe=9
-
+export viewresultcmd="feh "
 export callprotocol="http"
 export ext_target=jpg
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-### CALL ./build.sh content.jpg
+### WELL THIS DOES FUCKALL NOW !!
 
 
 # vars

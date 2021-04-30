@@ -41,6 +41,11 @@ $nodepostscripting  $responseFile $responseImage --html  >> $resulthtml
 # Moving result in CDIR
 echo "Result file created : $resultFileTarget"
 mv $responseImage $resultFileTarget
+
+if [ "$showresult" == "1" ]; then 
+   echo "Showing result using $viewresultcmd"
+   $viewresultcmd $resultFileTarget
+fi
 rm -f $responseFile $requestFile
 
 # cleanup
