@@ -1,0 +1,28 @@
+{
+  "name": "gia-ast",
+  "version": "0.1.0",
+  "description": "A CLI Wrapping AST Web API calls to servers",
+  "main": "index.js",
+  "scripts": {
+    "test": "node gia-ast.js sample.jpg 56"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/GuillaumeAI/x__etch-a-sketch__210224.git"
+  },
+  "keywords": [
+    "ast",
+    "gia",
+    "cli"
+  ],
+  "author": "Guillaume Descoteaux-Isabelle",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224/issues"
+  },
+  "homepage": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "safer-buffer": "^2.1.2"
+  }
+}
