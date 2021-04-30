@@ -1,10 +1,14 @@
 {
   "name": "gia-ast",
-  "version": "0.1.0",
+  "version": "0.1.7",
   "description": "A CLI Wrapping AST Web API calls to servers",
   "main": "index.js",
   "scripts": {
-    "test": "node gia-ast.js sample.jpg 56"
+    "test": "node gia-ast.js sample.jpg 56",
+    "prepublish":"node prepublish.js"
+  },
+  "bin": {
+    "gia-ast": "gia-ast.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +27,7 @@
   "homepage": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224#readme",
   "dependencies": {
     "axios": "^0.21.1",
+    "gia-lib-encoding-base64": "^0.1.0",
     "safer-buffer": "^2.1.2"
   }
 }

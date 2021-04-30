@@ -71,7 +71,7 @@ if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "
 -------------------------------------
 AST Web API Stylizer CLI Wrapper
 by Guillaume D-Isabelle, 2021
-Version 0.1.6
+Version VERSIONFLAG
 --------------------------------------
 -------------HELP----------------------
 Stylize an image using the Web API.
