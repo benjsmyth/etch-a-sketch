@@ -26,7 +26,7 @@ export asthostname="orko.guillaumeisabelle.com"
 export astoutsuffix="__stylized__"
 export astportbase=90
 export astcallprotocol="http"
-export astcallmethod="/stylize"
+export astcallmethod="stylize"
 `;
 try {
   config = require('./config');
@@ -102,7 +102,9 @@ else // Lets do the work
   var targetOutput = imgFileNameOnly + config.outsuffix + modelid + ext;
   console.log("TargetOutput: " + targetOutput);
   var portnum = config.portbase + modelid;
-  const callurl = config.callprotocol + "://" + config.hostname + ":" + portnum + config.callmethod;
+  
+  const callurl = config.callprotocol + "://" + config.hostname + ":" + portnum +"/" + config.callmethod.replace("/","");
+  
 
 
   console.log("Processing: " + imgFile + " at port :" + portnum);
@@ -111,7 +113,7 @@ else // Lets do the work
     
     var data = giaenc.
     encFileToJSONStringifyBase64Prop(imgFile,"contentImage");
-    console.log(data);
+    //console.log(data);
     //var unparsedData = JSON.parse(data);
 
     //---------------------
