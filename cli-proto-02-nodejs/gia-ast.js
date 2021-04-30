@@ -21,11 +21,12 @@ var args = process.argv.slice(2);
 var config = null;
 
 const envListHelp = `
+vi ~/.bash_env
 export asthostname="orko.guillaumeisabelle.com"
 export astoutsuffix="__stylized__"
-astportbase=90
-astcallprotocol="http"
-astcallmethod="/stylize"
+export astportbase=90
+export astcallprotocol="http"
+export astcallmethod="/stylize"
 `;
 try {
   config = require('./config');
