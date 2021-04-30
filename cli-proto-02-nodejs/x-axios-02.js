@@ -53,20 +53,16 @@ else // Lets do the work
   var portnum = config.portbase + modelid;
   const callurl = config.callprotocol + "://" + config.hostname + ":" + portnum + config.callmethod;
 
-  var resultSuffix = config.outsuffix + modelid;
 
   console.log("Processing: " + imgFile + " at port :" + portnum);
 
-  //encode_base64_v2(imgFile, target);
   try {
     var data = encode_base64_v3_to_JSONRequestStringify(imgFile);
 
     //var unparsedData = JSON.parse(data);
 
     //---------------------
-    // const data = JSON.stringify({
-    //   todo: 'Buy the milk'
-    // })
+
     const options = {
       hostname: config.hostname,
       port: portnum,
@@ -97,45 +93,6 @@ else // Lets do the work
         console.log("There was error");
         console.log(err.message);
       });
-
-
-
-    // axios
-    //   .post(config.hostname,data)
-    //   .then(res => {
-    //     console.log(`statusCode: ${res.statusCode}`)
-    //    // console.log(res)
-    //     //process.stdout.write(res);
-    //   })
-    //   .catch(error => {
-    //     console.log("There were errors");
-    //     console.error(error.message);
-    //   })
-
-
-    // const req = http.request(options, res => {
-    //   console.log(`statusCode: ${res.statusCode}`)
-
-    //   res.on('data', d => {       
-    //     //process.stdout.write(d);
-    //   });
-
-    //   res.on('end',d =>
-    //   {
-    //    // console.log(res);
-    //     // var jsonDataResult = JSON.parse(d);
-    //     // jsonDataResult.stylizedImage = "---";
-    //     // process.stdout.write(jsonDataResult);
-    //   });
-
-    // }); 
-
-    // req.on('error', error => {
-    //   console.error(error)
-    // })
-
-    // req.write(data)
-    // req.end()
 
 
     //-----------------------
