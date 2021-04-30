@@ -1,0 +1,17 @@
+//Config
+
+const hostname = 'orko.guillaumeisabelle.com';
+var outsuffix = "__stylized__";
+
+var portbase = "90";
+const callprotocol = "http";
+const callmethod = "/stylize";
+
+
+module.exports  = {
+   portbase:portbase,
+   hostname:hostname,
+   outsuffix:outsuffix,
+   callprotocol:callprotocol,
+   callmethod:callmethod
+};
