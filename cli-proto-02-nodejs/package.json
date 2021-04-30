@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node gia-ast.js sample.jpg 56",
-    "prepack": "node prepack.js && git commit gia-ast.js -m version",
+    "prepack": "node prepack.js",
+    "hum":"git commit gia-ast.js -m version",
     "postpublish": "node postpublish.js"
   },
   "bin": {
