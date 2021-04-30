@@ -18,7 +18,7 @@
   "bugs": {
     "url": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224/issues"
   },
-  "homepage": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224/gia-ast-util/gia-tools-encoding-base64#readme",
+  "homepage": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224/gia-ast-util/gia-lib-encoding-base64#readme",
   "dependencies": {
     "safe-buffer": "^5.2.1"
   }
