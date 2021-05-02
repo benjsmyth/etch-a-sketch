@@ -19,27 +19,17 @@ var stylizedImage;
 fs.readFile(jsonFile, 'utf8', function (err, data) {
   if (err) throw err;
   // console.log(data);
+  
   jsonData = JSON.parse(data);
   if (jsonData.stylizedImage) {
-    var tmp = jsonData.stylizedImage;
+    stylizedImage= jsonData.stylizedImage;
 
     if (args[2] == "--html" || args[2] == "-html") console.log(
-      `<img src="${tmp}">`);
+      `<img src="${stylizedImage}">`);
 
-    stylizedImage = tmp;
+      
 
-    if (tmp.indexOf("png;base64") > -1)
-      stylizedImage = tmp
-        .replace(/^data:image\/png;base64,/, "");
-
-    if (tmp.indexOf("jpeg;base64") > -1) {
-      stylizedImage = tmp
-        .replace(/^data:image\/jpeg;base64,/, "");
-    }
-
-
-
-    decode_base64(stylizedImage, target);
+      decode_base64_to_file(stylizedImage, target);
 
     // fs.writeFileSync(target, buff);
 
@@ -79,10 +69,27 @@ function encode_base64(filename) {
  * @param  {string} base64str
  * @param  {string} filename
  */
-function decode_base64(base64str, filename) {
-  let buf = Buffer.from(base64str, 'base64');
-
-  fs.writeFileSync(filename, buf);
+function decode_base64_to_file(base64str, filename) {
+  
+  fs.writeFileSync(filename, 
+    decode_base64_to_string(base64str)
+    );
 
 }
 
+/**
+ * @param  {string} base64str
+ */
+function decode_base64_to_string(base64str) {
+  
+  if (base64str.indexOf("png;base64") > -1)
+    base64str = base64str
+      .replace(/^data:image\/png;base64,/, "");
+
+  if (base64str.indexOf("jpeg;base64") > -1) {
+    base64str = base64str
+      .replace(/^data:image\/jpeg;base64,/, "");
+  }
+
+  return Buffer.from(base64str, 'base64');
+}
