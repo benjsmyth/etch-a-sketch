@@ -1,6 +1,6 @@
 {
   "name": "gia-ast-util",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "CLI wrapper of utilities for AST Servers",
   "main": "ast",
   "scripts": {
@@ -8,6 +8,7 @@
   },
   "bin": {
     "gia-ast-cat-contentImage": "gia-ast-cat-contentImage.js",
+    "giau-catJsonPropBase64": "gia-ast-cat-contentImage.js",
     "gia-ast-img2stylize-request": "gia-ast-img2stylize-request.js",
     "giau-encodeImgFileToJsonPropBase64ToFile": "gia-ast-img2stylize-request.js",
     "gia-ast-response-stylizedImage2file": "gia-ast-response-stylizedImage2file.js",
