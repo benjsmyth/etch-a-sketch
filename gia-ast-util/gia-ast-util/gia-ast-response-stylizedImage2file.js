@@ -9,7 +9,7 @@ const fs = require('fs');
 var args = process.argv.slice(2);
 
 var appHead = `-------------------------------------
-StylizeImage/base64 JSON response to File
+Base64 JSON response prop decoder to File
 by Guillaume D-Isabelle, 2021
 --------------------------------------`;
 if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "--h" || !args[0])

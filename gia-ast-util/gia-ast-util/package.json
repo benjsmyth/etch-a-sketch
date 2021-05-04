@@ -1,6 +1,6 @@
 {
   "name": "gia-ast-util",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "CLI wrapper of utilities for AST Servers",
   "main": "ast",
   "scripts": {
@@ -9,7 +9,9 @@
   "bin": {
     "gia-ast-cat-contentImage": "gia-ast-cat-contentImage.js",
     "gia-ast-img2stylize-request": "gia-ast-img2stylize-request.js",
-    "gia-ast-response-stylizedImage2file": "gia-ast-response-stylizedImage2file.js"
+    "giau-encodeImgFileToJsonPropBase64ToFile": "gia-ast-img2stylize-request.js",
+    "gia-ast-response-stylizedImage2file": "gia-ast-response-stylizedImage2file.js",
+    "giau-decodeJsonBase65ImgPropToFile": "gia-ast-response-stylizedImage2file.js"
   },
   "repository": {
     "bugs": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224/issues",
