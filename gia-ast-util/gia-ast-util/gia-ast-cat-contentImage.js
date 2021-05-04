@@ -22,9 +22,9 @@ if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "
 
 usage : 
 
-./util_cat_contentImage_json.js myrequestfile.json --html >> myHTMLresult.html
+gia-ast-cat-contentImage myrequestfile.json --html >> myHTMLresult.html
 
-./util_cat_contentImage_json.js myrequestfile.json  > myimgasText.txt
+gia-ast-cat-contentImage myrequestfile.json  > myimgasText.txt
 
 `);
 

@@ -8,12 +8,12 @@ const fs = require('fs');
 
 var args = process.argv.slice(2);
 
+var appHead = `-------------------------------------
+StylizeImage/base64 JSON response to File
+by Guillaume D-Isabelle, 2021
+--------------------------------------`;
 if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "--h" || !args[0])
-    console.log(`
-  -------------------------------------
-  StylizeImage/base64 JSON response to File
-  by Guillaume D-Isabelle, 2021
-  --------------------------------------
+    console.log(`${appHead}
   -------------HELP----------------------
   Convert the spec response with propValue/base64 to a file
 
@@ -54,20 +54,24 @@ try {
   if (args[3] && args[3] == "--quiet")q = true;
   } catch (error) {}  
 
+  if (v > 0) console.log(appHead);
+  
   //Enable spec propName in JSONFile
 var propName = "stylizedImage";
 try {
-  if (args[2] && (args[2] != "--quiet" || args[2] != "--verbose"))propName= args[2];
+  if (args[2] && (args[2] != "--quiet" && args[2] != "--verbose"))propName= args[2];
   
   } catch (error) {}  
-  
+   if (v > 0)console.log("looking for prop:"+ propName + " in file");
+
   fs.readFile(jsonFile, 'utf8', function (err, data) {
     if (err) throw err;
     // console.log(data);
     
     jsonData = JSON.parse(data);
     if (jsonData[propName]) {
-      propValue= jsonData[propName];
+
+      propValue= jsonData[propName] ;
 
       if (args[2] == "--html" || args[2] == "-html") console.log(
         `<img src="${propValue}">`);
@@ -80,12 +84,12 @@ try {
 
       //if (args[2] == "--verbose" || args[2] == "-verbose" || args[3] == "--verbose" || args[3] == "-verbose")
       
-      console.log("should have written:" + target);
+      if (!q)console.log("should have written:" + target);
     }
     else {
       //@STCSTatus The response is probably bad
-      console.log("BAD RESPONSE - Object non existent (jsonData.propValue)");
-      
+      console.log(`BAD RESPONSE - Object non existent (jsonData.${propName})`);
+      process.exit(1);
     }
 
   });

@@ -17,13 +17,13 @@ const fs = require('fs');
 
 var args = process.argv.slice(2);
 
+var appHead = `-------------------------------------
+ContentImage request Preper
+by Guillaume D-Isabelle, 2021
+--------------------------------------`;
 
 if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "--h" || !args[0])
-    console.log(`
-  -------------------------------------
-  ContentImage request Preper
-  by Guillaume D-Isabelle, 2021
-  --------------------------------------
+    console.log(`${appHead}
   -------------HELP----------------------
   Prep a Request file for AST by creating a target JSON request file with a base64 image tag contentImage.
 
@@ -44,23 +44,34 @@ else // Lets do the work
 
     //Verbose and Quiet
     var v = 0;
-    if (args[2] && args[2] == "--verbose")v = 1;
+    if (args[2] && args[2] == "--verbose") v = 1;
     var q = false;
-    if (args[2] && args[2] == "--quiet")q = true;
+    if (args[2] && args[2] == "--quiet") q = true;
+
+    if (v > 0) console.log(appHead);
 
 
-   if (v>0) console.log("Reading using v3: " + imgFile);
+    var propName = "contentImage";
+    try {
+        if (args[2] && (args[2] != "--quiet" && args[2] != "--verbose")) propName = args[2];
+
+    } catch (error) { }
+    if (v > 0) console.log("the file will have a prop :" + propName + " with the encoded data");
+
+
+
+    if (v > 0) console.log("Reading using v3: " + imgFile);
 
     //encode_base64_v2(imgFile, target);
     try {
-        encode_base64_v3_to_JSONRequestFile(imgFile, target);
-        if (!q)  console.log( target + " created");
+        encode_base64_v3_to_JSONRequestFile(imgFile, target, propName);
+        if (!q) console.log(target + " created");
     } catch (error) {
-        console.log("something went wrong: " );
+        console.log("something went wrong: ");
         console.log(error);
     }
 
-    
+
 }
 
 /**
@@ -68,7 +79,7 @@ else // Lets do the work
  * @param  {string} filename
  * @param  {string} targetJsonFile
  */
-function encode_base64_v3_to_JSONRequestFile(filename, targetJsonFile) {
+function encode_base64_v3_to_JSONRequestFile(filename, targetJsonFile, propName = "contentImage") {
     var base64Raw = fs.readFileSync(filename, 'base64');
 
     var base64 = base64Raw;
@@ -83,7 +94,7 @@ function encode_base64_v3_to_JSONRequestFile(filename, targetJsonFile) {
 
     //console.log(base64);
     var jsonRequest = new Object();
-    jsonRequest.contentImage = base64;
+    jsonRequest[propName] = base64;
     var jsonData = JSON.stringify(jsonRequest);
 
     fs.writeFileSync(targetJsonFile, jsonData);
