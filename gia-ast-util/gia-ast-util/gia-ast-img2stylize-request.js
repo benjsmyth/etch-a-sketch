@@ -28,11 +28,11 @@ if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "
   Prep a Request file for AST by creating a target JSON request file with a base64 image tag contentImage.
 
 Synopsis:  
-     ./img2stylizationRequest.js [IMAGE] [OutJSON]
+    gia-ast-img2stylize-request <IMAGE> <OutJSON> [--verbose|--quiet]
      
 usage : 
 
-./img2stylizationRequest.js mycontent.jpg myrequest.json
+gia-ast-img2stylize-request mycontent.jpg myrequest.json
 
 ------------------------------
 `);
@@ -42,13 +42,19 @@ else // Lets do the work
     var imgFile = args[0];
     var target = args[1];
 
+    //Verbose and Quiet
+    var v = 0;
+    if (args[2] && args[2] == "--verbose")v = 1;
+    var q = false;
+    if (args[2] && args[2] == "--quiet")q = true;
 
-    console.log("Reading using v3: " + imgFile);
+
+   if (v>0) console.log("Reading using v3: " + imgFile);
 
     //encode_base64_v2(imgFile, target);
     try {
         encode_base64_v3_to_JSONRequestFile(imgFile, target);
-        console.log("filje: " + target + " should have been created");
+        if (!q)  console.log( target + " created");
     } catch (error) {
         console.log("something went wrong: " );
         console.log(error);

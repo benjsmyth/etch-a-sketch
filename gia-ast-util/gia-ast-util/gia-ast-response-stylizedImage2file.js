@@ -8,42 +8,89 @@ const fs = require('fs');
 
 var args = process.argv.slice(2);
 
+if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "--h" || !args[0])
+    console.log(`
+  -------------------------------------
+  StylizeImage/base64 JSON response to File
+  by Guillaume D-Isabelle, 2021
+  --------------------------------------
+  -------------HELP----------------------
+  Convert the spec response with propValue/base64 to a file
 
-var jsonFile = args[0];
-var target = args[1];
-var jsonData;
-var stylizedImage;
+Synopsis:  
+  gia-ast-response-propValue2file <JSONFile> <IMAGE> [propName] [--verbose|--quiet]
 
-//encode_base64('ddr.jpg');
+  propName in JSONFile (default: stylizedImage)
 
-fs.readFile(jsonFile, 'utf8', function (err, data) {
-  if (err) throw err;
-  // console.log(data);
+usage : 
+
+gia-ast-response-propValue2file myresponse.json myresult.jpg 
+gia-ast-response-propValue2file myresponse.json myresult.jpg propValue
+gia-ast-response-propValue2file myresponse.json myresult.jpg stylizedImage
+gia-ast-response-propValue2file myresponse.json myresult.jpg myJsonProp --quiet
+gia-ast-response-propValue2file myresponse.json myresult.jpg myJsonProp --verbose
+
+------------------------------
+`);
+
+else // Lets do the work
+  {
+
+  var jsonFile = args[0];
+  var target = args[1];
+  var jsonData;
+  var propValue;
+
+  //Verbose and Quiet
+  var v = 0;
+  try {
+    if (args[2] && args[2] == "--verbose")v = 1;
+    if (args[3] && args[3] == "--verbose")v = 1;    
+  } catch (error) { }
+
+var q = false;
+try {
+  if (args[2] && args[2] == "--quiet")q = true;
+  if (args[3] && args[3] == "--quiet")q = true;
+  } catch (error) {}  
+
+  //Enable spec propName in JSONFile
+var propName = "stylizedImage";
+try {
+  if (args[2] && (args[2] != "--quiet" || args[2] != "--verbose"))propName= args[2];
   
-  jsonData = JSON.parse(data);
-  if (jsonData.stylizedImage) {
-    stylizedImage= jsonData.stylizedImage;
-
-    if (args[2] == "--html" || args[2] == "-html") console.log(
-      `<img src="${stylizedImage}">`);
-
-      
-
-      decode_base64_to_file(stylizedImage, target);
-
-    // fs.writeFileSync(target, buff);
-
-    if (args[2] == "--verbose" || args[2] == "-verbose" || args[3] == "--verbose" || args[3] == "-verbose") console.log("should have written:" + target);
-  }
-  else {
-    //@STCSTatus The response is probably bad
-    console.log("BAD RESPONSE - Object non existent (jsonData.stylizedImage)");
+  } catch (error) {}  
+  
+  fs.readFile(jsonFile, 'utf8', function (err, data) {
+    if (err) throw err;
+    // console.log(data);
     
-  }
+    jsonData = JSON.parse(data);
+    if (jsonData[propName]) {
+      propValue= jsonData[propName];
 
-});
+      if (args[2] == "--html" || args[2] == "-html") console.log(
+        `<img src="${propValue}">`);
 
+        
 
+        decode_base64_to_file(propValue, target);
+
+      // fs.writeFileSync(target, buff);
+
+      //if (args[2] == "--verbose" || args[2] == "-verbose" || args[3] == "--verbose" || args[3] == "-verbose")
+      
+      console.log("should have written:" + target);
+    }
+    else {
+      //@STCSTatus The response is probably bad
+      console.log("BAD RESPONSE - Object non existent (jsonData.propValue)");
+      
+    }
+
+  });
+
+}
 
 
 
