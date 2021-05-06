@@ -93,7 +93,7 @@ try {
   
 } catch (error) {
   // console.error("config.js NOT FOUND.  ");
-  console.log("Read from ENV VAR");
+  //console.log("Read from ENV VAR");
   try {
     config = new Object();
     var envErr = 0;
@@ -136,7 +136,7 @@ if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "
 -------------------------------------
 AST Web API Stylizer CLI Wrapper
 by Guillaume D-Isabelle, 2021
-Version VERSIONFLAG
+Version 0.1.15
 --------------------------------------
 -------------HELP----------------------
 Stylize an image using the Web API.
