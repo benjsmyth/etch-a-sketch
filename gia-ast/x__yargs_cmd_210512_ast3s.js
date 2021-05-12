@@ -6,6 +6,7 @@
 const http = require("http");
 var url = "http://jgwill.com/data/dkrunningcontainerports.txt";
 const urlexist = require("url-exists");
+const dns = require('dns');
 
 const fs = require("fs");
 //const process = require("process").process;
@@ -190,11 +191,16 @@ function ast(file, port, cb = null) {
 
 //const url = "https://jsonplaceholder.typicode.com/posts/1";
 
-function parseAstArgv(argv) {
+function parseAstArgv(argv, cb = null) {
   if (argv.verbose) console.info(`Infering on :${argv.port} for file: ${argv.file}`);
 
   ast(argv.file, argv.port, function (arr) {
-    console.log(arr);
+    //console.log(arr);
+    //console.log("aléo")
+
+    if (cb && typeof cb === "function")
+      cb(arr);
+
   });
 }
 function parseAst(yargs) {
@@ -212,13 +218,16 @@ function parseAst(yargs) {
     });
 }
 
-function parseListArgv(argv) {
+function parseListArgv(argv, cb = null) {
   if (argv.verbose) console.info(`Listing`)
   listing(function (r, err) {
     if (err) {
       console.log("Some error occured");
       exit(1);
     }
+    if (cb && typeof cb === "function")
+      cb(r);
+
   }, argv.hostname);
 }
 function parseList(yargs) {
@@ -264,71 +273,87 @@ function listing(cb = null, hostname = "ENV", port = 80) {
   // console.log(hostname);
   // console.log(port);
   // console.log(callurl);
-  urlexist(url, function (err, exists) {
-    console.log(exists); // true
-    try {
 
-      http.get(callurl, res => {
-        res.setEncoding("utf8");
-        let body = "";
-        res.on("error", err => {
-          // console.log(err.message);
+  dns.lookup(hostname, function (err, result) {
+    //console.log(result);
+    if (err) {
+      console.log("BAD Host or unaccessible");
+      exit(1);
+    }
+    else {
+
+      urlexist(url, function (err, exists) {
+        //console.log(exists); // true
+        if (!exists || err) {
+          console.log("BAD URL or unaccessible");
+          exit(1);
+        }
+        try {
+
+          http.get(callurl, res => {
+            res.setEncoding("utf8");
+            let body = "";
+            res.on("error", err => {
+              // console.log(err.message);
+              var errO = new Object();
+              errO.message = err.message;
+              errO.name = err.name;
+              errO.error = 1;
+
+              if (cb && typeof cb === "function") cb(null, errO);
+              return;
+            });
+            res.on("data", data => {
+              body += data;
+            });
+            res.on("end", () => {
+              // body = JSON.parse(body);
+              list = "";
+              prettyList = "";
+
+              servers = new Object();
+              ports = new Object();
+              //console.debug(body);
+              var arr = body.split(" ");
+              arr.forEach(a => {
+                var iarr = a.replace("\n", "").split(":");
+                var p = iarr[0];
+                var c = iarr[1];
+                servers[c] = p;
+                ports[p] = c;
+                var l = `${p}\t ${c}`;
+                list += a + " ";
+                prettyList += l + "\n";
+
+              });
+              var r = new Object();
+              //r.ports = ports;
+              //r.servers = servers;
+              r = { ports, servers, list, body };
+
+              if (mode == "LIST") console.info(list);
+              //else console.log(list);
+              if (cb && typeof cb === "function") cb(r);
+            });
+          });
+        } catch (error) {
+          // console.log(error.message)
           var errO = new Object();
-          errO.message = err.message;
-          errO.name = err.name;
+          errO.message = error.message;
+          errO.name = error.name;
           errO.error = 1;
 
           if (cb && typeof cb === "function") cb(null, errO);
-          return;
-        });
-        res.on("data", data => {
-          body += data;
-        });
-        res.on("end", () => {
-          // body = JSON.parse(body);
-          list = "";
-          prettyList = "";
+        }
 
-          servers = new Object();
-          ports = new Object();
-          //console.debug(body);
-          var arr = body.split(" ");
-          arr.forEach(a => {
-            var iarr = a.replace("\n", "").split(":");
-            var p = iarr[0];
-            var c = iarr[1];
-            servers[c] = p;
-            ports[p] = c;
-            var l = `${p}\t ${c}`;
-            list += a + " ";
-            prettyList += l + "\n";
+        // fetch(url)
+        //   .then(res => res.text())
+        //   .then(text => console.log(text));
 
-          });
-          var r = new Object();
-          //r.ports = ports;
-          //r.servers = servers;
-          r = { ports, servers, list, body };
+        // console.log("done")
 
-          if (mode == "LIST") console.info(list);
-          //else console.log(list);
-          if (cb && typeof cb === "function") cb(r);
-        });
-      });
-    } catch (error) {
-      // console.log(error.message)
-      var errO = new Object();
-      errO.message = error.message;
-      errO.name = error.name;
-      errO.error = 1;
+      });//URL Exist
 
-      if (cb && typeof cb === "function") cb(null, errO);
     }
-
-    // fetch(url)
-    //   .then(res => res.text())
-    //   .then(text => console.log(text));
-
-    // console.log("done")
-    
-  });//URL Exist
+  });//DNS resolved
 }
