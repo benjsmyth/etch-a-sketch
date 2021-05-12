@@ -49,17 +49,22 @@ yargs(hideBin(process.argv))
   .usage(appStartMessage)
   .epilogue('for more information, find our manual at http://guillaumeisabelle.com')
 
-  .command('list [dihostname]', 'List available model',
+  .command('list [dihostname]', 'List available model from the hub',
     (yargs) => listSetupCLI(yargs), (argv) => listArgsParsing(argv))
-  .command('ls [dihostname]', 'List available model',
+  .command('ls [dihostname]', 'List available model from the hub',
     (yargs) => listSetupCLI(yargs), (argv) => listArgsParsing(argv))
-  .example("$0 list as.jgwill.com", "#List the models being served at that host")
+    
+  .option('pretty', {
+    default: false,
+    type: 'boolean',
+    description: 'Changes the output'
+  })
 
-  .command('stylize [file] [astport]', 'Stylize a file using the selected AST Port', (yargs) => stylizeSetupCLI(yargs), (argv) => stylizeArgsParsing(argv))
+  .command('stylize [file] [astport]', 'Stylize a file using the selected AST Port', (yargs) => stylizeSetupCLI(yargs), (argv) => stylizeArgsParsing(argv)).alias("ast",'stylize')
   .example("$0 ast sample.jpg 98", "# Stylize using model id 98")
 
-  .command('ast [file] [astport]', 'start the astr', (yargs) => stylizeSetupCLI(yargs), (argv) => stylizeArgsParsing(argv))
-  
+  .command('ast [file] [astport]', '# Stylize using model id 98 ', (yargs) => stylizeSetupCLI(yargs), (argv) => stylizeArgsParsing(argv))
+
 
   .option('asthostname', {
     alias: 'ah',
@@ -68,11 +73,6 @@ yargs(hideBin(process.argv))
     description: 'HostNamed the main model server'
   })
 
-  .option('pretty', {
-    default: false,
-    type: 'boolean',
-    description: 'Changes the output'
-  })
   .option('verbose', {
     alias: 'v',
     default: false,
@@ -84,6 +84,12 @@ yargs(hideBin(process.argv))
     default: false,
     type: 'boolean',
     description: 'dev - Show the arguments'
+  })
+  .option('showcnf', {
+    alias: 'showconf',
+    default: false,
+    type: 'boolean',
+    description: 'dev - Show the conf'
   })
   .option('label', {
     alias: 'l',
@@ -187,7 +193,8 @@ function getAstHosts() {
     'custom'];
 }
 
-function ast(file, port, cb = null) {
+function ast(cnf, cb = null) {
+  var {file, astport} = cnf.options;
   //console.log("->"+argv[2]+"<-");
   //console.log("->"+argv[1]+"<-");
   if (argv[2] == "--get-yargs-completions") {
@@ -203,8 +210,8 @@ function ast(file, port, cb = null) {
   }
   else {
 
-    console.log("Stylizing using port : " + port + " for file: " + file);
-    if (argv.directory) console.log("--directory");
+    console.log("Stylizing using port : " + astport + " for file: " + file);
+    
   }
 
 }
@@ -222,18 +229,22 @@ function preProcessCommandArgs(argv) {
   // if (argv.label) {cnf.label=true;console.log("Label switch on");}
   // if (argv.showargs) {cnf.showargs=true;console.log(argv);}
 
-  var { pretty, verbose, label, directory, showargs, file, port, asthostname,dihostname,callmethod } = argv;
+  var { pretty, verbose, label, directory, showargs, file, astport, asthostname, dihostname, callmethod,showcnf } = argv;
 
   if (asthostname == "#ENV") {
-    try {   if (process.env.asthostname)   asthostname = process.env.asthostname;
-    } catch (error) {    }  }
+    try {
+      if (process.env.asthostname) asthostname = process.env.asthostname;
+    } catch (error) { }
+  }
   if (dihostname == "#ENV") {
-    try {    if ( process.env.dihostname)  dihostname = process.env.dihostname;
-    } catch (error) {    }  }
+    try {
+      if (process.env.dihostname) dihostname = process.env.dihostname;
+    } catch (error) { }
+  }
 
-  cnf.options = { pretty, verbose, label, directory, showargs, file, port,asthostname,dihostname,callmethod };
+  cnf.options = { pretty, verbose, label, directory, showargs, file, astport, asthostname, dihostname, callmethod };
 
-  console.log(cnf);
+ if (showcnf) console.log(cnf);
 
 
 }
@@ -253,7 +264,7 @@ function loadcnf(cnf) {
     // console.error("cnf.js NOT FOUND.  ");
     //console.log("Read from ENV VAR");
     try {
-     if (cnf==null) cnf = new Object();
+      if (cnf == null) cnf = new Object();
 
       _cnfLoaded = loadCNFFromEnv(cnf) < 1 ? true : false;
       //----grab-the-env
@@ -302,10 +313,11 @@ function loadCNFFromEnv(cnf) {
  * @param {*} cb 
  */
 function stylizeArgsParsing(argv, cb = null) {
+
   preProcessCommandArgs(argv);
 
 
-  ast(argv.file, argv.port, function (arr) {
+  ast(cnf, function (arr) {
     //console.log(arr);
     //console.log("aléo")
 
@@ -330,8 +342,8 @@ function stylizeSetupCLI(yargs) {
     type: 'string',
     default: '.'
   })
-  .example('$0 s sample.jpg 98','Would stylize sample.jpg using astport 98.')
-  .example('$0 s .jpg 98','Would stylize all jpgs.')
+    .example('$0 s sample.jpg 98', 'Would stylize sample.jpg using astport 98.')
+    .example('$0 s .jpg 98', 'Would stylize all jpgs.')
     .positional('astport', {
       describe: 'ast of the model port',
       default: 52
@@ -342,14 +354,51 @@ function stylizeSetupCLI(yargs) {
       default: '/stylize',
       description: 'Stylization method on the server'
     })
-    .option('output', {
+    .option('save_dir', {
       alias: 'o',
       type: 'string',
       default: "_aststylized",
       description: 'Name the output '
     })
-  
-    
+    .option('file_suffix', {
+      alias: 'o',
+      type: 'string',
+      default: "_stylized",
+      description: 'specify file suffix '
+    })
+
+    .option('image_size', {
+      alias: 'image_size',
+      type: 'Number',
+      default: 768,
+      description: `For training phase: will crop out images of this particular size.
+     For inference phase: each input image will have the smallest side of this size. 
+     For inference recommended size is 1280.`
+    })
+
+    .option('ckpt_nmbr',
+      {
+        alias: 'chk',
+        type: 'Number',
+        default: '300',
+        description: `CheckpoNumber number we want to use for inference.  Might be null(unspecified), then the latest available will be used.`
+      })
+
+    .option('model_name', {
+      alias: 'model_name',
+      default: 'model1',
+      description: `Name of the model.  
+      //@STCGoal Might use this to call the service for a model that might not be hydrated on a port.  It would take care of giving us inference from the model we specified.`
+    })
+    .example('$0 s.jpg --model_name "model_gia-ds-daliwill-210123-v01_new"',' Load latest chkpoint or otherwise spec --ckpt_nmbr 105')
+    .example('$0 s.jpg --ckpt_nmbr 105 --model_name "model_gia-ds-daliwill-210123-v01_new"',' Load spec chkpoint ')
+    .deprecateOption('ast')
+    .option('s')
+
+
+
+
+
 
     ;
 }
@@ -388,7 +437,10 @@ function listSetupCLI(yargs) {
     .positional('diport', {
       describe: 'diport to look for getting data we would use',
       default: 80
-    });
+    })
+
+    .example("$0 list as.jgwill.com", "#List the models being served at that host")
+    ;
 }
 
 function listingAsArray(cb = null, dihostname = "ENV", port = 80) {
@@ -416,10 +468,10 @@ function listing(cb = null, dihostname = "ENV", port = 80) {
   //console.log("Listing available model. ");
   var callurl = url;
   try {
-    
-  if (dihostname == "ENV") dihostname = process.env.dihostname;
-  else dihostname = process.env.asthostname;
-  } catch (error) {   }
+
+    if (dihostname == "ENV") dihostname = process.env.dihostname;
+    else dihostname = process.env.asthostname;
+  } catch (error) { }
 
   callurl = "http://" + dihostname + ":" + port + "/data/dkrunningcontainerports.txt";
 
