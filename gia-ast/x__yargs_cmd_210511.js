@@ -10,7 +10,7 @@ var url = "http://jgwill.com/data/dkrunningcontainerports.txt";
 const yargs = require('yargs/yargs')
 const { hideBin } = require('yargs/helpers')
 
-
+var list = ""
 
 //var ver = yargs.version();
 
@@ -31,7 +31,7 @@ yargs(hideBin(process.argv))
 
   .command('list', 'List available model',
     (yargs) => yargs, (argv) => listing())
-  .command('ls', 'List avilable model',
+  .command('ls', 'List available model',
     (yargs) => yargs, (argv) => listing())
   .command('stylize [file] [port]', 'start the astr', (yargs) => parseAst(yargs), (argv) => parseAstArgv(argv))
   .command('ast [file] [port]', 'start the astr', (yargs) => parseAst(yargs), (argv) => parseAstArgv(argv))
@@ -58,7 +58,12 @@ yargs(hideBin(process.argv))
     // 'current' is the current command being completed.
     // 'argv' is the parsed arguments so far.
     // simply return an array of completions.
+    if (current == "ls" ||current == "list" || argv.list)
+    {
+      //console.log("We are listing")
+    }
     //console.log(current);
+    //console.log(argv);
     return [
       'ast',
       'list',
@@ -101,6 +106,7 @@ function listing() {
   console.log("Listing available model. ");
 
   http.get(url, res => {
+    list = "";
     res.setEncoding("utf8");
     let body = "";
     res.on("data", data => {
@@ -114,7 +120,10 @@ function listing() {
         var iarr = a.split(":");
         var p = iarr[0];
         var c = iarr[1];
-        console.info(`On port ${p}\t Container ${c}`);
+        var l =`On port ${p}\t Container ${c}`
+        console.info(l
+        );
+        list +=l;
       });
     });
   });
