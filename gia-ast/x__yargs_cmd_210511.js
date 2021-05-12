@@ -4,58 +4,77 @@
 
 
 
-const yargs = require('yargs');
-var ver = yargs.version();
+const yargs = require('yargs/yargs')
+const { hideBin } = require('yargs/helpers')
 
-var appStartMessage = 
-`Mastery Yargs
+//var ver = yargs.version();
+
+var appStartMessage =
+  `Mastery Yargs
 By Guillaume Descoteaux-Isabelle, 2020-2021
-version ${ver}
+version 
 ----------------------------------------`;
-//const { argv } = require('process');
-//const { hideBin } = require('yargs/helpers')
-const argv = yargs(process.argv)
+const { argv } = require('process');
+// const { hideBin } = require('yargs/helpers')
+//const argv = yargs(process.argv)
+// .scriptName("gia-ast2")
+// .usage(appStartMessage)   
+yargs(hideBin(process.argv))
+.command('list','List available model',
+(yargs) => {
+    return yargs
+  }, (argv) => {
+    if (argv.verbose) console.info(`Listing`)
+    
+  })
+  .command('stylize [file] [port]', 'start the astr', (yargs) => {
+    return yargs
+      .positional('file', {
+        describe: 'file to stylize',
+        type: 'string',
+        default:'.'
+      })
+      .positional('port', {
+        describe: 'port to bind on',
+        default: 52
+      })
+  }, (argv) => {
+    if (argv.verbose) console.info(`Infering on :${argv.port} for file: ${argv.file}`)
+    ast(argv.file, argv.port)
+  })
+  .option('directory', {
+    alias: 'd',
+    type: 'boolean',
+    default: false,
+    description: 'Name the output using current Basedirname'
+  })
 
-.scriptName("gia-ast")
-.usage(appStartMessage)
-   .command('serve [port]', 'start the server', (yargs) => {
-     yargs
-       .positional('port', {
-         describe: 'port to bind on',
-         type:'string',
-         default: 5000
-       })
-   }, (argv) => {
-     if (argv.verbose) console.info(`start server on :${argv.port}`)
-     //serve(argv.port)
-     console.log("test");
-     console.info(`start server on :${argv.port}`)
-   })
-   .option('file', {
-     alias: 'f',
-     type: 'string',
-     description: 'Specify the file out'
-   })
-   .option('directory', {
-     alias: 'd',
-     type: 'boolean',
-     default:false,
-     description: 'Name the output using current Basedirname'
-   }).usage(`gis-csm -d --label  # Assuming this file in directory: vm_s01-v01_768x___285k.jpg
-   # will extract 285 and add that instead of filename`)
-   .option('verbose', {
-     alias: 'v',
-     default:false,
-     type: 'boolean',
-     description: 'Run with verbose logging'
-   })
-   .option('label', {
-     alias: 'l',
-     type: 'boolean',
-     default:false,
-     description: 'Label using last digit in filename (used for parsing inference result that contain checkpoint number)'
-   })
- .argv;
+  .option('verbose', {
+    alias: 'v',
+    default: false,
+    type: 'boolean',
+    description: 'Run with verbose logging'
+  })
+  .option('label', {
+    alias: 'l',
+    type: 'boolean',
+    default: false,
+    description: 'Label using last digit in filename (used for parsing inference result that contain checkpoint number)'
+  })
+  .argv;
 
 // console.log(argv._);
 // console.log(argv);
+
+
+
+function ast(file, port) {
+  console.log("Stylizing using port : " + port + " for file: " + file);
+  if (argv.directory) console.log("--directory");
+}
+
+function listing()
+{
+  console.log("Listing available model. http://jgwill.com/data/dkrunningcontainerports.txt");
+
+}
