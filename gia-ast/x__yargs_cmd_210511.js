@@ -26,29 +26,15 @@ const { argv } = require('process');
 // .usage(appStartMessage)   
 yargs(hideBin(process.argv))
 
-.scriptName("gia-ast")
-.usage(appStartMessage)
+  .scriptName("gia-ast2")
+  .usage(appStartMessage)
 
   .command('list', 'List available model',
     (yargs) => yargs, (argv) => listing())
   .command('ls', 'List avilable model',
     (yargs) => yargs, (argv) => listing())
-  .command('stylize [file] [port]', 'start the astr', (yargs) => {
-    return yargs
-      // .alias('ast [file] [port]')
-      .positional('file', {
-        describe: 'file to stylize',
-        type: 'string',
-        default: '.'
-      })
-      .positional('port', {
-        describe: 'port to bind on',
-        default: 52
-      })
-  }, (argv) => {
-    if (argv.verbose) console.info(`Infering on :${argv.port} for file: ${argv.file}`)
-    ast(argv.file, argv.port)
-  })
+  .command('stylize [file] [port]', 'start the astr', (yargs) => parseAst(yargs), (argv) => parseAstArgv(argv))
+  .command('ast [file] [port]', 'start the astr', (yargs) => parseAst(yargs), (argv) => parseAstArgv(argv))
   .option('directory', {
     alias: 'd',
     type: 'boolean',
@@ -67,12 +53,24 @@ yargs(hideBin(process.argv))
     type: 'boolean',
     default: false,
     description: 'Label using last digit in filename (used for parsing inference result that contain checkpoint number)'
+  }) 
+   .completion('completion', function(current, argv) {
+    // 'current' is the current command being completed.
+    // 'argv' is the parsed arguments so far.
+    // simply return an array of completions.
+    //console.log(current);
+    return [
+      'ast',
+      'list',
+      'ls',
+      'stylize'
+    ];
   })
   .argv;
 
 // console.log(argv._);
 // console.log(argv);
-
+//console.log(argv.label ? "Labels":"");
 
 
 function ast(file, port) {
@@ -82,6 +80,22 @@ function ast(file, port) {
 
 //const url = "https://jsonplaceholder.typicode.com/posts/1";
 
+function parseAstArgv(argv) {
+  if (argv.verbose) console.info(`Infering on :${argv.port} for file: ${argv.file}`)
+  ast(argv.file, argv.port);
+}
+function parseAst(yargs) {
+  // .alias('ast [file] [port]')
+  return yargs.positional('file', {
+    describe: 'file to stylize',
+    type: 'string',
+    default: '.'
+  })
+    .positional('port', {
+      describe: 'port to bind on',
+      default: 52
+    });
+}
 
 function listing() {
   console.log("Listing available model. ");
