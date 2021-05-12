@@ -5,7 +5,7 @@
 # Installation: gia-ast2 completion >> ~/.bashrc
 #    or gia-ast2 completion >> ~/.bash_profile on OSX.
 #
-alias gia-ast2="/a/src/x__etch-a-sketch__210224/gia-ast/x__yargs_cmd_210511.js "
+alias gia-ast2="$srcpath/x__etch-a-sketch__210224/gia-ast/x__yargs_cmd_210511.js "
 
 _yargs_completions()
 {
@@ -29,7 +29,7 @@ _yargs_completions()
 complete -o default -F _yargs_completions gia-ast2
 ###-end-gia-ast2-completions-###
 
-alias gia-ast2s="/a/src/x__etch-a-sketch__210224/gia-ast/x__yargs_cmd_210511_SIMPLE.js "
+alias gia-ast2s="$srcpath/x__etch-a-sketch__210224/gia-ast/x__yargs_cmd_210511_SIMPLE.js "
 
 _yargs_completions2s()
 {
