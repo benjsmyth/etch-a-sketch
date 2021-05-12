@@ -33,7 +33,7 @@ By Guillaume Descoteaux-Isabelle, 2020-2021
 version 
 ----------------------------------------`;
 const { argv } = require('process');
-const { exit } = require("node-process");
+// const { exit } = require("node-process");
 
 // const { hideBin } = require('yargs/helpers')
 //const argv = yargs(process.argv)
