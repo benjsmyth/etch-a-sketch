@@ -31,9 +31,11 @@
   "dependencies": {
     "axios": "^0.21.1",
     "gia-lib-encoding-base64": "^0.1.0",
+    "http": "^0.0.1-security",
     "node-fetch": "^2.6.1",
     "safer-buffer": "^2.1.2",
     "tempfile": "^3.0.0",
+    "url-exists": "^1.0.3",
     "yargs": "^16.2.0"
   }
 }
