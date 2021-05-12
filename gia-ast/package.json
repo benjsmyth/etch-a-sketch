@@ -10,7 +10,8 @@
     "postpublish": "node postpublish.js"
   },
   "bin": {
-    "gia-ast": "gia-ast.js"
+    "gia-ast": "gia-ast.js",
+    "gia-ast2": "gia-ast2.js"
   },
   "repository": {
     "type": "git",
