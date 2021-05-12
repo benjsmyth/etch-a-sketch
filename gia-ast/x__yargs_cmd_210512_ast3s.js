@@ -45,13 +45,17 @@ yargs(hideBin(process.argv))
 
   .scriptName("gia-ast2")
   .usage(appStartMessage)
+  .epilogue('for more information, find our manual at http://guillaumeisabelle.com')
 
   .command('list [hostname]', 'List available model',
     (yargs) => parseList(yargs), (argv) => parseListArgv(argv))
   .command('list [hostname]', 'List available model',
     (yargs) => parseList(yargs), (argv) => parseListArgv(argv))
+    .example("$0 list as.jgwill.com","#List the models being served at that host")
 
   .command('stylize [file] [port]', 'start the astr', (yargs) => parseAst(yargs), (argv) => parseAstArgv(argv))
+  .example("$0 ast sample.jpg 98", "# Stylize using model id 98")
+
   .command('ast [file] [port]', 'start the astr', (yargs) => parseAst(yargs), (argv) => parseAstArgv(argv))
   .option('directory', {
     alias: 'd',
@@ -60,6 +64,11 @@ yargs(hideBin(process.argv))
     description: 'Name the output using current Basedirname'
   })
 
+  .option('pretty', {
+    default: false,
+    type: 'boolean',
+    description: 'Changes the output'
+  })
   .option('verbose', {
     alias: 'v',
     default: false,
@@ -331,8 +340,15 @@ function listing(cb = null, hostname = "ENV", port = 80) {
               //r.servers = servers;
               r = { ports, servers, list, body };
 
-              if (mode == "LIST") console.info(list);
-              //else console.log(list);
+              if (mode == "LIST") {
+                console.log();
+                if (argv.pretty)
+                  console.info(prettyList);
+                else console.info(list);
+
+              }
+              //else               console.log(list);
+
               if (cb && typeof cb === "function") cb(r);
             });
           });
