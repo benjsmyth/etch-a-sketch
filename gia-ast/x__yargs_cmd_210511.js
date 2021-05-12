@@ -2,6 +2,9 @@
 
 //@STCGoal A command with two positional args
 
+// const fetch = require('node-fetch');
+const http = require("http");
+var url = "http://jgwill.com/data/dkrunningcontainerports.txt";
 
 
 const yargs = require('yargs/yargs')
@@ -20,19 +23,20 @@ const { argv } = require('process');
 // .scriptName("gia-ast2")
 // .usage(appStartMessage)   
 yargs(hideBin(process.argv))
-.command('list','List available model',
-(yargs) => {
-    return yargs
-  }, (argv) => {
-    if (argv.verbose) console.info(`Listing`)
-    
-  })
+  .command('list', 'List available model',
+    (yargs) => {
+      return yargs
+    }, (argv) => {
+      if (argv.verbose) 
+      console.info(`Listing`)
+      listing();
+    })
   .command('stylize [file] [port]', 'start the astr', (yargs) => {
     return yargs
       .positional('file', {
         describe: 'file to stylize',
         type: 'string',
-        default:'.'
+        default: '.'
       })
       .positional('port', {
         describe: 'port to bind on',
@@ -73,8 +77,34 @@ function ast(file, port) {
   if (argv.directory) console.log("--directory");
 }
 
-function listing()
-{
-  console.log("Listing available model. http://jgwill.com/data/dkrunningcontainerports.txt");
+//const url = "https://jsonplaceholder.typicode.com/posts/1";
 
+
+function listing() {
+  console.log("Listing available model. ");
+  
+  http.get(url, res => {
+    res.setEncoding("utf8");
+    let body = "";
+    res.on("data", data => {
+      body += data;
+    });
+    res.on("end", () => {
+     // body = JSON.parse(body);
+      //console.debug(body);
+      var arr = body.split(" ");
+      arr.forEach(a => {
+        var iarr = a.split(":");
+        var p = iarr[0];
+        var c = iarr[1];
+        console.info(`On port ${p}\t Container ${c}`);
+      });
+    });
+  });
+
+  // fetch(url)
+  //   .then(res => res.text())
+  //   .then(text => console.log(text));
+
+ // console.log("done")
 }
