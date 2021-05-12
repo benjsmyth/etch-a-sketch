@@ -8,7 +8,7 @@ const yargs = require('yargs');
 var ver = yargs.version();
 
 var appStartMessage = 
-`Multi platform Contact Sheet maker
+`Mastery Yargs
 By Guillaume Descoteaux-Isabelle, 2020-2021
 version ${ver}
 ----------------------------------------`;
@@ -20,7 +20,7 @@ const argv = yargs(process.argv)
 .usage(appStartMessage)
    .command('serve [port]', 'start the server', (yargs) => {
      yargs
-       .positional('f', {
+       .positional('port', {
          describe: 'port to bind on',
          type:'string',
          default: 5000
@@ -57,4 +57,5 @@ const argv = yargs(process.argv)
    })
  .argv;
 
-console.log(argv._);
+// console.log(argv._);
+// console.log(argv);
