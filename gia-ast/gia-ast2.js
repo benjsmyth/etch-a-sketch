@@ -5,8 +5,6 @@
 const giaenc = require("gia-lib-encoding-base64");
 
 
-
-
 const http = require('http');
 const axios = require('axios').default;
 var path = require('path');
@@ -22,58 +20,58 @@ var args = process.argv.slice(2);
 
 //----for later
 
-// const yargs = require('yargs');
-// var ver = yargs.version();
+ const yargs = require('yargs');
+ var ver = yargs.version();
 
-// var appStartMessage = 
-// `Multi platform Contact Sheet maker
-// By Guillaume Descoteaux-Isabelle, 2020-2021
-// version ${ver}
-// ----------------------------------------`;
-// //const { argv } = require('process');
-// //const { hideBin } = require('yargs/helpers')
-// const argv = yargs(process.argv)
+var appStartMessage = 
+`Multi platform Contact Sheet maker
+By Guillaume Descoteaux-Isabelle, 2020-2021
+version ${ver}
+----------------------------------------`;
+//const { argv } = require('process');
+//const { hideBin } = require('yargs/helpers')
+const argv = yargs(process.argv)
 
-// .scriptName("gis-csm")
-// .usage(appStartMessage)
-//     // .command('serve [port]', 'start the server', (yargs) => {
-//     //   yargs
-//     //     .positional('f', {
-//     //       describe: 'port to bind on',
-//     //       type:'string',
-//     //       default: 5000
-//     //     })
-//     // }, (argv) => {
-//     //   if (argv.verbose) console.info(`start server on :${argv.port}`)
-//     //   //serve(argv.port)
-//     //   console.log("test");
-//     //   console.info(`start server on :${argv.port}`)
-//     // })
-//     .option('file', {
-//       alias: 'f',
-//       type: 'string',
-//       description: 'Specify the file out'
-//     })
-//     .option('directory', {
-//       alias: 'd',
-//       type: 'boolean',
-//       default:false,
-//       description: 'Name the output using current Basedirname'
-//     }).usage(`gis-csm -d --label  # Assuming this file in directory: vm_s01-v01_768x___285k.jpg
-//     # will extract 285 and add that instead of filename`)
-//     .option('verbose', {
-//       alias: 'v',
-//       default:false,
-//       type: 'boolean',
-//       description: 'Run with verbose logging'
-//     })
-//     .option('label', {
-//       alias: 'l',
-//       type: 'boolean',
-//       default:false,
-//       description: 'Label using last digit in filename (used for parsing inference result that contain checkpoint number)'
-//     })
-//   .argv;
+.scriptName("gia-ast")
+.usage(appStartMessage)
+    // .command('serve [port]', 'start the server', (yargs) => {
+    //   yargs
+    //     .positional('f', {
+    //       describe: 'port to bind on',
+    //       type:'string',
+    //       default: 5000
+    //     })
+    // }, (argv) => {
+    //   if (argv.verbose) console.info(`start server on :${argv.port}`)
+    //   //serve(argv.port)
+    //   console.log("test");
+    //   console.info(`start server on :${argv.port}`)
+    // })
+    .option('file', {
+      alias: 'f',
+      type: 'string',
+      description: 'Specify the file out'
+    })
+    .option('directory', {
+      alias: 'd',
+      type: 'boolean',
+      default:false,
+      description: 'Name the output using current Basedirname'
+    }).usage(`gis-csm -d --label  # Assuming this file in directory: vm_s01-v01_768x___285k.jpg
+    # will extract 285 and add that instead of filename`)
+    .option('verbose', {
+      alias: 'v',
+      default:false,
+      type: 'boolean',
+      description: 'Run with verbose logging'
+    })
+    .option('label', {
+      alias: 'l',
+      type: 'boolean',
+      default:false,
+      description: 'Label using last digit in filename (used for parsing inference result that contain checkpoint number)'
+    })
+  .argv;
 
 
 //-----------
@@ -89,7 +87,7 @@ export astcallprotocol="http"
 export astcallmethod="stylize"
 `;
 try {
-  config = require('./config');
+  config = require(__dirname +'/config');
   
 } catch (error) {
   // console.error("config.js NOT FOUND.  ");

@@ -64,46 +64,10 @@ yargs(hideBin(process.argv))
     default: false,
     description: 'Label using last digit in filename (used for parsing inference result that contain checkpoint number)'
   })
-  .completion('completion', function (current, argv, done) {
-
-    if (!argv._[0]) return arrComplete;
-
-    //if (done == "list") console.log(done);
-    if (current == "ast")
-      showAstCompletion();
-    setTimeout(function () {
-
-      listing(function (r) {
-        //console.log(r.ports);
-        for (const [key, value] of Object.entries(r.ports)) {
-          console.log(`${key}: ${value}`);
-        }
-
-
-      });
-
-      if (argv._[0] == "ast") {
-        fs.exists(argv._[1], (flag) => {
-          if (flag)
-            done(["Giving a hypothetical list of available server to use"]);
-          //  listing((r)=> {
-          //    console.log(r);
-          //     done(r);
-          //  });
-          //)  ;
-
-        });
-
-      }
-      // if (argv._ == "list") console.log("Giving a hypothetical list of available server to use");
-      // done([
-      //   'ast',
-      //   'list'
-      // ]);
-      //console.log(list);
-    }, 500);
-    // console.log(argv._);
-    //console.log(current)
+  .completion('completion', function (current, argv) {
+    if (argv._[0] == "ast")
+    return ["ast_xfp","compo_eou"];
+    
     return arrComplete;
   })
   .argv;
@@ -158,14 +122,14 @@ function parseList(yargs) {
     });
 }
 
-function listing(cb = null, hostname = "ENV", port = 80) {
+function listing(cb=null,hostname = "ENV", port = 80) {
   //console.log("Listing available model. ");
   var callurl = url;
   if (hostname == "ENV") hostname = process.env.asthostname;
   callurl = "http://" + hostname + ":" + port + "/data/dkrunningcontainerports.txt";
-  // console.log(hostname);
-  // console.log(port);
-  // console.log(callurl);
+ // console.log(hostname);
+ // console.log(port);
+ // console.log(callurl);
   try {
 
     http.get(callurl, res => {
@@ -183,32 +147,32 @@ function listing(cb = null, hostname = "ENV", port = 80) {
         prettyList = "";
 
         servers = new Object();
-        ports = new Object();
+        ports= new Object();
         //console.debug(body);
         var arr = body.split(" ");
         arr.forEach(a => {
-          var iarr = a.replace("\n", "").split(":");
+          var iarr = a.replace("\n","").split(":");
           var p = iarr[0];
           var c = iarr[1];
-          servers[c] = p;
+          servers[c] =p; 
           ports[p] = c;
           var l = `${p}\t ${c}`;
           list += a + " ";
-          prettyList += l + "\n";
-
+          prettyList += l  + "\n";
+         
         });
         var r = new Object();
         //r.ports = ports;
         //r.servers = servers;
-        r = { ports, servers, list, body };
+        r = {ports,servers,list,body};
 
-        if (mode == "LIST") console.info(prettyList);
+        if (mode=="LIST") console.info(prettyList);
         //else console.log(list);
-        if (cb && typeof cb === "function") cb(r);
+        if (cb && typeof cb === "function") cb (r);
       });
     });
   } catch (error) {
-    console.log(error.message)
+      console.log(error.message)
   }
 
   // fetch(url)
