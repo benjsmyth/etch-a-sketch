@@ -49,18 +49,25 @@ yargs(hideBin(process.argv))
   .usage(appStartMessage)
   .epilogue('for more information, find our manual at http://guillaumeisabelle.com')
 
-  .command('list [dihostname]', 'List available model from the hub',
+  .command('list [dihostname] ', 'List available model from the hub',
     (yargs) => listSetupCLI(yargs), (argv) => listArgsParsing(argv))
-  .command('ls [dihostname]', 'List available model from the hub',
+  .command('ls [dihostname] ', 'List available model from the hub',
     (yargs) => listSetupCLI(yargs), (argv) => listArgsParsing(argv))
-    
+
   .option('pretty', {
     default: false,
     type: 'boolean',
     description: 'Changes the output'
   })
+  .option('diport', {
+    alias: 'dip',
+    type: 'string',
+    default: '80',
+    description: 'diport to look for getting data we would use'
+  })
 
-  .command('stylize [file] [astport]', 'Stylize a file using the selected AST Port', (yargs) => stylizeSetupCLI(yargs), (argv) => stylizeArgsParsing(argv)).alias("ast",'stylize')
+
+  .command('stylize [file] [astport]', 'Stylize a file using the selected AST Port', (yargs) => stylizeSetupCLI(yargs), (argv) => stylizeArgsParsing(argv)).alias("ast", 'stylize')
   .example("$0 ast sample.jpg 98", "# Stylize using model id 98")
 
   .command('ast [file] [astport]', '# Stylize using model id 98 ', (yargs) => stylizeSetupCLI(yargs), (argv) => stylizeArgsParsing(argv))
@@ -98,58 +105,6 @@ yargs(hideBin(process.argv))
     description: 'Label using last digit in filename (used for parsing inference result that contain checkpoint number)'
   })
 
-  .completion('completion', function (current, argv2, done) {
-
-    //console.log("Current-" + current);
-    // console.log("1:"+argv2._[1]);
-    // console.log("2:"+argv2._[2]);
-    var gotFile = false;
-    try {
-      if (fs.existsSync(argv2._[2])) gotFile = true;
-
-    } catch (error) {
-
-    }
-    //if (gotFile)console.log("Got a file");
-
-    if (current == "list" || current == "ls" || argv2._[1] == "list") {
-      //console.log("Going in LIST")
-      done(getAstHosts());
-    }
-
-
-    if (current != "ast" && current != "stylize" && argv2._[1] != "ast" && argv2._[1] != "stylize") done(arrComplete);
-
-    // else console.log("Going in ast")
-    setTimeout(function () {
-      // console.log("--" + current);
-      if (argv2._[1] == "ast" || argv2._[1] == "stylize") {
-        ast("ENV", 80, (r) => {
-          //console.log(r);
-          done(r);
-        });
-      }
-      else {
-
-        // console.log("->"+argv[2]+"<-");
-        //console.log(current);
-        if (argv2._[2] != "--get-yargs-completions" && argv2._[1] != "ast") {
-
-          mode = "NONE";
-          console.log('mode:NONE');
-          done(arrComplete);
-        }
-      }
-
-
-    }, 444);
-    // return arrComplete;
-    return ['ast',
-      'list',
-      'ls',
-      'stylize',
-      'complete'];
-  })
   // .completion('completion', function (current, argv, done) {
 
   //   // return ["ast_xfp","compo_eou"];
@@ -193,26 +148,35 @@ function getAstHosts() {
     'custom'];
 }
 
-function ast(cnf, cb = null) {
-  var {file, astport} = cnf.options;
-  //console.log("->"+argv[2]+"<-");
-  //console.log("->"+argv[1]+"<-");
-  if (argv[2] == "--get-yargs-completions") {
-    setTimeout(function () {
-      listingAsArray((r) => {
-        //console.log(r);
-        if (cb && typeof cb === "function")
-          cb(r);
-        //exit();
-        //return;
-      });
-    }, 333);
-  }
-  else {
+function ast(_cnf, cb = null) {
+  loadcnf(_cnf, function (_cnf, err) {
+    cnf = _cnf;
+    //console.log(_cnf);
+    try {
+      var { file, astport } = cnf.options;
 
-    console.log("Stylizing using port : " + astport + " for file: " + file);
-    
-  }
+    } catch (error) {
+
+    }
+    //console.log("->"+argv[2]+"<-");
+    //console.log("->"+argv[1]+"<-");
+    if (argv[2] == "--get-yargs-completions") {
+      setTimeout(function () {
+        listingAsArray(cnf, (r) => {
+          //console.log(r);
+          if (cb && typeof cb === "function")
+            cb(r);
+          //exit();
+          //return;
+        });
+      }, 444);
+    }
+    else {
+
+      console.log("Stylizing using port : " + astport + " for file: " + file);
+
+    }
+  });
 
 }
 
@@ -220,63 +184,86 @@ function ast(cnf, cb = null) {
  * 
  * @param {*} argv 
  */
-function preProcessCommandArgs(argv) {
+function preProcessCommandArgs(argv, cb = null) {
 
-  if (!_cnfLoaded) loadcnf(cnf);
+  if (!_cnfLoaded)
+    cnf = loadcnf(cnf, function (_cnf, err) {
+      if (err) {
+        // console.error(err);
+        if (cb && typeof cb === "function")
+          cb(cnf, err);
+      }
+      else {
 
-  // if (argv.pretty) {cnf.pretty=true;console.log("Pretty switch on");}
-  //  if (argv.verbose) {cnf.verbose=true;console.info(`Infering on :${argv.port} for file: ${argv.file}`);}
-  // if (argv.label) {cnf.label=true;console.log("Label switch on");}
-  // if (argv.showargs) {cnf.showargs=true;console.log(argv);}
+        // if (argv.pretty) {cnf.pretty=true;console.log("Pretty switch on");}
+        //  if (argv.verbose) {cnf.verbose=true;console.info(`Infering on :${argv.port} for file: ${argv.file}`);}
+        // if (argv.label) {cnf.label=true;console.log("Label switch on");}
+        // if (argv.showargs) {cnf.showargs=true;console.log(argv);}
 
-  var { pretty, verbose, label, directory, showargs, file, astport, asthostname, dihostname, callmethod,showcnf } = argv;
+        var { pretty, verbose, label, showargs, file, astport, asthostname, dihostname, callmethod, showcnf, diport, port_only } = argv;
 
-  if (asthostname == "#ENV") {
-    try {
-      if (process.env.asthostname) asthostname = process.env.asthostname;
-    } catch (error) { }
-  }
-  if (dihostname == "#ENV") {
-    try {
-      if (process.env.dihostname) dihostname = process.env.dihostname;
-    } catch (error) { }
-  }
+        if (!asthostname || asthostname == '#ENV') {
+          try {
+            if (process.env.asthostname) asthostname = process.env.asthostname;
+          } catch (error) { }
+        }
+        if (!dihostname || dihostname == '#ENV') {
+          try {
+            if (process.env.dihostname) dihostname = process.env.dihostname;
+            else dihostname = asthostname;
+          } catch (error) { }
+        }
+        cnf.options = { pretty, verbose, label, showargs, file, astport, asthostname, dihostname, callmethod, diport, port_only };
 
-  cnf.options = { pretty, verbose, label, directory, showargs, file, astport, asthostname, dihostname, callmethod };
+        // console.log(cnf)
 
- if (showcnf) console.log(cnf);
+        if (showcnf) console.log(cnf);
+
+        if (cb && typeof cb === "function")
+          cb(cnf, null);
+
+      }
+    });
 
 
 }
 
-function loadcnf(cnf) {
+function loadcnf(cnf, cb = null) {
 
-  try {
-    if (fs.existsSync(__dirname + '/cnf.js'))
-      cnf = require(__dirname + '/cnf.js');
-    else if (fs.existsSync(process.env.HOME + '/astcnf.js'))
-      cnf = require(process.env.HOME + '/astcnf.js');
-    else {
-      _cnfLoaded = loadCNFFromEnv(cnf) < 1 ? true : false;
-    }
-
-  } catch (error) {
-    // console.error("cnf.js NOT FOUND.  ");
-    //console.log("Read from ENV VAR");
+  if (!cnf || cnf["options"] == null) {
     try {
-      if (cnf == null) cnf = new Object();
-
-      _cnfLoaded = loadCNFFromEnv(cnf) < 1 ? true : false;
-      //----grab-the-env
+      if (fs.existsSync(__dirname + '/cnf.js'))
+        cnf = require(__dirname + '/cnf.js');
+      else if (fs.existsSync(process.env.HOME + '/astcnf.js'))
+        cnf = require(process.env.HOME + '/astcnf.js');
+      else {
+        _cnfLoaded = loadCNFFromEnv(cnf) < 1 ? true : false;
+      }
 
     } catch (error) {
-      console.error("Require astcnf.js in $HOME or cnf.js in " + __dirname + " or env var to be set. \n see bellow:");
-      console.log(envListHelp);
-      process.exit(1);
+      // console.error("cnf.js NOT FOUND.  ");
+      //console.log("Read from ENV VAR");
+      try {
+        if (cnf == null) cnf = new Object();
 
+        _cnfLoaded = loadCNFFromEnv(cnf) < 1 ? true : false;
+        //----grab-the-env
+
+      } catch (error) {
+        console.error("Require astcnf.js in $HOME or cnf.js in " + __dirname + " or env var to be set. \n see bellow:");
+        console.log(envListHelp);
+        if (cb && typeof cb === "function")
+          cb(cnf, err);
+        process.exit(1);
+
+      }
     }
   }
+  if (cb && typeof cb === "function")
+    cb(cnf, null);
+  // return cnf;
 }
+
 function loadCNFFromEnv(cnf) {
   var envErr = 0;
 
@@ -297,6 +284,12 @@ function loadCNFFromEnv(cnf) {
   if (process.env.astcallmethod)
     cnf.callmethod = process.env.astcallmethod;
   else envErr++;
+  if (process.env.diport)
+    cnf.diport = process.env.diport;
+  else envErr++;
+  if (process.env.dihostname)
+    cnf.dihostname = process.env.dihostname;
+  else envErr++;
 
   if (envErr > 0) {
     console.log("Env require setup");
@@ -314,16 +307,18 @@ function loadCNFFromEnv(cnf) {
  */
 function stylizeArgsParsing(argv, cb = null) {
 
-  preProcessCommandArgs(argv);
+  preProcessCommandArgs(argv, function (_cnf, err) {
 
 
-  ast(cnf, function (arr) {
-    //console.log(arr);
-    //console.log("aléo")
 
-    if (cb && typeof cb === "function")
-      cb(arr);
+    ast(_cnf, function (arr) {
+      //console.log(arr);
+      //console.log("aléo")
 
+      if (cb && typeof cb === "function")
+        cb(arr);
+
+    });
   });
 }
 
@@ -390,11 +385,63 @@ function stylizeSetupCLI(yargs) {
       description: `Name of the model.  
       //@STCGoal Might use this to call the service for a model that might not be hydrated on a port.  It would take care of giving us inference from the model we specified.`
     })
-    .example('$0 s.jpg --model_name "model_gia-ds-daliwill-210123-v01_new"',' Load latest chkpoint or otherwise spec --ckpt_nmbr 105')
-    .example('$0 s.jpg --ckpt_nmbr 105 --model_name "model_gia-ds-daliwill-210123-v01_new"',' Load spec chkpoint ')
-    .deprecateOption('ast')
-    .option('s')
+    .example('$0 s.jpg --model_name "model_gia-ds-daliwill-210123-v01_new"', ' Load latest chkpoint or otherwise spec --ckpt_nmbr 105')
+    .example('$0 s.jpg --ckpt_nmbr 105 --model_name "model_gia-ds-daliwill-210123-v01_new"', ' Load spec chkpoint ')
+    // .deprecateOption('ast')
+    // .option('s')
 
+    .completion('completion', function (current, argv2, done) {
+
+      //console.log("Current-" + current);
+      // console.log("1:"+argv2._[1]);
+      // console.log("2:"+argv2._[2]);
+      var gotFile = false;
+      try {
+        if (fs.existsSync(argv2._[2])) gotFile = true;
+
+      } catch (error) {
+
+      }
+      //if (gotFile)console.log("Got a file");
+
+      if (current == "list" || current == "ls" || argv2._[1] == "list") {
+        //console.log("Going in LIST")
+        done(getAstHosts());
+      }
+
+
+      if (current != "ast" && current != "stylize" && argv2._[1] != "ast" && argv2._[1] != "stylize") done(arrComplete);
+
+      // else console.log("Going in ast")
+      setTimeout(function () {
+        // console.log("--" + current);
+        if (argv2._[1] == "ast" || argv2._[1] == "stylize") {
+          ast(cnf, (r) => {
+            //console.log(r);
+            done(r);
+          });
+        }
+        else {
+
+          // console.log("->"+argv[2]+"<-");
+          //console.log(current);
+          if (argv2._[2] != "--get-yargs-completions" && argv2._[1] != "ast") {
+
+            mode = "NONE";
+            console.log('mode:NONE');
+            done(arrComplete);
+          }
+        }
+
+
+      }, 444);
+      // return arrComplete;
+      return ['ast',
+        'list',
+        'ls',
+        'stylize',
+        'complete'];
+    })
 
 
 
@@ -408,17 +455,21 @@ function stylizeSetupCLI(yargs) {
  * @param {*} cb 
  */
 function listArgsParsing(argv, cb = null) {
-  preProcessCommandArgs(argv);
+  preProcessCommandArgs(argv, function (_cnf, err) {
 
-  listing(function (r, err) {
-    if (err) {
-      console.log("Some error occured");
-      exit(1);
-    }
-    if (cb && typeof cb === "function")
-      cb(r);
 
-  }, argv.dihostname);
+
+    listing(_cnf, function (r, err) {
+      if (err) {
+        console.log("Some error occured");
+        exit(1);
+      }
+      if (cb && typeof cb === "function")
+        cb(r);
+
+    });
+
+  });
 }
 
 /** Setup List Command for the CLI
@@ -434,17 +485,24 @@ function listSetupCLI(yargs) {
     type: 'string',
     default: '#ENV'
   })
-    .positional('diport', {
-      describe: 'diport to look for getting data we would use',
-      default: 80
+    // .positional('diport', {
+    //   describe: 'diport to look for getting data we would use',
+    //   default: 80
+    // })
+
+    .option('port_only', {
+      alias: 'po',
+      default: false,
+      type: 'boolean',
+      description: 'Show ports only for available model'
     })
 
     .example("$0 list as.jgwill.com", "#List the models being served at that host")
     ;
 }
 
-function listingAsArray(cb = null, dihostname = "ENV", port = 80) {
-  listing(function (r) {
+function listingAsArray(cnf, cb = null, dihostname = "ENV", port = 80) {
+  listing(cnf, function (r) {
     if (r.error) exit(1);
 
     var o = "";
@@ -462,35 +520,62 @@ function listingAsArray(cb = null, dihostname = "ENV", port = 80) {
     if (cb && typeof cb === "function")
       cb(arr);
 
-  }, dihostname, port);
+  });
 }
-function listing(cb = null, dihostname = "ENV", port = 80) {
-  //console.log("Listing available model. ");
-  var callurl = url;
-  try {
+function makeCallURL(cnf, cb = null) {
+  //console.log(cnf);
 
-    if (dihostname == "ENV") dihostname = process.env.dihostname;
-    else dihostname = process.env.asthostname;
-  } catch (error) { }
+  loadcnf(cnf, function (_cnf, err) {
+    // console.log(_cnf);
 
-  callurl = "http://" + dihostname + ":" + port + "/data/dkrunningcontainerports.txt";
+    var { diport, dihostname } = _cnf;
+    var urlreturn = "http://" + dihostname + ":" + diport + "/data/dkrunningcontainerports.txt";
+   // console.log(urlreturn);
 
-  // console.log(dihostname);
-  // console.log(port);
-  // console.log(callurl);
+    if (cb && typeof cb === "function")
+      cb(urlreturn);
+  });
+}
 
+function checkDNSHost(dihostname, cb = null) {
   dns.lookup(dihostname, function (err, result) {
     //console.log(result);
     if (err) {
       console.log("BAD Host or unaccessible");
+      if (cb && typeof cb === "function") cb(err, result);
       exit(1);
     }
     else {
+      if (cb && typeof cb === "function") cb(err, result);
 
-      urlexist(url, function (err, exists) {
+    }
+  });//DNS resolved
+}
+
+/** List the available agent
+ * 
+ * @param {*} cnf 
+ * @param {*} cb 
+ */
+function listing(cnf, cb = null) {
+  //console.log("Listing available model. ");
+  //var callurl = url;
+
+  makeCallURL(cnf, (callurl) => {
+
+    // "http://" + dihostname + ":" + port + "/data/dkrunningcontainerports.txt";
+
+    // console.log(dihostname);
+    // console.log(port);
+    // console.log(callurl);
+
+    checkDNSHost(cnf.dihostname, function (err1, results) {
+
+
+      urlexist(url, function (err2, exists) {
         //console.log(exists); // true
-        if (!exists || err) {
-          console.log("BAD URL or unaccessible");
+        if (!exists || err2 || err1) {
+          console.log("BAD URL or unaccessible.");
           exit(1);
         }
         try {
@@ -566,6 +651,6 @@ function listing(cb = null, dihostname = "ENV", port = 80) {
 
       });//URL Exist
 
-    }
-  });//DNS resolved
+    });
+  });
 }
