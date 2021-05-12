@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 //@STCGoal A command with two positional args
+var cnf = new Object();
+var _cnfLoaded = false;
 
 // const fetch = require('node-fetch');
 const http = require("http");
@@ -47,21 +49,23 @@ yargs(hideBin(process.argv))
   .usage(appStartMessage)
   .epilogue('for more information, find our manual at http://guillaumeisabelle.com')
 
-  .command('list [hostname]', 'List available model',
-    (yargs) => parseList(yargs), (argv) => parseListArgv(argv))
-  .command('list [hostname]', 'List available model',
-    (yargs) => parseList(yargs), (argv) => parseListArgv(argv))
-    .example("$0 list as.jgwill.com","#List the models being served at that host")
+  .command('list [dihostname]', 'List available model',
+    (yargs) => listSetupCLI(yargs), (argv) => listArgsParsing(argv))
+  .command('ls [dihostname]', 'List available model',
+    (yargs) => listSetupCLI(yargs), (argv) => listArgsParsing(argv))
+  .example("$0 list as.jgwill.com", "#List the models being served at that host")
 
-  .command('stylize [file] [port]', 'start the astr', (yargs) => parseAst(yargs), (argv) => parseAstArgv(argv))
+  .command('stylize [file] [astport]', 'Stylize a file using the selected AST Port', (yargs) => stylizeSetupCLI(yargs), (argv) => stylizeArgsParsing(argv))
   .example("$0 ast sample.jpg 98", "# Stylize using model id 98")
 
-  .command('ast [file] [port]', 'start the astr', (yargs) => parseAst(yargs), (argv) => parseAstArgv(argv))
-  .option('directory', {
-    alias: 'd',
-    type: 'boolean',
-    default: false,
-    description: 'Name the output using current Basedirname'
+  .command('ast [file] [astport]', 'start the astr', (yargs) => stylizeSetupCLI(yargs), (argv) => stylizeArgsParsing(argv))
+  
+
+  .option('asthostname', {
+    alias: 'ah',
+    type: 'string',
+    default: '#ENV',
+    description: 'HostNamed the main model server'
   })
 
   .option('pretty', {
@@ -74,6 +78,12 @@ yargs(hideBin(process.argv))
     default: false,
     type: 'boolean',
     description: 'Run with verbose logging'
+  })
+  .option('showargs', {
+    alias: 'sa',
+    default: false,
+    type: 'boolean',
+    description: 'dev - Show the arguments'
   })
   .option('label', {
     alias: 'l',
@@ -162,6 +172,7 @@ yargs(hideBin(process.argv))
   .argv;
 
 
+
 function showAstCompletion() {
   // console.log("ast FILE ModelPort");
 }
@@ -195,13 +206,104 @@ function ast(file, port, cb = null) {
     console.log("Stylizing using port : " + port + " for file: " + file);
     if (argv.directory) console.log("--directory");
   }
-  //if (hello) console.log(`Hello: ${hello}`);
+
 }
 
-//const url = "https://jsonplaceholder.typicode.com/posts/1";
+/** Preprocess before parsing Command Arguments
+ * 
+ * @param {*} argv 
+ */
+function preProcessCommandArgs(argv) {
 
-function parseAstArgv(argv, cb = null) {
-  if (argv.verbose) console.info(`Infering on :${argv.port} for file: ${argv.file}`);
+  if (!_cnfLoaded) loadcnf(cnf);
+
+  // if (argv.pretty) {cnf.pretty=true;console.log("Pretty switch on");}
+  //  if (argv.verbose) {cnf.verbose=true;console.info(`Infering on :${argv.port} for file: ${argv.file}`);}
+  // if (argv.label) {cnf.label=true;console.log("Label switch on");}
+  // if (argv.showargs) {cnf.showargs=true;console.log(argv);}
+
+  var { pretty, verbose, label, directory, showargs, file, port, asthostname,dihostname,callmethod } = argv;
+
+  if (asthostname == "#ENV") {
+    try {   if (process.env.asthostname)   asthostname = process.env.asthostname;
+    } catch (error) {    }  }
+  if (dihostname == "#ENV") {
+    try {    if ( process.env.dihostname)  dihostname = process.env.dihostname;
+    } catch (error) {    }  }
+
+  cnf.options = { pretty, verbose, label, directory, showargs, file, port,asthostname,dihostname,callmethod };
+
+  console.log(cnf);
+
+
+}
+
+function loadcnf(cnf) {
+
+  try {
+    if (fs.existsSync(__dirname + '/cnf.js'))
+      cnf = require(__dirname + '/cnf.js');
+    else if (fs.existsSync(process.env.HOME + '/astcnf.js'))
+      cnf = require(process.env.HOME + '/astcnf.js');
+    else {
+      _cnfLoaded = loadCNFFromEnv(cnf) < 1 ? true : false;
+    }
+
+  } catch (error) {
+    // console.error("cnf.js NOT FOUND.  ");
+    //console.log("Read from ENV VAR");
+    try {
+     if (cnf==null) cnf = new Object();
+
+      _cnfLoaded = loadCNFFromEnv(cnf) < 1 ? true : false;
+      //----grab-the-env
+
+    } catch (error) {
+      console.error("Require astcnf.js in $HOME or cnf.js in " + __dirname + " or env var to be set. \n see bellow:");
+      console.log(envListHelp);
+      process.exit(1);
+
+    }
+  }
+}
+function loadCNFFromEnv(cnf) {
+  var envErr = 0;
+
+  //----grab-the-env
+
+  if (process.env.asthostname)
+    cnf.asthostname = process.env.asthostname;
+  else envErr++;
+  if (process.env.astoutsuffix)
+    cnf.outsuffix = process.env.astoutsuffix;
+  else envErr++;
+  if (process.env.astportbase)
+    cnf.portbase = process.env.astportbase;
+  else envErr++;
+  if (process.env.astcallprotocol)
+    cnf.callprotocol = process.env.astcallprotocol;
+  else envErr++;
+  if (process.env.astcallmethod)
+    cnf.callmethod = process.env.astcallmethod;
+  else envErr++;
+
+  if (envErr > 0) {
+    console.log("Env require setup");
+    console.log(envListHelp);
+    _cnfLoaded = false;
+  }
+  else _cnfLoaded = true;
+  return envErr;
+}
+
+/** Parse Stylize CMD Args
+ * 
+ * @param {*} argv 
+ * @param {*} cb 
+ */
+function stylizeArgsParsing(argv, cb = null) {
+  preProcessCommandArgs(argv);
+
 
   ast(argv.file, argv.port, function (arr) {
     //console.log(arr);
@@ -212,23 +314,53 @@ function parseAstArgv(argv, cb = null) {
 
   });
 }
-function parseAst(yargs) {
+
+/** Stylize Setup CLI yargs
+ * 
+ * @param {*} yargs 
+ * @returns 
+ */
+function stylizeSetupCLI(yargs) {
+
 
   mode = "AST";
   // .alias('ast [file] [port]')
   return yargs.positional('file', {
-    describe: 'file to stylize',
+    describe: 'file to stylize.',
     type: 'string',
     default: '.'
   })
-    .positional('port', {
-      describe: 'port to bind on',
+  .example('$0 s sample.jpg 98','Would stylize sample.jpg using astport 98.')
+  .example('$0 s .jpg 98','Would stylize all jpgs.')
+    .positional('astport', {
+      describe: 'ast of the model port',
       default: 52
-    });
-}
+    })
+    .option('callmethod', {
+      alias: 'cm',
+      type: 'string',
+      default: '/stylize',
+      description: 'Stylization method on the server'
+    })
+    .option('output', {
+      alias: 'o',
+      type: 'string',
+      default: "_aststylized",
+      description: 'Name the output '
+    })
+  
+    
 
-function parseListArgv(argv, cb = null) {
-  if (argv.verbose) console.info(`Listing`)
+    ;
+}
+/** Parse the list CMD args
+ * 
+ * @param {*} argv 
+ * @param {*} cb 
+ */
+function listArgsParsing(argv, cb = null) {
+  preProcessCommandArgs(argv);
+
   listing(function (r, err) {
     if (err) {
       console.log("Some error occured");
@@ -237,23 +369,29 @@ function parseListArgv(argv, cb = null) {
     if (cb && typeof cb === "function")
       cb(r);
 
-  }, argv.hostname);
+  }, argv.dihostname);
 }
-function parseList(yargs) {
+
+/** Setup List Command for the CLI
+ * 
+ * @param {*} yargs 
+ * @returns 
+ */
+function listSetupCLI(yargs) {
   mode = "LIST";
   // .alias('ast [file] [port]')
-  return yargs.positional('hostname', {
-    describe: 'hostname',
+  return yargs.positional('dihostname', {
+    describe: 'dihostname',
     type: 'string',
-    default: 'ENV'
+    default: '#ENV'
   })
-    .positional('port', {
-      describe: 'port to look for',
+    .positional('diport', {
+      describe: 'diport to look for getting data we would use',
       default: 80
     });
 }
 
-function listingAsArray(cb = null, hostname = "ENV", port = 80) {
+function listingAsArray(cb = null, dihostname = "ENV", port = 80) {
   listing(function (r) {
     if (r.error) exit(1);
 
@@ -272,18 +410,24 @@ function listingAsArray(cb = null, hostname = "ENV", port = 80) {
     if (cb && typeof cb === "function")
       cb(arr);
 
-  }, hostname, port);
+  }, dihostname, port);
 }
-function listing(cb = null, hostname = "ENV", port = 80) {
+function listing(cb = null, dihostname = "ENV", port = 80) {
   //console.log("Listing available model. ");
   var callurl = url;
-  if (hostname == "ENV") hostname = process.env.asthostname;
-  callurl = "http://" + hostname + ":" + port + "/data/dkrunningcontainerports.txt";
-  // console.log(hostname);
+  try {
+    
+  if (dihostname == "ENV") dihostname = process.env.dihostname;
+  else dihostname = process.env.asthostname;
+  } catch (error) {   }
+
+  callurl = "http://" + dihostname + ":" + port + "/data/dkrunningcontainerports.txt";
+
+  // console.log(dihostname);
   // console.log(port);
   // console.log(callurl);
 
-  dns.lookup(hostname, function (err, result) {
+  dns.lookup(dihostname, function (err, result) {
     //console.log(result);
     if (err) {
       console.log("BAD Host or unaccessible");
