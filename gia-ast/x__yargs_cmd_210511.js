@@ -10,6 +10,8 @@ var url = "http://jgwill.com/data/dkrunningcontainerports.txt";
 const yargs = require('yargs/yargs')
 const { hideBin } = require('yargs/helpers')
 
+
+
 //var ver = yargs.version();
 
 var appStartMessage =
@@ -23,16 +25,17 @@ const { argv } = require('process');
 // .scriptName("gia-ast2")
 // .usage(appStartMessage)   
 yargs(hideBin(process.argv))
+
+.scriptName("gia-ast")
+.usage(appStartMessage)
+
   .command('list', 'List available model',
-    (yargs) => {
-      return yargs
-    }, (argv) => {
-      if (argv.verbose) 
-      console.info(`Listing`)
-      listing();
-    })
+    (yargs) => yargs, (argv) => listing())
+  .command('ls', 'List avilable model',
+    (yargs) => yargs, (argv) => listing())
   .command('stylize [file] [port]', 'start the astr', (yargs) => {
     return yargs
+      // .alias('ast [file] [port]')
       .positional('file', {
         describe: 'file to stylize',
         type: 'string',
@@ -82,7 +85,7 @@ function ast(file, port) {
 
 function listing() {
   console.log("Listing available model. ");
-  
+
   http.get(url, res => {
     res.setEncoding("utf8");
     let body = "";
@@ -90,7 +93,7 @@ function listing() {
       body += data;
     });
     res.on("end", () => {
-     // body = JSON.parse(body);
+      // body = JSON.parse(body);
       //console.debug(body);
       var arr = body.split(" ");
       arr.forEach(a => {
@@ -106,5 +109,5 @@ function listing() {
   //   .then(res => res.text())
   //   .then(text => console.log(text));
 
- // console.log("done")
+  // console.log("done")
 }
