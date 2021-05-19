@@ -4,6 +4,19 @@
 var cnf = new Object();
 var _cnfLoaded = false;
 
+const envListHelp = `
+vi ~/.bash_env
+export asthostname="orko.guillaumeisabelle.com"
+export astoutsuffix="__stylized__"
+export astportbase=90
+export astcallprotocol="http"
+export astcallmethod="stylize"
+export dihostname=$asthostname
+export diport=80
+export astportrange=90
+
+`;
+
 // const fetch = require('node-fetch');
 const http = require("http");
 var url = "http://jgwill.com/data/dkrunningcontainerports.txt";
@@ -200,7 +213,7 @@ function preProcessCommandArgs(argv, cb = null) {
         // if (argv.label) {cnf.label=true;console.log("Label switch on");}
         // if (argv.showargs) {cnf.showargs=true;console.log(argv);}
 
-        var { pretty, verbose, label, showargs, file, astport, asthostname, dihostname, callmethod, showcnf, diport, port_only } = argv;
+        var { pretty, verbose, label, showargs, file, astport, asthostname, dihostname, callmethod, showcnf, diport, port_only,port_id } = argv;
 
         if (!asthostname || asthostname == '#ENV') {
           try {
@@ -213,7 +226,7 @@ function preProcessCommandArgs(argv, cb = null) {
             else dihostname = asthostname;
           } catch (error) { }
         }
-        cnf.options = { pretty, verbose, label, showargs, file, astport, asthostname, dihostname, callmethod, diport, port_only };
+        cnf.options = { pretty, verbose, label, showargs, file, astport, asthostname, dihostname, callmethod, diport, port_only,port_id };
 
         // console.log(cnf)
 
@@ -277,6 +290,9 @@ function loadCNFFromEnv(cnf) {
   else envErr++;
   if (process.env.astportbase)
     cnf.portbase = process.env.astportbase;
+  else envErr++;
+  if (process.env.astportrange)
+    cnf.portrange = process.env.astportrange;
   else envErr++;
   if (process.env.astcallprotocol)
     cnf.callprotocol = process.env.astcallprotocol;
@@ -490,6 +506,12 @@ function listSetupCLI(yargs) {
     //   default: 80
     // })
 
+    .option('port_id', {
+      alias: 'pid',
+      default: false,
+      type: 'boolean',
+      description: 'Show ports id for available model'
+    })
     .option('port_only', {
       alias: 'po',
       default: false,
@@ -623,9 +645,33 @@ function listing(cnf, cb = null) {
 
               if (mode == "LIST") {
                 console.log();
-                if (argv.pretty)
+                if (cnf.options.pretty)
                   console.info(prettyList);
-                else console.info(list);
+                else  if (cnf.options.port_only || cnf.options.port_id)   
+                {
+                  var sub_port_id= cnf.options.port_only ? 0:2;
+
+//@STCgoal Get only ports so we can use in loops
+                  var arr = list.split(" ");
+                  var ports = "";
+                  arr.forEach(e => {
+                    var p= "";var n = "";
+                    try {
+                      p = e.split(":")[0];
+                      n = e.split(":")[1];                      
+                    } catch (error) {     }
+                    //console.log(p);
+                    try {
+                      if (n.indexOf("ast") > -1)
+                             ports += p.substr(sub_port_id) + " ";
+                      
+                    } catch (error) { }
+                  });
+                   console.info(ports );
+                  }
+
+                else
+                console.info(list );
 
               }
               //else               console.log(list);
