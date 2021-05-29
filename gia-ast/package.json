@@ -1,6 +1,6 @@
 {
   "name": "gia-ast",
-  "version": "0.1.17",
+  "version": "0.1.19",
   "description": "A CLI Wrapping AST Web API calls to servers",
   "main": "index.js",
   "scripts": {
@@ -33,9 +33,12 @@
     "gia-lib-encoding-base64": "^0.1.0",
     "http": "^0.0.1-security",
     "node-fetch": "^2.6.1",
+    "request": "^2.88.2",
     "safer-buffer": "^2.1.2",
+    "sharp": "^0.28.3",
     "tempfile": "^3.0.0",
     "url-exists": "^1.0.3",
+    "uuid": "^8.3.2",
     "yargs": "^16.2.0"
   }
 }
