@@ -11,7 +11,9 @@
   },
   "bin": {
     "gia-ast": "gia-ast.js",
-    "gia-ast2": "gia-ast2.js"
+    "gia-astv1": "gia-astv1.js",
+    "gia-ast2": "gia-ast2.js",
+    "gia-ast3": "gia-ast3.js"
   },
   "repository": {
     "type": "git",
@@ -30,6 +32,7 @@
   "homepage": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224#readme",
   "dependencies": {
     "axios": "^0.21.1",
+    "dotenv": "^10.0.0",
     "gia-lib-encoding-base64": "^0.1.0",
     "http": "^0.0.1-security",
     "node-fetch": "^2.6.1",
