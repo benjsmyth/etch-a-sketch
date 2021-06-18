@@ -103,7 +103,10 @@ try {
     //----grab-the-env
 
     if (process.env.asthostname)
-    config.hostname = process.env.asthostname;
+     { 
+	    config.hostname = process.env.asthostname;
+	   // console.log(config.hostname);
+    }
     else envErr++;
     if (process.env.astoutsuffix)
     config.outsuffix = process.env.astoutsuffix;
@@ -132,9 +135,11 @@ try {
 
   }
 }
+console.log(config);
 
 //changes the calling protocol if HTTPS
 if (config.callprotocol == "https") {
+  console.log("SSL is Enabled");
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
  // callerProtocol = https;
 }
