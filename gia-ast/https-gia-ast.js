@@ -9,7 +9,7 @@ const giaenc = require("gia-lib-encoding-base64");
 
 const http = require('http');
 const https = require('https');
-// var callerProtocol=http;
+
 const axios = require('axios').default;
 var path = require('path');
 
@@ -90,10 +90,34 @@ export astportbase=90
 export astcallprotocol="http"
 export astcallmethod="stylize"
 `;
+
 try {
+	
+	var tst=require('dotenv').config()
+	if (tst.parsed) 
+	{
+		config = new Object()
+		var {asthostname,astoutsuffix,astportbase,astcallprotocol,astcallmethod}	= tst.parsed;
+
+config.hostname = asthostname; config.outsuffix = astoutsuffix; config.portbase = astportbase;  config.callmethod = astcallmethod;config.callprotocol = astcallprotocol;
+	config.src=".env";}
+
+
+} catch (error) { }
+try {
+	//@a Init if we did not had a .env
+	if (config == null ) {
   config = require('./config');
-  
+
+                config.src="config";
+        }
+
+
 } catch (error) {
+
+
+
+
   // console.error("config.js NOT FOUND.  ");
   //console.log("Read from ENV VAR");
   try {
@@ -103,10 +127,7 @@ try {
     //----grab-the-env
 
     if (process.env.asthostname)
-     { 
-	    config.hostname = process.env.asthostname;
-	   // console.log(config.hostname);
-    }
+    config.hostname = process.env.asthostname;
     else envErr++;
     if (process.env.astoutsuffix)
     config.outsuffix = process.env.astoutsuffix;
@@ -120,7 +141,7 @@ try {
     if (process.env.astcallmethod)    
     config.callmethod = process.env.astcallmethod;
     else envErr++;
-    
+	config.src="var";    
     if (envErr > 0) {
       console.log("Env require setup");
       console.log(envListHelp);
@@ -135,31 +156,25 @@ try {
 
   }
 }
-console.log(config);
 
-//changes the calling protocol if HTTPS
-if (config.callprotocol == "https") {
-  console.log("SSL is Enabled");
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
- // callerProtocol = https;
-}
+
 if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "--h" || !args[0] || !args[1]) {
     console.log(`
 -------------------------------------
 AST Web API Stylizer CLI Wrapper
 by Guillaume D-Isabelle, 2021
-Version 0.1.15
+Version 0.2.1
 --------------------------------------
 -------------HELP----------------------
 Stylize an image using the Web API.
 
 Synopsis:  
-./gia-ast.js [IMAGE] [ModelID]
+gia-ast [IMAGE] [ModelID]
 
 usage : 
-./gia-ast.js mycontent.jpg 91
-./gia-ast.js mycontent.jpg 01
-./gia-ast.js mycontent.jpg 12
+gia-ast mycontent.jpg 91
+gia-ast mycontent.jpg 01
+gia-ast mycontent.jpg 12
 
 ------------------------------
   `);
@@ -254,8 +269,8 @@ function doTheWork(cFile,config,portnum,callurl,targetOutput)
         'Content-Type': 'application/json',
         'Content-Length': data.length
       },
-responseType: 'json',
-httpsAgent: new https.Agent({ rejectUnauthorized: false })
+	responseType: 'json',
+	httpsAgent: new https.Agent({ rejectUnauthorized: false })
 
     };
 

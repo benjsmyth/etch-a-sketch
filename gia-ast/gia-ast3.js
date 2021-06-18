@@ -92,6 +92,13 @@ yargs(hideBin(process.argv))
     default: '#ENV',
     description: 'HostNamed the main model server'
   })
+  
+  .option('astportbase', {
+    alias: 'apb',
+    type: 'string',
+    default: '#ENV',
+    description: 'default port base on main model server'
+  })
 
   .option('verbose', {
     alias: 'v',
@@ -281,6 +288,7 @@ function loadCNFFromEnv(cnf) {
   var envErr = 0;
 
   //----grab-the-env
+  console.log("//@STCIssue cleanup double  var astportrange and astportbass");
 
   if (process.env.asthostname)
     cnf.asthostname = process.env.asthostname;
@@ -292,7 +300,8 @@ function loadCNFFromEnv(cnf) {
     cnf.portbase = process.env.astportbase;
   else envErr++;
   if (process.env.astportrange)
-    cnf.portrange = process.env.astportrange;
+    {cnf.portrange = process.env.astportrange;
+  }
   else envErr++;
   if (process.env.astcallprotocol)
     cnf.callprotocol = process.env.astcallprotocol;
