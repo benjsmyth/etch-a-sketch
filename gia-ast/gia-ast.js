@@ -88,10 +88,27 @@ export astportbase=90
 export astcallprotocol="http"
 export astcallmethod="stylize"
 `;
+
 try {
-  config = require('./config');
-  
-} catch (error) {
+	
+	var tst=require('dotenv').config()
+	if (tst.parsed) 
+	{
+		config = new Object()
+		var {asthostname,astoutsuffix,astportbase,astcallprotocol,astcallmethod}	= tst.parsed;
+
+config.hostname = asthostname; config.outsuffix = astoutsuffix; config.portbase = astportbase;  config.callmethod = astcallmethod;config.callprotocol = astcallprotocol;
+	config.src=".env";}
+
+
+} catch (error) { }
+
+try {	//@a Init if we did not had a .env
+	if (config == null ) { 
+		config = require('./config'); 
+		config.src="config";
+	}
+ } catch (error) {
   // console.error("config.js NOT FOUND.  ");
   //console.log("Read from ENV VAR");
   try {
@@ -115,7 +132,7 @@ try {
     if (process.env.astcallmethod)    
     config.callmethod = process.env.astcallmethod;
     else envErr++;
-    
+	config.src="var";    
     if (envErr > 0) {
       console.log("Env require setup");
       console.log(envListHelp);
@@ -130,6 +147,8 @@ try {
 
   }
 }
+console.log(config);
+process.exit();
 
 if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "--h" || !args[0] || !args[1]) {
     console.log(`
