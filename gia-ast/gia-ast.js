@@ -8,6 +8,8 @@ const giaenc = require("gia-lib-encoding-base64");
 
 
 const http = require('http');
+const https = require('https');
+
 const axios = require('axios').default;
 var path = require('path');
 
@@ -266,7 +268,10 @@ function doTheWork(cFile,config,portnum,callurl,targetOutput)
       headers: {
         'Content-Type': 'application/json',
         'Content-Length': data.length
-      }
+      },
+	responseType: 'json',
+	httpsAgent: new https.Agent({ rejectUnauthorized: false })
+
     };
 
     console.log("Calling : " + config.hostname + ":" + portnum);
