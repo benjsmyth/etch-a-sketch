@@ -102,13 +102,20 @@ config.hostname = asthostname; config.outsuffix = astoutsuffix; config.portbase 
 
 
 } catch (error) { }
+try {
+	//@a Init if we did not had a .env
+	if (config == null ) {
+  config = require('./config');
 
-try {	//@a Init if we did not had a .env
-	if (config == null ) { 
-		config = require('./config'); 
-		config.src="config";
-	}
- } catch (error) {
+                config.src="config";
+        }
+
+
+} catch (error) {
+
+
+
+
   // console.error("config.js NOT FOUND.  ");
   //console.log("Read from ENV VAR");
   try {
@@ -147,8 +154,7 @@ try {	//@a Init if we did not had a .env
 
   }
 }
-console.log(config);
-process.exit();
+
 
 if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "--h" || !args[0] || !args[1]) {
     console.log(`
