@@ -1,0 +1,7 @@
+#asthostname=orko.guillaumeisabelle.com
+asthostname=osiris.astia.xyz
+astoutsuffix=__stylized__
+astportbase=90
+astcallprotocol=http
+astcallmethod=/stylize
+
