@@ -161,18 +161,18 @@ if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "
 -------------------------------------
 AST Web API Stylizer CLI Wrapper
 by Guillaume D-Isabelle, 2021
-Version 0.1.15
+Version 0.2.1
 --------------------------------------
 -------------HELP----------------------
 Stylize an image using the Web API.
 
 Synopsis:  
-./gia-ast.js [IMAGE] [ModelID]
+gia-ast [IMAGE] [ModelID]
 
 usage : 
-./gia-ast.js mycontent.jpg 91
-./gia-ast.js mycontent.jpg 01
-./gia-ast.js mycontent.jpg 12
+gia-ast mycontent.jpg 91
+gia-ast mycontent.jpg 01
+gia-ast mycontent.jpg 12
 
 ------------------------------
   `);
