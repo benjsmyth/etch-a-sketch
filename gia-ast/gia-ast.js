@@ -92,25 +92,25 @@ export astcallmethod="stylize"
 `;
 
 try {
-	
-	var tst=require('dotenv').config()
-	if (tst.parsed) 
-	{
-		config = new Object()
-		var {asthostname,astoutsuffix,astportbase,astcallprotocol,astcallmethod}	= tst.parsed;
 
-config.hostname = asthostname; config.outsuffix = astoutsuffix; config.portbase = astportbase;  config.callmethod = astcallmethod;config.callprotocol = astcallprotocol;
-	config.src=".env";}
+  var tst = require('dotenv').config()
+  if (tst.parsed) {
+    config = new Object()
+    var { asthostname, astoutsuffix, astportbase, astcallprotocol, astcallmethod } = tst.parsed;
+
+    config.hostname = asthostname; config.outsuffix = astoutsuffix; config.portbase = astportbase; config.callmethod = astcallmethod; config.callprotocol = astcallprotocol;
+    config.src = ".env";
+  }
 
 
 } catch (error) { }
 try {
-	//@a Init if we did not had a .env
-	if (config == null ) {
-  config = require('./config');
+  //@a Init if we did not had a .env
+  if (config == null) {
+    config = require('./config');
 
-                config.src="config";
-        }
+    config.src = "config";
+  }
 
 
 } catch (error) {
@@ -127,28 +127,28 @@ try {
     //----grab-the-env
 
     if (process.env.asthostname)
-    config.hostname = process.env.asthostname;
+      config.hostname = process.env.asthostname;
     else envErr++;
     if (process.env.astoutsuffix)
-    config.outsuffix = process.env.astoutsuffix;
+      config.outsuffix = process.env.astoutsuffix;
     else envErr++;
-    if ( process.env.astportbase)
-    config.portbase = process.env.astportbase;
+    if (process.env.astportbase)
+      config.portbase = process.env.astportbase;
     else envErr++;
     if (process.env.astcallprotocol)
-    config.callprotocol = process.env.astcallprotocol;
+      config.callprotocol = process.env.astcallprotocol;
     else envErr++;
-    if (process.env.astcallmethod)    
-    config.callmethod = process.env.astcallmethod;
+    if (process.env.astcallmethod)
+      config.callmethod = process.env.astcallmethod;
     else envErr++;
-	config.src="var";    
+    config.src = "var";
     if (envErr > 0) {
       console.log("Env require setup");
       console.log(envListHelp);
     }
 
     //----grab-the-env
-    
+
   } catch (error) {
     console.error("Require config.js or env var to be set");
     console.log(envListHelp);
@@ -159,17 +159,17 @@ try {
 
 
 if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "--h" || !args[0] || !args[1]) {
-    console.log(`
+  console.log(`
 -------------------------------------
 AST Web API Stylizer CLI Wrapper
 by Guillaume D-Isabelle, 2021
-Version 0.2.1
+Version 0.2.4
 --------------------------------------
 -------------HELP----------------------
 Stylize an image using the Web API.
 
 Synopsis:  
-gia-ast [IMAGE] [ModelID]
+gia-ast <IMAGE-FILENAME> <ModelID> [x1] [x2] [x3] 
 
 usage : 
 gia-ast mycontent.jpg 91
@@ -178,60 +178,83 @@ gia-ast mycontent.jpg 12
 
 ------------------------------
   `);
-    if (!args[0] || !args[1]) console.log("MISSING ARGUMENTS");
+  if (!args[0] || !args[1]) console.log("MISSING ARGUMENTS");
 }
 else // Lets do the work
 {
 
   var stylizedImage;
   var imgFile = args[0];
+  var x1,x2,x3 = -1;
   var ext = path.extname(imgFile);
   var imgFileBasename = path.basename(imgFile);
   var imgFileNameOnly = imgFileBasename.replace(ext, "");
 
-  
+
   var resizeSwitch = false;
-  var targetResolutionX = 768;
-  if (args[2]) {
-    resizeSwitch = true;
-    targetResolutionX = Number(args[2]);
-  }
+  var targetResolutionX = 768; //DEPRECATING
+  // if (args[2]) {
+  //   resizeSwitch = true;
+  //   targetResolutionX = Number(args[2]);
+  // }
+
+  if (args[2])   {  x1 = Number(args[2]);} else x1 = -1
+  if (args[3])   {  x2 = Number(args[3]);} else x2 = -1
+  if (args[4])   {  x3 = Number(args[4]);} else x3 = -1
+
+  console.log(`
+  x1:${x1}
+  x2:${x2}
+  x3:${x3}
+  `);
+  //process.exit(1);
 
   //ModelID is related to a port will use
   var modelid = args[1];
   var targetOutput = imgFileNameOnly + config.outsuffix + modelid + ext;
   console.log("TargetOutput: " + targetOutput);
   var portnum = config.portbase + modelid;
-  
-  const callurl = config.callprotocol + "://" + config.hostname + ":" + portnum +"/" + config.callmethod.replace("/","");
-  
+
+  const callurl = config.callprotocol + "://" + config.hostname + ":" + portnum + "/" + config.callmethod.replace("/", "");
+
 
 
   console.log("Processing: " + imgFile + " at port :" + portnum);
 
-/*
-//Use later to resized the image if switch used
-sharp('input.jpg')
-  .rotate()
-  .resize(200)
-  .jpeg({ mozjpeg: true })
-  .toBuffer()
-  .then( data => { ... })
-  .catch( err => { ... });
-  */
-  doWeResize(imgFile,config,portnum,callurl,targetOutput,resizeSwitch,targetResolutionX);
+  /*
+  //Use later to resized the image if switch used
+  sharp('input.jpg')
+    .rotate()
+    .resize(200)
+    .jpeg({ mozjpeg: true })
+    .toBuffer()
+    .then( data => { ... })
+    .catch( err => { ... });
+    */
+  //  doWeResize(imgFile, config, portnum, callurl, targetOutput, resizeSwitch, targetResolutionX);
+   doTheWork(imgFile, config, portnum, callurl, targetOutput,x1,x2,x3);
+   
 
-  
 }
- 
-function doWeResize(imgFile,config,portnum,callurl,targetOutput,resizeSwitch=false,targetResolutionX=512)
-{
+
+/**
+ * 
+ * DEPRECATED 
+ * @param {*} imgFile 
+ * @param {*} config 
+ * @param {*} portnum 
+ * @param {*} callurl 
+ * @param {*} targetOutput 
+ * @param {*} resizeSwitch 
+ * @param {*} targetResolutionX 
+ */
+function doWeResize(imgFile, config, portnum, callurl, targetOutput, resizeSwitch = false, targetResolutionX = 512) {
 
   if (resizeSwitch)
   {
     var tfile =  tempfile('.jpg');
     //console.log("Tempfile:" + tfile);
-    
+
     sharp(imgFile)
     .resize(targetResolutionX)
     .toFile( tfile, (err, info) => { 
@@ -243,18 +266,24 @@ function doWeResize(imgFile,config,portnum,callurl,targetOutput,resizeSwitch=fal
     doTheWork(tfile,config,portnum,callurl,targetOutput);
    });
   } else  //no resize command
-    doTheWork(imgFile,config,portnum,callurl,targetOutput);
+   {
+  console.log("Normal mode");
+  doTheWork(imgFile, config, portnum, callurl, targetOutput,x1,x2,x3);
+   }
 
 
 }
 
 
-function doTheWork(cFile,config,portnum,callurl,targetOutput)
-{
+function doTheWork(cFile, config, portnum, callurl, targetOutput,x1=-1,x2=-1,x3=-1) {
   try {
-    
+
     var data = giaenc.
-    encFileToJSONStringifyBase64Prop(cFile,"contentImage");
+      encFileToJSONStringifyBase64Prop(cFile, "contentImage");
+    if (x1 != -1) data.x1= x1;
+    if (x2 != -1) data.x2= x2;
+    if (x3 != -1) data.x3= x3;
+    
     //console.log(data);
     //var unparsedData = JSON.parse(data);
 
@@ -269,8 +298,8 @@ function doTheWork(cFile,config,portnum,callurl,targetOutput)
         'Content-Type': 'application/json',
         'Content-Length': data.length
       },
-	responseType: 'json',
-	httpsAgent: new https.Agent({ rejectUnauthorized: false })
+      responseType: 'json',
+      httpsAgent: new https.Agent({ rejectUnauthorized: false })
 
     };
 
@@ -285,9 +314,9 @@ function doTheWork(cFile,config,portnum,callurl,targetOutput)
 
         //---import
         // decode_base64_to_file(stylizedImage, targetOutput);
-        giaenc.dec64_StringToFile(stylizedImage,targetOutput);
+        giaenc.dec64_StringToFile(stylizedImage, targetOutput);
         console.log("A stylizedImage should be available at that path :\n    feh " + targetOutput);
-      
+
 
         //console.log(stylizedImage);
       })
@@ -303,4 +332,5 @@ function doTheWork(cFile,config,portnum,callurl,targetOutput)
   } catch (error) {
     console.log("something went wrong: ");
     console.log(error);
-  }}
+  }
+}
