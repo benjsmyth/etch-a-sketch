@@ -114,6 +114,30 @@ module.exports = {
 
 		return jsonData;
 
+	},
+	//Try to encode and return string data
+	
+	encFileToJSONStringifyBase64PropWithOptionalResolutions:
+	/**
+	 * Encode an image file into base64 JSON file under a target property 
+	 * @param  {string} filename
+	 * @param  {string} targetProp
+	 */
+	function (filename, targetProp,x1=-1,x2=-1,x3=-1) {
+		var base64 = this.encFileToBase64String(filename);
+
+		//console.log(base64);
+		var jsonRequest = new Object();
+		jsonRequest[targetProp] = base64;
+		
+    if (x1 != -1) jsonRequest.x1= x1;
+    if (x2 != -1) jsonRequest.x2= x2;
+    if (x3 != -1) jsonRequest.x3= x3;
+    
+		var jsonData = JSON.stringify(jsonRequest);
+
+		return jsonData;
+
 	}
 	
 }
