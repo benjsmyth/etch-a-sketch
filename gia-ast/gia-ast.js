@@ -202,11 +202,11 @@ else // Lets do the work
   if (args[3])   {  x2 = Number(args[3]);} else x2 = -1
   if (args[4])   {  x3 = Number(args[4]);} else x3 = -1
 
-  console.log(`
-  x1:${x1}
-  x2:${x2}
-  x3:${x3}
-  `);
+  // console.log(`
+  // x1:${x1}
+  // x2:${x2}
+  // x3:${x3}
+  // `);
   //process.exit(1);
 
   //ModelID is related to a port will use
