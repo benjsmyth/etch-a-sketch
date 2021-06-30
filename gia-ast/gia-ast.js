@@ -100,6 +100,9 @@ try {
 
     config.hostname = asthostname; config.outsuffix = astoutsuffix; config.portbase = astportbase; config.callmethod = astcallmethod; config.callprotocol = astcallprotocol;
     config.src = ".env";
+
+    //Taking Env var if commented or absent from .env
+    if (!astoutsuffix)    config.outsuffix = process.env.astoutsuffix;
   }
 
 
