@@ -279,10 +279,10 @@ function doTheWork(cFile, config, portnum, callurl, targetOutput,x1=-1,x2=-1,x3=
   try {
 
     var data = giaenc.
-      encFileToJSONStringifyBase64Prop(cFile, "contentImage");
-    if (x1 != -1) data.x1= x1;
-    if (x2 != -1) data.x2= x2;
-    if (x3 != -1) data.x3= x3;
+    encFileToJSONStringifyBase64PropWithOptionalResolutions(cFile, "contentImage");
+    // if (x1 != -1) data.x1= x1;
+    // if (x2 != -1) data.x2= x2;
+    // if (x3 != -1) data.x3= x3;
     
     //console.log(data);
     //var unparsedData = JSON.parse(data);
@@ -323,14 +323,17 @@ function doTheWork(cFile, config, portnum, callurl, targetOutput,x1=-1,x2=-1,x3=
       .catch(function (err) {
         console.log("There was error");
         console.log(err.message);
+        console.log("---------arrrr 2");
       });
-
-
-    //-----------------------
-
-
-  } catch (error) {
-    console.log("something went wrong: ");
-    console.log(error);
+      
+      
+      //-----------------------
+      
+      
+    } catch (error) {
+      console.log("something went wrong: ");
+      console.log(error);
+      console.log(error.message);
+      console.log("---------arrrr 1");
   }
 }
