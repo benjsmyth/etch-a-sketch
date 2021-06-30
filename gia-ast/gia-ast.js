@@ -96,9 +96,9 @@ try {
   var tst = require('dotenv').config()
   if (tst.parsed) {
     config = new Object()
-    var { asthostname, astoutsuffix, astportbase, astcallprotocol, astcallmethod } = tst.parsed;
+    var { asthostname, astoutsuffix, astportbase, astcallprotocol, astcallmethod, astmetaurl } = tst.parsed;
 
-    config.hostname = asthostname; config.outsuffix = astoutsuffix; config.portbase = astportbase; config.callmethod = astcallmethod; config.callprotocol = astcallprotocol;
+    config.hostname = asthostname; config.outsuffix = astoutsuffix; config.portbase = astportbase; config.callmethod = astcallmethod; config.callprotocol = astcallprotocol; config.metaurl = astmetaurl;
     config.src = ".env";
 
     //Taking Env var if commented or absent from .env
@@ -172,12 +172,14 @@ Version 0.2.4
 Stylize an image using the Web API.
 
 Synopsis:  
-gia-ast <IMAGE-FILENAME> <ModelID> [x1] [x2] [x3] 
+gia-ast <IMAGE-FILENAME> <ModelID> [x1] [x2] [x3] -a
+ 
+-a  Auto suffix using x1,x2,x3...
 
 usage : 
 gia-ast mycontent.jpg 91
 gia-ast mycontent.jpg 01
-gia-ast mycontent.jpg 12
+gia-ast mycontent.jpg 12 1280 2048 -1 -a
 
 ------------------------------
   `);
@@ -189,6 +191,7 @@ else // Lets do the work
   var stylizedImage;
   var imgFile = args[0];
   var x1,x2,x3 = -1;
+  var autosuffix = false;
   var ext = path.extname(imgFile);
   var imgFileBasename = path.basename(imgFile);
   var imgFileNameOnly = imgFileBasename.replace(ext, "");
@@ -204,6 +207,8 @@ else // Lets do the work
   if (args[2])   {  x1 = Number(args[2]);} else x1 = -1
   if (args[3])   {  x2 = Number(args[3]);} else x2 = -1
   if (args[4])   {  x3 = Number(args[4]);} else x3 = -1
+
+  if (args[5] && args[5] == "-a")   {  autosuffix=true; } else autosuffix=false;
 
   // console.log(`
   // x1:${x1}
@@ -235,7 +240,7 @@ else // Lets do the work
     .catch( err => { ... });
     */
   //  doWeResize(imgFile, config, portnum, callurl, targetOutput, resizeSwitch, targetResolutionX);
-   doTheWork(imgFile, config, portnum, callurl, targetOutput,x1,x2,x3);
+   doTheWork(imgFile, config, portnum, callurl, targetOutput,x1,x2,x3,autosuffix);
    
 
 }
@@ -278,7 +283,7 @@ function doWeResize(imgFile, config, portnum, callurl, targetOutput, resizeSwitc
 }
 
 
-function doTheWork(cFile, config, portnum, callurl, targetOutput,x1=-1,x2=-1,x3=-1) {
+function doTheWork(cFile, config, portnum, callurl, targetOutput,x1=-1,x2=-1,x3=-1,autosuffix=false) {
   try {
 
     var data = giaenc.
