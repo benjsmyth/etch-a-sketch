@@ -1,0 +1,11 @@
+{
+  "modelname": "model_ds-GabrielleKelly-v01-210624-864x_new",
+  "containername": "ast_ds-GabrielleKelly-v01-210624-864x_255m_d2",
+  "checkpointno": "255",
+  "type": "doubletwo",
+  "callurl": "http://as.guillaumeisabelle.com:9076/stylize",
+  "PASS1IMAGESIZE": "2400",
+  "PASS2IMAGESIZE": "2400",
+  "getmetaurl": "http://as.guillaumeisabelle.com/astia/info/9076.json",
+  "created": "Wed Jun 30 00:27:58 EDT 2021"
+}
