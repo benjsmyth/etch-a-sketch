@@ -96,13 +96,13 @@ try {
   var tst = require('dotenv').config()
   if (tst.parsed) {
     config = new Object()
-    var { asthostname, astoutsuffix, astportbase, astcallprotocol, astcallmethod, astmetaurl } = tst.parsed;
+    var { asthostname, astoutsuffix, astportbase, astcallprotocol, astcallmethod, astmetaurl, astdebug, astsavemeta } = tst.parsed;
 
-    config.hostname = asthostname; config.outsuffix = astoutsuffix; config.portbase = astportbase; config.callmethod = astcallmethod; config.callprotocol = astcallprotocol; config.metaurl = astmetaurl;
+    config.hostname = asthostname; config.outsuffix = astoutsuffix; config.portbase = astportbase; config.callmethod = astcallmethod; config.callprotocol = astcallprotocol; config.metaurl = astmetaurl; config.debug = astdebug; config.savemeta = astsavemeta;
     config.src = ".env";
 
     //Taking Env var if commented or absent from .env
-    if (!astoutsuffix)    config.outsuffix = process.env.astoutsuffix;
+    if (!astoutsuffix) config.outsuffix = process.env.astoutsuffix;
   }
 
 
@@ -190,7 +190,7 @@ else // Lets do the work
 
   var stylizedImage;
   var imgFile = args[0];
-  var x1,x2,x3 = -1;
+  var x1, x2, x3 = -1;
   var autosuffix = false;
   var ext = path.extname(imgFile);
   var imgFileBasename = path.basename(imgFile);
@@ -204,11 +204,11 @@ else // Lets do the work
   //   targetResolutionX = Number(args[2]);
   // }
 
-  if (args[2])   {  x1 = Number(args[2]);} else x1 = -1
-  if (args[3])   {  x2 = Number(args[3]);} else x2 = -1
-  if (args[4])   {  x3 = Number(args[4]);} else x3 = -1
+  if (args[2]) { x1 = Number(args[2]); } else x1 = -1
+  if (args[3]) { x2 = Number(args[3]); } else x2 = -1
+  if (args[4]) { x3 = Number(args[4]); } else x3 = -1
 
-  if (args[5] && args[5] == "-a")   {  autosuffix=true; } else autosuffix=false;
+  if (args[5] && args[5] == "-a") { autosuffix = true; } else autosuffix = false;
 
   // console.log(`
   // x1:${x1}
@@ -240,8 +240,8 @@ else // Lets do the work
     .catch( err => { ... });
     */
   //  doWeResize(imgFile, config, portnum, callurl, targetOutput, resizeSwitch, targetResolutionX);
-   doTheWork(imgFile, config, portnum, callurl, targetOutput,x1,x2,x3,autosuffix);
-   
+  doTheWork(imgFile, config, portnum, callurl, targetOutput, x1, x2, x3, autosuffix);
+
 
 }
 
@@ -258,40 +258,39 @@ else // Lets do the work
  */
 function doWeResize(imgFile, config, portnum, callurl, targetOutput, resizeSwitch = false, targetResolutionX = 512) {
 
-  if (resizeSwitch)
-  {
-    var tfile =  tempfile('.jpg');
+  if (resizeSwitch) {
+    var tfile = tempfile('.jpg');
     //console.log("Tempfile:" + tfile);
 
     sharp(imgFile)
-    .resize(targetResolutionX)
-    .toFile( tfile, (err, info) => { 
-      if (err) console.error(err);
-      //console.log(info);
-      console.log("A resized contentImage should be available at that path :\n    feh " + tfile
-      + "  \n     with resolution : " + targetResolutionX);
-   // process.exit(1); 
-    doTheWork(tfile,config,portnum,callurl,targetOutput);
-   });
+      .resize(targetResolutionX)
+      .toFile(tfile, (err, info) => {
+        if (err) console.error(err);
+        //console.log(info);
+        console.log("A resized contentImage should be available at that path :\n    feh " + tfile
+          + "  \n     with resolution : " + targetResolutionX);
+        // process.exit(1); 
+        doTheWork(tfile, config, portnum, callurl, targetOutput);
+      });
   } else  //no resize command
-   {
-  console.log("Normal mode");
-  doTheWork(imgFile, config, portnum, callurl, targetOutput,x1,x2,x3);
-   }
+  {
+    console.log("Normal mode");
+    doTheWork(imgFile, config, portnum, callurl, targetOutput, x1, x2, x3);
+  }
 
 
 }
 
 
-function doTheWork(cFile, config, portnum, callurl, targetOutput,x1=-1,x2=-1,x3=-1,autosuffix=false) {
+function doTheWork(cFile, config, portnum, callurl, targetOutput, x1 = -1, x2 = -1, x3 = -1, autosuffix = false) {
   try {
 
     var data = giaenc.
-    encFileToJSONStringifyBase64PropWithOptionalResolutions(cFile, "contentImage",x1,x2,x3);
+      encFileToJSONStringifyBase64PropWithOptionalResolutions(cFile, "contentImage", x1, x2, x3);
     // if (x1 != -1) data.x1= x1;
     // if (x2 != -1) data.x2= x2;
     // if (x3 != -1) data.x3= x3;
-    
+
     //console.log(data);
     //var unparsedData = JSON.parse(data);
 
@@ -322,7 +321,14 @@ function doTheWork(cFile, config, portnum, callurl, targetOutput,x1=-1,x2=-1,x3=
 
         //---import
         // decode_base64_to_file(stylizedImage, targetOutput);
+        if (config.debug == "true") fs.writeFileSync("__stylizedImage.json", JSON.stringify(data));
         giaenc.dec64_StringToFile(stylizedImage, targetOutput);
+
+        if (config.savemeta == "true") {
+          data.stylizedImage = null;
+          fs.writeFileSync(targetOutput + ".json", JSON.stringify(data));
+        }
+
         console.log("A stylizedImage should be available at that path :\n    feh " + targetOutput);
 
 
@@ -333,15 +339,15 @@ function doTheWork(cFile, config, portnum, callurl, targetOutput,x1=-1,x2=-1,x3=
         console.log(err.message);
         console.log("---------arrrr 2");
       });
-      
-      
-      //-----------------------
-      
-      
-    } catch (error) {
-      console.log("something went wrong: ");
-      console.log(error);
-      console.log(error.message);
-      console.log("---------arrrr 1");
+
+
+    //-----------------------
+
+
+  } catch (error) {
+    console.log("something went wrong: ");
+    console.log(error);
+    console.log(error.message);
+    console.log("---------arrrr 1");
   }
 }

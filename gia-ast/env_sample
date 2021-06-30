@@ -1,0 +1,8 @@
+asthostname=orko.guillaumeisabelle.com
+astoutsuffix=__stylized__
+astportbase=90
+astcallprotocol=http
+astcallmethod=/stylize
+astmetaurl=http://as.guillaumeisabelle.com:8999
+astdebug=true
+astsavemeta=true
