@@ -208,7 +208,9 @@ else // Lets do the work
   if (args[3]) { x2 = Number(args[3]); } else x2 = -1
   if (args[4]) { x3 = Number(args[4]); } else x3 = -1
 
+  var autosuffixSuffix = "__";
   if (args[5] && args[5] == "-a") { autosuffix = true; } else autosuffix = false;
+ if (args[6]) { autosuffixSuffix = args[6] ; }
 
   // console.log(`
   // x1:${x1}
@@ -220,6 +222,17 @@ else // Lets do the work
   //ModelID is related to a port will use
   var modelid = args[1];
   var targetOutput = imgFileNameOnly + config.outsuffix + modelid + ext;
+
+  if (autosuffix) 
+{  
+  var x1str = x1 != -1 ? x1+"x":"";
+  var x2str = x2 != -1 ? x2+"x":"";
+  var x3str = x3 != -1 ? x3+"x":"";
+  if (x3== -1) x2str = x2;
+  
+  targetOutput = imgFileNameOnly + "__" +x1str + x2str + x3str + autosuffixSuffix  + modelid + ext;
+}
+
   console.log("TargetOutput: " + targetOutput);
   var portnum = config.portbase + modelid;
 
@@ -322,6 +335,7 @@ function doTheWork(cFile, config, portnum, callurl, targetOutput, x1 = -1, x2 = 
         //---import
         // decode_base64_to_file(stylizedImage, targetOutput);
         if (config.debug == "true") fs.writeFileSync("__stylizedImage.json", JSON.stringify(data));
+
         giaenc.dec64_StringToFile(stylizedImage, targetOutput);
 
         if (config.savemeta == "true") {
