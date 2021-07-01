@@ -96,9 +96,11 @@ try {
   var tst = require('dotenv').config()
   if (tst.parsed) {
     config = new Object()
-    var { asthostname, astoutsuffix, astportbase, astcallprotocol, astcallmethod, astmetaurl, astdebug, astsavemeta } = tst.parsed;
+    var { asthostname, astoutsuffix, astportbase, astcallprotocol, astcallmethod, astmetaurl, astdebug, astsavemeta, astmeta, astmetaportnum } = tst.parsed;
 
     config.hostname = asthostname; config.outsuffix = astoutsuffix; config.portbase = astportbase; config.callmethod = astcallmethod; config.callprotocol = astcallprotocol; config.metaurl = astmetaurl; config.debug = astdebug; config.savemeta = astsavemeta;
+    config.meta = astmeta; config.metaportnum = astmetaportnum;
+
     config.src = ".env";
 
     //Taking Env var if commented or absent from .env
@@ -210,7 +212,7 @@ else // Lets do the work
 
   var autosuffixSuffix = "__";
   if (args[5] && args[5] == "-a") { autosuffix = true; } else autosuffix = false;
- if (args[6]) { autosuffixSuffix = args[6] ; }
+  if (args[6]) { autosuffixSuffix = args[6]; }
 
   // console.log(`
   // x1:${x1}
@@ -223,20 +225,21 @@ else // Lets do the work
   var modelid = args[1];
   var targetOutput = imgFileNameOnly + config.outsuffix + modelid + ext;
 
-  if (autosuffix) 
-{  
-  var x1str = x1 != -1 ? x1+"x":"";
-  var x2str = x2 != -1 ? x2+"x":"";
-  var x3str = x3 != -1 ? x3+"x":"";
-  if (x3== -1) x2str = x2;
-  
-  targetOutput = imgFileNameOnly + "__" +x1str + x2str + x3str + autosuffixSuffix  + modelid + ext;
-}
+  if (autosuffix) {
+    var x1str = x1 != -1 ? x1 + "x" : "";
+    var x2str = x2 != -1 ? x2 + "x" : "";
+    var x3str = x3 != -1 ? x3 + "x" : "";
+    if (x3 == -1) x2str = x2;
+
+    targetOutput = imgFileNameOnly + "__" + x1str + x2str + x3str + autosuffixSuffix + modelid + ext;
+  }
 
   console.log("TargetOutput: " + targetOutput);
   var portnum = config.portbase + modelid;
 
   const callurl = config.callprotocol + "://" + config.hostname + ":" + portnum + "/" + config.callmethod.replace("/", "");
+  const callurlmeta = config.callprotocol + "://" + config.hostname + ":" + config.metaportnum + "/" + portnum + ".json";
+  
 
 
 
@@ -252,8 +255,8 @@ else // Lets do the work
     .then( data => { ... })
     .catch( err => { ... });
     */
-  //  doWeResize(imgFile, config, portnum, callurl, targetOutput, resizeSwitch, targetResolutionX);
-  doTheWork(imgFile, config, portnum, callurl, targetOutput, x1, x2, x3, autosuffix);
+  //  doWeResize(imgFile, config, portnum, callurl, callurlmeta,targetOutput, resizeSwitch, targetResolutionX);
+  doTheWork(imgFile, config, portnum, callurl,callurlmeta, targetOutput, x1, x2, x3, autosuffix);
 
 
 }
@@ -269,7 +272,7 @@ else // Lets do the work
  * @param {*} resizeSwitch 
  * @param {*} targetResolutionX 
  */
-function doWeResize(imgFile, config, portnum, callurl, targetOutput, resizeSwitch = false, targetResolutionX = 512) {
+function doWeResize(imgFile, config, portnum, callurl, callurlmeta,targetOutput, resizeSwitch = false, targetResolutionX = 512) {
 
   if (resizeSwitch) {
     var tfile = tempfile('.jpg');
@@ -288,14 +291,14 @@ function doWeResize(imgFile, config, portnum, callurl, targetOutput, resizeSwitc
   } else  //no resize command
   {
     console.log("Normal mode");
-    doTheWork(imgFile, config, portnum, callurl, targetOutput, x1, x2, x3);
+    doTheWork(imgFile, config, portnum, callurl,callurlmeta, targetOutput, x1, x2, x3);
   }
 
 
 }
 
 
-function doTheWork(cFile, config, portnum, callurl, targetOutput, x1 = -1, x2 = -1, x3 = -1, autosuffix = false) {
+function doTheWork(cFile, config, portnum, callurl, callurlmeta,targetOutput, x1 = -1, x2 = -1, x3 = -1, autosuffix = false) {
   try {
 
     var data = giaenc.
@@ -323,6 +326,15 @@ function doTheWork(cFile, config, portnum, callurl, targetOutput, x1 = -1, x2 = 
 
     };
 
+    const optionsMeta = {
+      hostname: config.hostname,
+      port: 8999,
+      path: portnum + ".json",
+      method: 'GET',
+      responseType: 'json',
+      httpsAgent: new https.Agent({ rejectUnauthorized: false })
+
+    };
     console.log("Calling : " + config.hostname + ":" + portnum);
 
     axios.post(callurl, data, options)
@@ -336,14 +348,33 @@ function doTheWork(cFile, config, portnum, callurl, targetOutput, x1 = -1, x2 = 
         // decode_base64_to_file(stylizedImage, targetOutput);
         if (config.debug == "true") fs.writeFileSync("__stylizedImage.json", JSON.stringify(data));
 
-        giaenc.dec64_StringToFile(stylizedImage, targetOutput);
+        if (!config.meta || config.meta == "false") {
+          saveStylizedResult(stylizedImage, targetOutput, config);
+        }
+        else {
+          //@a CHG the output using a Call to meta server
+          console.log("Calling Meta: " + callurlmeta);
+          axios.get(callurlmeta, optionsMeta)
+          .then(function (metaResp) {
+            console.log(metaResp.data);
+            var {checkpointno,svrtype,PASS1IMAGESIZE,PASS2IMAGESIZE,PASS3IMAGESIZE,modelname,containername,containertag,mtype} = metaResp.data;
+            var mtag=  `_${}`;
+            process.exit(1);
+              saveStylizedResult(stylizedImage, targetOutput, config);
+              
+            })
+            .catch(function (errMeta) {
+              console.log("There was error with meta server (your file might save right anyway");
+              console.log(errMeta.message);
+              console.log("---------arrrr 3 (meta)");
+              saveStylizedResult(stylizedImage, targetOutput, config);
+            });
 
-        if (config.savemeta == "true") {
-          data.stylizedImage = null;
-          fs.writeFileSync(targetOutput + ".json", JSON.stringify(data));
+          //@a then save result
+         // saveStylizedResult(stylizedImage, targetOutput, config);
         }
 
-        console.log("A stylizedImage should be available at that path :\n    feh " + targetOutput);
+
 
 
         //console.log(stylizedImage);
@@ -365,3 +396,16 @@ function doTheWork(cFile, config, portnum, callurl, targetOutput, x1 = -1, x2 = 
     console.log("---------arrrr 1");
   }
 }
+
+
+function saveStylizedResult(stylizedImage, targetOutput, config) {
+  giaenc.dec64_StringToFile(stylizedImage, targetOutput);
+
+  if (config.savemeta == "true") {
+    data.stylizedImage = null;
+    fs.writeFileSync(targetOutput + ".json", JSON.stringify(data));
+  }
+
+  console.log("A stylizedImage should be available at that path :\n    feh " + targetOutput);
+}
+
