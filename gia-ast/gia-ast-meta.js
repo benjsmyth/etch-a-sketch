@@ -22,6 +22,36 @@ const sharp = require('sharp');
 var args = process.argv.slice(2);
 
 
+
+if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "--h" || !args[0] || !args[1]) {
+  console.log(`
+-------------------------------------
+AST Web API Stylizer CLI Wrapper
+by Guillaume D-Isabelle, 2021
+Version 0.2.4
+--------------------------------------
+-------------HELP----------------------
+Stylize an image using the Web API.
+
+Synopsis:  
+gia-ast <IMAGE-FILENAME> <ModelID> [x1] [x2] [x3] -a
+ 
+-a  Auto suffix using x1,x2,x3...
+
+usage : 
+gia-ast mycontent.jpg 91
+gia-ast mycontent.jpg 01
+gia-ast mycontent.jpg 12 1280 2048 -1 -a
+
+------------------------------
+  `);
+  if (!args[0] || !args[1]) console.log("MISSING ARGUMENTS");
+
+  process.exit(1);
+
+}
+
+
 //----for later
 
 // const yargs = require('yargs');
@@ -92,23 +122,34 @@ export astcallmethod="stylize"
 `;
 
 try {
-
+  //console.log("Do we have a dot env ??");
   var tst = require('dotenv').config()
   if (tst.parsed) {
+    //console.log("We do :)");
     config = new Object()
-    var { asthostname, astoutsuffix, astportbase, astcallprotocol, astcallmethod, astmetaurl, astdebug, astsavemeta, astmeta, astmetaportnum } = tst.parsed;
+    var { asthostname, astoutsuffix, astportbase, astcallprotocol, astcallmethod, astdebug, astsavemeta, astusemetasvr, astmetaportnum, astappendmodelid } = tst.parsed;
 
-    config.hostname = asthostname; config.outsuffix = astoutsuffix; config.portbase = astportbase; config.callmethod = astcallmethod; config.callprotocol = astcallprotocol; config.metaurl = astmetaurl; config.debug = astdebug; config.savemeta = astsavemeta;
-    config.meta = astmeta; config.metaportnum = astmetaportnum;
-
+    config.hostname = asthostname; config.outsuffix = astoutsuffix; config.portbase = astportbase; config.callmethod = astcallmethod; config.callprotocol = astcallprotocol; 
+    config.debug = astdebug == "true"; config.savemeta = astsavemeta == "true";
+    config.usemetasvr = astusemetasvr == "true"; config.metaportnum = astmetaportnum;
+    config.appendmodelid = astappendmodelid == "true";
     config.src = ".env";
-
+    
     //Taking Env var if commented or absent from .env
     if (!astoutsuffix) config.outsuffix = process.env.astoutsuffix;
   }
+  
+  
+} catch (error) {
+  console.log("An error with .env");
+  console.log("Hum, it might not be good, make sure you have one : cp env_sample .env ; vi .env");
+
+ }
+
+//console.log(config);
+//process.exit(1);
 
 
-} catch (error) { }
 try {
   //@a Init if we did not had a .env
   if (config == null) {
@@ -163,103 +204,80 @@ try {
 }
 
 
-if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "--h" || !args[0] || !args[1]) {
-  console.log(`
--------------------------------------
-AST Web API Stylizer CLI Wrapper
-by Guillaume D-Isabelle, 2021
-Version 0.2.4
---------------------------------------
--------------HELP----------------------
-Stylize an image using the Web API.
+// Lets do the work
 
-Synopsis:  
-gia-ast <IMAGE-FILENAME> <ModelID> [x1] [x2] [x3] -a
- 
--a  Auto suffix using x1,x2,x3...
 
-usage : 
-gia-ast mycontent.jpg 91
-gia-ast mycontent.jpg 01
-gia-ast mycontent.jpg 12 1280 2048 -1 -a
+var stylizedImage;
+var imgFile = args[0];
+var x1, x2, x3 = -1;
+var xname = "";
+var autosuffix = false;
+var ext = path.extname(imgFile);
+var imgFileBasename = path.basename(imgFile);
+var imgFileNameOnly = imgFileBasename.replace(ext, "");
 
-------------------------------
-  `);
-  if (!args[0] || !args[1]) console.log("MISSING ARGUMENTS");
+
+var resizeSwitch = false;
+var targetResolutionX = 768; //DEPRECATING
+// if (args[2]) {
+//   resizeSwitch = true;
+//   targetResolutionX = Number(args[2]);
+// }
+
+if (args[2]) { x1 = Number(args[2]); } else x1 = -1
+if (args[3]) { x2 = Number(args[3]); } else x2 = -1
+if (args[4]) { x3 = Number(args[4]); } else x3 = -1
+
+var autosuffixSuffix = "__";
+if (args[5] && args[5] == "-a") { autosuffix = true; } else autosuffix = false;
+if (args[6]) { autosuffixSuffix = args[6]; }
+
+// console.log(`
+// x1:${x1}
+// x2:${x2}
+// x3:${x3}
+// `);
+//process.exit(1);
+
+//ModelID is related to a port will use
+var modelid = args[1];
+var targetOutput = imgFileNameOnly + config.outsuffix + modelid + ext;
+
+if (autosuffix) {
+  var x1str = x1 != -1 ? x1 + "x" : "";
+  var x2str = x2 != -1 ? x2 + "x" : "";
+  var x3str = x3 != -1 ? x3 + "x" : "";
+  if (x3 == -1) x2str = x2;
+  xname = x1str + x2str + x3str;
+  targetOutput = imgFileNameOnly + "__" + xname + autosuffixSuffix + modelid + ext;
 }
-else // Lets do the work
-{
 
-  var stylizedImage;
-  var imgFile = args[0];
-  var x1, x2, x3 = -1;
-  var autosuffix = false;
-  var ext = path.extname(imgFile);
-  var imgFileBasename = path.basename(imgFile);
-  var imgFileNameOnly = imgFileBasename.replace(ext, "");
+//console.log("TargetOutput: " + targetOutput);
+var portnum = config.portbase + modelid;
 
-
-  var resizeSwitch = false;
-  var targetResolutionX = 768; //DEPRECATING
-  // if (args[2]) {
-  //   resizeSwitch = true;
-  //   targetResolutionX = Number(args[2]);
-  // }
-
-  if (args[2]) { x1 = Number(args[2]); } else x1 = -1
-  if (args[3]) { x2 = Number(args[3]); } else x2 = -1
-  if (args[4]) { x3 = Number(args[4]); } else x3 = -1
-
-  var autosuffixSuffix = "__";
-  if (args[5] && args[5] == "-a") { autosuffix = true; } else autosuffix = false;
-  if (args[6]) { autosuffixSuffix = args[6]; }
-
-  // console.log(`
-  // x1:${x1}
-  // x2:${x2}
-  // x3:${x3}
-  // `);
-  //process.exit(1);
-
-  //ModelID is related to a port will use
-  var modelid = args[1];
-  var targetOutput = imgFileNameOnly + config.outsuffix + modelid + ext;
-
-  if (autosuffix) {
-    var x1str = x1 != -1 ? x1 + "x" : "";
-    var x2str = x2 != -1 ? x2 + "x" : "";
-    var x3str = x3 != -1 ? x3 + "x" : "";
-    if (x3 == -1) x2str = x2;
-
-    targetOutput = imgFileNameOnly + "__" + x1str + x2str + x3str + autosuffixSuffix + modelid + ext;
-  }
-
-  console.log("TargetOutput: " + targetOutput);
-  var portnum = config.portbase + modelid;
-
-  const callurl = config.callprotocol + "://" + config.hostname + ":" + portnum + "/" + config.callmethod.replace("/", "");
-  const callurlmeta = config.callprotocol + "://" + config.hostname + ":" + config.metaportnum + "/" + portnum + ".json";
-  
+const callurl = config.callprotocol + "://" + config.hostname + ":" + portnum + "/" + config.callmethod.replace("/", "");
+const callurlmeta = config.callprotocol + "://" + config.hostname + ":" + config.metaportnum + "/" + portnum + ".json";
 
 
 
-  console.log("Processing: " + imgFile + " at port :" + portnum);
 
-  /*
-  //Use later to resized the image if switch used
-  sharp('input.jpg')
-    .rotate()
-    .resize(200)
-    .jpeg({ mozjpeg: true })
-    .toBuffer()
-    .then( data => { ... })
-    .catch( err => { ... });
-    */
-  //  doWeResize(imgFile, config, portnum, callurl, callurlmeta,targetOutput, resizeSwitch, targetResolutionX);
-  doTheWork(imgFile, config, portnum, callurl,callurlmeta, targetOutput, x1, x2, x3, autosuffix);
+console.log("Processing: " + imgFile + " at port :" + portnum);
+
+/*
+//Use later to resized the image if switch used
+sharp('input.jpg')
+  .rotate()
+  .resize(200)
+  .jpeg({ mozjpeg: true })
+  .toBuffer()
+  .then( data => { ... })
+  .catch( err => { ... });
+  */
+//  doWeResize(imgFile, config, portnum, callurl, callurlmeta,targetOutput, resizeSwitch, targetResolutionX);
+doTheWork(imgFile, config, portnum, callurl, callurlmeta, targetOutput, x1, x2, x3, autosuffix);
 
 
-}
+
 
 /**
  * 
@@ -272,7 +290,7 @@ else // Lets do the work
  * @param {*} resizeSwitch 
  * @param {*} targetResolutionX 
  */
-function doWeResize(imgFile, config, portnum, callurl, callurlmeta,targetOutput, resizeSwitch = false, targetResolutionX = 512) {
+function doWeResize(imgFile, config, portnum, callurl, callurlmeta, targetOutput, resizeSwitch = false, targetResolutionX = 512) {
 
   if (resizeSwitch) {
     var tfile = tempfile('.jpg');
@@ -291,14 +309,14 @@ function doWeResize(imgFile, config, portnum, callurl, callurlmeta,targetOutput,
   } else  //no resize command
   {
     console.log("Normal mode");
-    doTheWork(imgFile, config, portnum, callurl,callurlmeta, targetOutput, x1, x2, x3);
+    doTheWork(imgFile, config, portnum, callurl, callurlmeta, targetOutput, x1, x2, x3);
   }
 
 
 }
 
 
-function doTheWork(cFile, config, portnum, callurl, callurlmeta,targetOutput, x1 = -1, x2 = -1, x3 = -1, autosuffix = false) {
+function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x1 = -1, x2 = -1, x3 = -1, autosuffix = false) {
   try {
 
     var data = giaenc.
@@ -346,32 +364,45 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta,targetOutput, x1
 
         //---import
         // decode_base64_to_file(stylizedImage, targetOutput);
-        if (config.debug == "true") fs.writeFileSync("__stylizedImage.json", JSON.stringify(data));
+        if (config.debug ) fs.writeFileSync("__stylizedImage.json", JSON.stringify(data));
 
-        if (!config.meta || config.meta == "false") {
-          saveStylizedResult(stylizedImage, targetOutput, config);
+        if (!config.usemetasvr) {
+          saveStylizedResult(stylizedImage,data, targetOutput, config);
         }
         else {
           //@a CHG the output using a Call to meta server
           console.log("Calling Meta: " + callurlmeta);
           axios.get(callurlmeta, optionsMeta)
-          .then(function (metaResp) {
-            console.log(metaResp.data);
-            var {checkpointno,svrtype,PASS1IMAGESIZE,PASS2IMAGESIZE,PASS3IMAGESIZE,modelname,containername,containertag,mtype} = metaResp.data;
-            var mtag=  `_${}`;
-            process.exit(1);
-              saveStylizedResult(stylizedImage, targetOutput, config);
-              
+            .then(function (metaResp) {
+              var metadata = metaResp.data;
+              //console.log(metadata);
+              var { checkpointno, svrtype, PASS1IMAGESIZE, PASS2IMAGESIZE, PASS3IMAGESIZE, modelname, fname, containername, containertag, mtype } = metaResp.data;
+              var xtraModelID= config.appendmodelid ? "__" + modelid: "" ;
+
+              var mtag = `${fname}_${xname}-${svrtype}__${checkpointno}k`;
+
+              targetOutput = imgFileNameOnly 
+              + "__"
+              + modelid 
+              + "_"
+               + mtag 
+               + xtraModelID 
+               + ext;
+              // targetOutput = imgFileNameOnly + "__" + mtag + autosuffixSuffix + modelid + ext;
+              //process.exit(1);
+              saveStylizedResult(stylizedImage,data, targetOutput, config,metadata);
+
             })
             .catch(function (errMeta) {
               console.log("There was error with meta server (your file might save right anyway");
               console.log(errMeta.message);
               console.log("---------arrrr 3 (meta)");
+
               saveStylizedResult(stylizedImage, targetOutput, config);
             });
 
           //@a then save result
-         // saveStylizedResult(stylizedImage, targetOutput, config);
+          // saveStylizedResult(stylizedImage, targetOutput, config);
         }
 
 
@@ -398,11 +429,13 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta,targetOutput, x1
 }
 
 
-function saveStylizedResult(stylizedImage, targetOutput, config) {
+function saveStylizedResult(stylizedImage,data, targetOutput, config,metaData=null) {
   giaenc.dec64_StringToFile(stylizedImage, targetOutput);
 
-  if (config.savemeta == "true") {
+  if (config.savemeta ) {
     data.stylizedImage = null;
+    if (metaData) data.meta = metaData;
+
     fs.writeFileSync(targetOutput + ".json", JSON.stringify(data));
   }
 
