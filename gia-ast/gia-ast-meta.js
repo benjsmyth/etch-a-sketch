@@ -381,13 +381,14 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
 
               var mtag = `${fname}_${xname}-${svrtype}__${checkpointno}k`;
 
-              targetOutput = imgFileNameOnly 
+              targetOutput = (imgFileNameOnly 
               + "__"
               + modelid 
               + "_"
-               + mtag 
-               + xtraModelID 
-               + ext;
+               + mtag
+               + xtraModelID
+               + ext).replace("_-","_") 
+               ;
               // targetOutput = imgFileNameOnly + "__" + mtag + autosuffixSuffix + modelid + ext;
               //process.exit(1);
               saveStylizedResult(stylizedImage,data, targetOutput, config,metadata);
