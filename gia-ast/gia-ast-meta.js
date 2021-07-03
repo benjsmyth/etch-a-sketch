@@ -371,7 +371,8 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
         }
         else {
           //@a CHG the output using a Call to meta server
-          console.log("Calling Meta: " + callurlmeta);
+         if (config.debug) console.log("Calling Meta: " + callurlmeta);
+         
           axios.get(callurlmeta, optionsMeta)
             .then(function (metaResp) {
               var metadata = metaResp.data;
