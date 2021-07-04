@@ -19,6 +19,17 @@ export astportrange=90
 
 // const fetch = require('node-fetch');
 const http = require("http");
+const https = require('https');
+
+const axios = require('axios').default;
+
+const Buffer = require('safer-buffer').Buffer;
+const fs = require('fs');
+const tempfile = require('tempfile');
+const sharp = require('sharp');
+
+
+
 var url = "http://jgwill.com/data/dkrunningcontainerports.txt";
 const urlexist = require("url-exists");
 const dns = require('dns');
@@ -152,6 +163,33 @@ yargs(hideBin(process.argv))
   // })
   .argv;
 
+
+// var config = null;
+  
+// try {
+//   //console.log("Do we have a dot env ??");
+//   var tst = require('dotenv').config()
+//   if (tst.parsed) {
+//     //console.log("We do :)");
+//     config = new Object()
+//     var { asthostname, astoutsuffix, astportbase, astcallprotocol, astcallmethod, astdebug, astsavemeta, astusemetasvr, astmetaportnum, astappendmodelid } = tst.parsed;
+
+//     config.hostname = asthostname; config.outsuffix = astoutsuffix; config.portbase = astportbase; config.callmethod = astcallmethod; config.callprotocol = astcallprotocol; 
+//     config.debug = astdebug == "true"; config.savemeta = astsavemeta == "true";
+//     config.usemetasvr = astusemetasvr == "true"; config.metaportnum = astmetaportnum;
+//     config.appendmodelid = astappendmodelid == "true";
+//     config.src = ".env";
+    
+//     //Taking Env var if commented or absent from .env
+//     if (!astoutsuffix) config.outsuffix = process.env.astoutsuffix;
+//   }
+  
+  
+// } catch (error) {
+//   console.log("An error with .env");
+//   console.log("Hum, it might not be good, make sure you have one : cp env_sample .env ; vi .env");
+
+//  }
 
 
 function showAstCompletion() {

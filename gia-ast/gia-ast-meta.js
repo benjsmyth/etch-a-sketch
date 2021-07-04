@@ -1,4 +1,4 @@
-#!/bin/env node
+#!/usr/bin/env node
 'use strict';
 
 
@@ -6,7 +6,7 @@ const giaenc = require("gia-lib-encoding-base64");
 
 
 
-
+//dihostname
 const http = require('http');
 const https = require('https');
 
@@ -372,7 +372,7 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
         else {
           //@a CHG the output using a Call to meta server
          if (config.debug) console.log("Calling Meta: " + callurlmeta);
-         
+
           axios.get(callurlmeta, optionsMeta)
             .then(function (metaResp) {
               var metadata = metaResp.data;
