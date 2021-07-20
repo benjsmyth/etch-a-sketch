@@ -1,6 +1,6 @@
 {
   "name": "gia-ast-util",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "CLI wrapper of utilities for AST Servers",
   "main": "ast",
   "scripts": {
