@@ -434,11 +434,12 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
 function saveStylizedResult(stylizedImage,data, targetOutput, config,metaData=null) {
   giaenc.dec64_StringToFile(stylizedImage, targetOutput);
 
-  if (config.savemeta ) {
-    data.stylizedImage = null;
-    if (metaData) data.meta = metaData;
-
-    fs.writeFileSync(targetOutput + ".json", JSON.stringify(data));
+  data.stylizedImage = null;
+  if (metaData) data.meta = metaData;
+  
+  fs.writeFileSync(targetOutput + ".json", JSON.stringify(data));
+  if (!config.savemeta ) {
+    
   }
 
   console.log("A stylizedImage should be available at that path :\n    feh " + targetOutput);
