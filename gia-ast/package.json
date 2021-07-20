@@ -33,15 +33,14 @@
   "dependencies": {
     "axios": "^0.21.1",
     "dotenv": "^10.0.0",
-    "gia-lib-encoding-base64": "^0.1.1",
+    "gia-lib-encoding-base64": "^0.1.2",
     "http": "^0.0.1-security",
     "node-fetch": "^2.6.1",
-    "request": "^2.88.2",
     "safer-buffer": "^2.1.2",
     "sharp": "^0.28.3",
-    "tempfile": "^3.0.0",
+    "tempfile": "^4.0.0",
     "url-exists": "^1.0.3",
     "uuid": "^8.3.2",
-    "yargs": "^16.2.0"
+    "yargs": "^17.0.1"
   }
 }
