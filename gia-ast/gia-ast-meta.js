@@ -129,22 +129,22 @@ try {
     config = new Object()
     var { asthostname, astoutsuffix, astportbase, astcallprotocol, astcallmethod, astdebug, astsavemeta, astusemetasvr, astmetaportnum, astappendmodelid } = tst.parsed;
 
-    config.hostname = asthostname; config.outsuffix = astoutsuffix; config.portbase = astportbase; config.callmethod = astcallmethod; config.callprotocol = astcallprotocol; 
+    config.hostname = asthostname; config.outsuffix = astoutsuffix; config.portbase = astportbase; config.callmethod = astcallmethod; config.callprotocol = astcallprotocol;
     config.debug = astdebug == "true"; config.savemeta = astsavemeta == "true";
     config.usemetasvr = astusemetasvr == "true"; config.metaportnum = astmetaportnum;
     config.appendmodelid = astappendmodelid == "true";
     config.src = ".env";
-    
+
     //Taking Env var if commented or absent from .env
     if (!astoutsuffix) config.outsuffix = process.env.astoutsuffix;
   }
-  
-  
+
+
 } catch (error) {
   console.log("An error with .env");
   console.log("Hum, it might not be good, make sure you have one : cp env_sample .env ; vi .env");
 
- }
+}
 
 //console.log(config);
 //process.exit(1);
@@ -319,8 +319,14 @@ function doWeResize(imgFile, config, portnum, callurl, callurlmeta, targetOutput
 function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x1 = -1, x2 = -1, x3 = -1, autosuffix = false) {
   try {
 
-    var data = giaenc.
-      encFileToJSONStringifyBase64PropWithOptionalResolutions(cFile, "contentImage", x1, x2, x3);
+    var data;
+    try {
+      data = giaenc.
+        encFileToJSONStringifyBase64PropWithOptionalResolutions(cFile, "contentImage", x1, x2, x3);
+
+    } catch (error) {
+      process.exit(1);
+    }
     // if (x1 != -1) data.x1= x1;
     // if (x2 != -1) data.x2= x2;
     // if (x3 != -1) data.x3= x3;
@@ -364,35 +370,35 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
 
         //---import
         // decode_base64_to_file(stylizedImage, targetOutput);
-        if (config.debug ) fs.writeFileSync("__stylizedImage.json", JSON.stringify(data));
+        if (config.debug) fs.writeFileSync("__stylizedImage.json", JSON.stringify(data));
 
         if (!config.usemetasvr) {
-          saveStylizedResult(stylizedImage,data, targetOutput, config);
+          saveStylizedResult(stylizedImage, data, targetOutput, config);
         }
         else {
           //@a CHG the output using a Call to meta server
-         if (config.debug) console.log("Calling Meta: " + callurlmeta);
+          if (config.debug) console.log("Calling Meta: " + callurlmeta);
 
           axios.get(callurlmeta, optionsMeta)
             .then(function (metaResp) {
               var metadata = metaResp.data;
               //console.log(metadata);
               var { checkpointno, svrtype, PASS1IMAGESIZE, PASS2IMAGESIZE, PASS3IMAGESIZE, modelname, fname, containername, containertag, mtype } = metaResp.data;
-              var xtraModelID= config.appendmodelid ? "__" + modelid: "" ;
+              var xtraModelID = config.appendmodelid ? "__" + modelid : "";
 
               var mtag = `${fname}_${xname}-${svrtype}__${checkpointno}k`;
 
-              targetOutput = (imgFileNameOnly 
-              + "__"
-              + modelid 
-              + "_"
-               + mtag
-               + xtraModelID
-               + ext).replace("_-","_") 
-               ;
+              targetOutput = (imgFileNameOnly
+                + "__"
+                + modelid
+                + "_"
+                + mtag
+                + xtraModelID
+                + ext).replace("_-", "_")
+                ;
               // targetOutput = imgFileNameOnly + "__" + mtag + autosuffixSuffix + modelid + ext;
               //process.exit(1);
-              saveStylizedResult(stylizedImage,data, targetOutput, config,metadata);
+              saveStylizedResult(stylizedImage, data, targetOutput, config, metadata);
 
             })
             .catch(function (errMeta) {
@@ -401,6 +407,7 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
               console.log("---------arrrr 3 (meta)");
 
               saveStylizedResult(stylizedImage, targetOutput, config);
+              process.exit(3);
             });
 
           //@a then save result
@@ -415,7 +422,8 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
       .catch(function (err) {
         console.log("There was error");
         console.log(err.message);
-        console.log("---------arrrr 2");
+        console.log("---------arrrr 2 - Calling ast servers");
+        process.exit(2);
       });
 
 
@@ -423,23 +431,24 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
 
 
   } catch (error) {
-    console.log("something went wrong: ");
+    console.log("something went wrong doing the work: ");
     console.log(error);
     console.log(error.message);
-    console.log("---------arrrr 1");
+    console.log("---------arrrr 1 - doing the work went wrong");
+    process.exit(1);
   }
 }
 
 
-function saveStylizedResult(stylizedImage,data, targetOutput, config,metaData=null) {
+function saveStylizedResult(stylizedImage, data, targetOutput, config, metaData = null) {
   giaenc.dec64_StringToFile(stylizedImage, targetOutput);
 
   data.stylizedImage = null;
   if (metaData) data.meta = metaData;
-  
+
   fs.writeFileSync(targetOutput + ".json", JSON.stringify(data));
-  if (!config.savemeta ) {
-    
+  if (!config.savemeta) {
+
   }
 
   console.log("A stylizedImage should be available at that path :\n    feh " + targetOutput);
