@@ -28,7 +28,7 @@ if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "
 -------------------------------------
 AST Web API Stylizer CLI Wrapper
 by Guillaume D-Isabelle, 2021
-Version 0.3.4
+Version 0.3.13
 --------------------------------------
 -------------HELP----------------------
 Stylize an image using the Web API.
@@ -403,10 +403,16 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
             })
             .catch(function (errMeta) {
               console.log("There was error with meta server (your file might save right anyway");
+              console.log("---------------------------------------------------");
               console.log(errMeta.message);
+              console.log("---------------------------------------------------");
               console.log("---------arrrr 3 (meta)");
+              console.log("---------------------------------------------------");
+              console.log("---------TRYING TO SAVE  WITHOUT META----------");
+              console.log("---------------------------------------------------");
+              console.log("---------DISABLE astusemetasvr=false in .env ----------");
 
-              saveStylizedResult(stylizedImage, targetOutput, config);
+              saveStylizedResult(stylizedImage, data, targetOutput, config);
               process.exit(3);
             });
 
@@ -441,6 +447,8 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
 
 
 function saveStylizedResult(stylizedImage, data, targetOutput, config, metaData = null) {
+  console.log("targetOutput:" + targetOutput);
+  //console.log("stylizedImage:" +  stylizedImage);
   giaenc.dec64_StringToFile(stylizedImage, targetOutput);
 
   data.stylizedImage = null;

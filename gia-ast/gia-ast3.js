@@ -34,7 +34,6 @@ var url = "http://jgwill.com/data/dkrunningcontainerports.txt";
 const urlexist = require("url-exists");
 const dns = require('dns');
 
-const fs = require("fs");
 //const process = require("process").process;
 
 const yargs = require('yargs/yargs')
@@ -56,7 +55,7 @@ var arrComplete = [
 //var ver = yargs.version();
 var mode = "NONE";
 var appStartMessage =
-  `Mastery Yargs
+  `Mastery Yargs - GIA Ast
 By Guillaume Descoteaux-Isabelle, 2020-2021
 version 
 ----------------------------------------`;

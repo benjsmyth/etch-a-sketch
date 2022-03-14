@@ -1,6 +1,6 @@
 {
   "name": "gia-ast",
-  "version": "0.3.10",
+  "version": "0.3.13",
   "description": "A CLI Wrapping AST Web API calls to servers",
   "main": "index.js",
   "scripts": {
@@ -33,7 +33,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "dotenv": "^10.0.0",
-    "gia-lib-encoding-base64": "^0.1.1",
+    "gia-lib-encoding-base64": "^0.1.2",
     "http": "^0.0.1-security",
     "node-fetch": "^2.6.1",
     "request": "^2.88.2",
