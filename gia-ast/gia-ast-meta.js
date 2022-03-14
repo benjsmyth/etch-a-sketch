@@ -406,11 +406,14 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
               console.log("---------------------------------------------------");
               console.log(errMeta.message);
               console.log("---------------------------------------------------");
-              console.log("---------arrrr 3 (meta)");
+              
               console.log("---------------------------------------------------");
-              console.log("---------TRYING TO SAVE  WITHOUT META----------");
+              console.log("---------TRYING TO SAVE  WITHOUT META SERVER DATA----------");
               console.log("---------------------------------------------------");
-              console.log("---------DISABLE astusemetasvr=false in .env ----------");
+              console.log("---------Make this faster by DISABLE astusemetasvr=false in .env ------");
+              console.log("---------Or start the server ------");
+              console.log("--");
+              console.log("---------------------------------------------------");
 
               saveStylizedResult(stylizedImage, data, targetOutput, config);
               process.exit(3);
@@ -447,7 +450,7 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
 
 
 function saveStylizedResult(stylizedImage, data, targetOutput, config, metaData = null) {
-  console.log("targetOutput:" + targetOutput);
+  //console.log("targetOutput:" + targetOutput);
   //console.log("stylizedImage:" +  stylizedImage);
   giaenc.dec64_StringToFile(stylizedImage, targetOutput);
 
