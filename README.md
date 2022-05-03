@@ -44,11 +44,15 @@ That's it!
 
 # About the UI
 
-A web ui of Ben Smith's Etch-a-sketch has hooked up with code to generate AI stylized image on the side.
+A Javascript web Ui of Ben Smith's Etch-a-sketch has been hooked up with code to generate an AI stylized image on the side.
 
 ## Versions
 
 When running the web server, you will have various version you can use.
+
+see: index.html  index.html.old  index2.html  v1.html  v2.html  v3.html  
+
+ie:  http://127.0.0.1:8080/v1.html
 
 
 ### Docker server
