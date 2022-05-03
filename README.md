@@ -50,6 +50,16 @@ A web ui of Ben Smith's Etch-a-sketch has hooked up with code to generate AI sty
 
 When running the web server, you will have various version you can use.
 
+
+### Docker server
+
+```sh
+docker run -it --rm -p 8080:8080 docker.io/guillaumeai/ast:etchai
+```
+
+
+### Local server
+
 ```sh
 npm i http-server
 cd $MYREPO
