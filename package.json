@@ -1,17 +1,20 @@
 {
   "name": "x__etch-a-sketch__210224",
   "version": "1.0.0",
-  "description": "This is a basic online version of the classic \"Etch-A-Sketch\" board, in which one can make pixelated sketches on the canvas.",
+  "description": "Classic \"Etch-A-Sketch\" board, in which one can make pixelated sketches on the canvas and get an AI stylized image from various artists.",
   "main": "script.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve":"docker run -it --rm -p 8080:8080 docker.io/guillaumeai/ast:etchai",
+    "serve-local":"http-server",
+    "ast:cezanne":"docker run -it --rm -e SPORT=9007 -p 9007:8000 guillaumeai/ast:cezanne"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GuillaumeAI/x__etch-a-sketch__210224.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["etch","ai","drawing","style-transfer","ast"],
+  "author": "Guillaume Descoteaux-Isabelle(JGWill)/Ben Smith",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224/issues"

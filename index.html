@@ -299,7 +299,8 @@ var infereAfterTimeOut = 19000;
 //----------------------------------------------------------FEATURE ON/OFF --------------------
 //----------------- Toogle This for processing Style or Not (Cost 0.01$ USD per inference -----
 var doProcess = true;
-var featCompoRendering = false;  //feature altering behaviour to compose image with two model
+var featCompoRendering = false;  //feature altering behaviour to compose image with two model (NOT WORKING SO GREATLY)
+
 var featCompoPort1 = 9002; //default 1: 3.165
 var featCompoPort2 = 9003; //default 2: 3.03
 
@@ -310,7 +311,7 @@ var debug = false;
 var countLoop = 0;
 var initialWaitBeforeStartingLoop = 2111;
 
-var _cnf_defaultPainterPort = 9012;
+var _cnf_defaultPainterPort = 9010;
 setTimeout(function() {
 	//Override the default port
 	setPainter(_cnf_defaultPainterPort);
