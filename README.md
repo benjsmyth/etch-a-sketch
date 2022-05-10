@@ -1,6 +1,8 @@
 # EtchAI
 
-Classic "Etch-A-Sketch" board, in which one can make pixelated sketches on the canvas and get an AI stylized image from various artists.
+Classic "Etch-A-Sketch" board transformed with an AI neural style transfer, in which one can make pixelated sketches on the canvas and get an AI stylized image from various artist's style.
+
+## DOCUMENTATION IS CURRENTLY BEING WRITTEN TO MAKE INSTALL AND TRY IT AT LARGE
 
 
 
