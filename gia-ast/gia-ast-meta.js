@@ -45,6 +45,28 @@ gia-ast-meta mycontent.jpg 01
 gia-ast-meta mycontent.jpg 12 1280 2048 -1 -a
 
 ------------------------------
+
+#-----.env EXAMPLE
+#asthostname=osiris.astia.xyz
+asthostname=localhost
+#asthostname=172.20.241.76
+astoutsuffix=__sty__
+astportbase=90
+astcallprotocol=http
+astcallmethod=/stylize
+astmetaportnum=8999
+astusemetasvr=true
+astdebug=false
+astsavemeta=true
+astcleanname=true
+#astsavemeta=false
+astappendmodelid=false
+dihostname=localhost
+echocmd=false
+devmode=true
+astmetaoutputdir=.astmeta
+src=config.js
+res1=333
   `);
   if (!args[0] || !args[1]) console.log("MISSING ARGUMENTS");
 
