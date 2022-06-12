@@ -28,21 +28,21 @@ if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "
   console.log(`
 -------------------------------------
 AST Web API Stylizer CLI Wrapper
-by Guillaume D-Isabelle, 2021
+by Guillaume D-Isabelle, 2022-06-11
 Version 0.3.13
 --------------------------------------
 -------------HELP----------------------
 Stylize an image using the Web API.
 
 Synopsis:  
-gia-ast <IMAGE-FILENAME> <ModelID> [x1] [x2] [x3] -a
+gia-ast-meta <IMAGE-FILENAME> <ModelID> [x1] [x2] [x3] -a
  
 -a  Auto suffix using x1,x2,x3...
 
 usage : 
-gia-ast mycontent.jpg 91
-gia-ast mycontent.jpg 01
-gia-ast mycontent.jpg 12 1280 2048 -1 -a
+gia-ast-meta mycontent.jpg 91
+gia-ast-meta mycontent.jpg 01
+gia-ast-meta mycontent.jpg 12 1280 2048 -1 -a
 
 ------------------------------
   `);
@@ -131,7 +131,8 @@ try {
     var { asthostname, astoutsuffix, astportbase, astcallprotocol, astcallmethod, astdebug, astsavemeta, astusemetasvr, astmetaportnum, astappendmodelid,astmetaoutputdir } = tst.parsed;
     if (!astmetaoutputdir) astmetaoutputdir = defaultMetaTarget;
 
-    config.hostname = asthostname;config.astmetaoutputdir = astmetaoutputdir; config.outsuffix = astoutsuffix; config.portbase = astportbase; config.callmethod = astcallmethod; config.callprotocol = astcallprotocol;
+    config.hostname = asthostname;
+    config.astmetaoutputdir = astmetaoutputdir; config.outsuffix = astoutsuffix; config.portbase = astportbase; config.callmethod = astcallmethod; config.callprotocol = astcallprotocol;
     config.debug = astdebug == "true"; config.savemeta = astsavemeta == "true";
     config.usemetasvr = astusemetasvr == "true"; config.metaportnum = astmetaportnum;
     config.appendmodelid = astappendmodelid == "true";
@@ -145,6 +146,10 @@ try {
 } catch (error) {
   console.log("An error with .env");
   console.log("Hum, it might not be good, make sure you have one : cp env_sample .env ; vi .env");
+  console.log(error);
+  console.log("----------------------------------------");
+  console.log("---WSL User --> Might be the Fuckin Windows 10 Issue, Just Start another shell or reboot :(");
+  console.log("----------------------------------------");
 
 }
 
