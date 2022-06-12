@@ -260,9 +260,9 @@ if (autosuffix) {
   targetOutput = imgFileNameOnly + "__" + xname + autosuffixSuffix + modelid + ext;
 }
     //@STCGoal Stuff we do not really want be removed from filename
-    if (config.astcleanname) {
+    if (config.astcleanname) { //astcleanname
 
-   // targetOutput = make_astcleanname(targetOutput);
+    targetOutput = make_astcleanname(targetOutput);
   }
 
 
@@ -332,15 +332,19 @@ function doWeResize(imgFile, config, portnum, callurl, callurlmeta, targetOutput
 
 
 function make_astcleanname(_targetOutput) {
-  _targetOutput
-    .replace("model_gia-ds-", "")
-    .replace("gia-ds-", "")
-    .replace("model_gia-", "")
-    .replace("model_", "")
-    .replace("-1-1-", "_")
-    .replace("-1-", "_")
-    .replace("-864x_new", "");
-    return _targetOutput;
+  
+  var r = _targetOutput
+  .replace("model_gia-ds-", "")
+  .replace("gia-ds-", "")
+  .replace("model_gia-", "")
+  .replace("model_", "")
+  .replace("-1-1-", "_")
+  .replace("-1-", "_")
+  .replace("-1", "_")
+  .replace("___", "__")
+  .replace("-864x_new", "");
+  // console.log("Cleaning the name: " + _targetOutput);
+    return r;
 }
 
 
@@ -414,22 +418,26 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
               var { checkpointno, svrtype, PASS1IMAGESIZE, PASS2IMAGESIZE, PASS3IMAGESIZE, modelname, fname, containername, containertag, mtype } = metaResp.data;
               var xtraModelID = config.appendmodelid ? "__" + modelid : "";
 
-              var mtag = `____k`;
+              var mtag = `${fname}__${xname}__${svrtype}__${checkpointno}k`;
 
               targetOutput = (imgFileNameOnly
                 + "__"
                 + modelid
-                + "_"
+                + "__"
                 + mtag
                 + xtraModelID
-                + ext).replace("_-", "_")
+                + ext)
+                .replace("_-", "_")
+                .replace("___", "__")
                 ;
+
 
               //@STCGoal Stuff we do not really want be removed from filename
               if (config.astcleanname) {
 
-               // targetOutput = make_astcleanname(targetOutput);
+                targetOutput = make_astcleanname(targetOutput);
               }
+             // console.log(targetOutput);
 
               // targetOutput = imgFileNameOnly + "__" + mtag + autosuffixSuffix + modelid + ext;
               //process.exit(1);
