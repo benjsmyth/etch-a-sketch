@@ -128,12 +128,13 @@ try {
   if (tst.parsed) {
     //console.log("We do :)");
     config = new Object()
-    var { asthostname, astoutsuffix, astportbase, astcallprotocol, astcallmethod, astdebug, astsavemeta, astusemetasvr, astmetaportnum, astappendmodelid,astmetaoutputdir } = tst.parsed;
+    var { asthostname, astoutsuffix, astportbase, astcallprotocol, astcallmethod, astdebug, astsavemeta, astusemetasvr, astmetaportnum, astappendmodelid, astmetaoutputdir, astcleanname } = tst.parsed;
     if (!astmetaoutputdir) astmetaoutputdir = defaultMetaTarget;
 
     config.hostname = asthostname;
     config.astmetaoutputdir = astmetaoutputdir; config.outsuffix = astoutsuffix; config.portbase = astportbase; config.callmethod = astcallmethod; config.callprotocol = astcallprotocol;
     config.debug = astdebug == "true"; config.savemeta = astsavemeta == "true";
+    config.astcleanname = astcleanname == "true";
     config.usemetasvr = astusemetasvr == "true"; config.metaportnum = astmetaportnum;
     config.appendmodelid = astappendmodelid == "true";
     config.src = ".env";
@@ -258,6 +259,13 @@ if (autosuffix) {
   xname = x1str + x2str + x3str;
   targetOutput = imgFileNameOnly + "__" + xname + autosuffixSuffix + modelid + ext;
 }
+    //@STCGoal Stuff we do not really want be removed from filename
+    if (config.astcleanname) {
+
+   // targetOutput = make_astcleanname(targetOutput);
+  }
+
+
 
 //console.log("TargetOutput: " + targetOutput);
 var portnum = config.portbase + modelid;
@@ -320,6 +328,19 @@ function doWeResize(imgFile, config, portnum, callurl, callurlmeta, targetOutput
   }
 
 
+}
+
+
+function make_astcleanname(_targetOutput) {
+  _targetOutput
+    .replace("model_gia-ds-", "")
+    .replace("gia-ds-", "")
+    .replace("model_gia-", "")
+    .replace("model_", "")
+    .replace("-1-1-", "_")
+    .replace("-1-", "_")
+    .replace("-864x_new", "");
+    return _targetOutput;
 }
 
 
@@ -393,7 +414,7 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
               var { checkpointno, svrtype, PASS1IMAGESIZE, PASS2IMAGESIZE, PASS3IMAGESIZE, modelname, fname, containername, containertag, mtype } = metaResp.data;
               var xtraModelID = config.appendmodelid ? "__" + modelid : "";
 
-              var mtag = `${fname}_${xname}-${svrtype}__${checkpointno}k`;
+              var mtag = `____k`;
 
               targetOutput = (imgFileNameOnly
                 + "__"
@@ -403,6 +424,13 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
                 + xtraModelID
                 + ext).replace("_-", "_")
                 ;
+
+              //@STCGoal Stuff we do not really want be removed from filename
+              if (config.astcleanname) {
+
+               // targetOutput = make_astcleanname(targetOutput);
+              }
+
               // targetOutput = imgFileNameOnly + "__" + mtag + autosuffixSuffix + modelid + ext;
               //process.exit(1);
               saveStylizedResult(stylizedImage, data, targetOutput, config, metadata);
@@ -413,7 +441,7 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
               console.log("---------------------------------------------------");
               console.log(errMeta.message);
               console.log("---------------------------------------------------");
-              
+
               console.log("---------------------------------------------------");
               console.log("---------TRYING TO SAVE  WITHOUT META SERVER DATA----------");
               console.log("---------------------------------------------------");
@@ -464,18 +492,17 @@ function saveStylizedResult(stylizedImage, data, targetOutput, config, metaData 
   data.stylizedImage = null;
   if (metaData) data.meta = metaData;
 
-  if (config.savemeta)
-  {
+  if (config.savemeta) {
     var outdir = ".";
-    if (config.astmetaoutputdir == ".")outdir = __dirname;
-    else 
-    try {
-      fs.mkdirSync(config.astmetaoutputdir, {recursive:true});
-      outdir=config.astmetaoutputdir;
-    } catch (error) {
-      
-    }
-    var metaoutputfile = path.join(outdir,targetOutput + ".json");
+    if (config.astmetaoutputdir == ".") outdir = __dirname;
+    else
+      try {
+        fs.mkdirSync(config.astmetaoutputdir, { recursive: true });
+        outdir = config.astmetaoutputdir;
+      } catch (error) {
+
+      }
+    var metaoutputfile = path.join(outdir, targetOutput + ".json");
     fs.writeFileSync(metaoutputfile, JSON.stringify(data));
   }
   if (!config.savemeta) {
