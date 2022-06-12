@@ -357,14 +357,17 @@ function make_astcleanname(_targetOutput) {
   
   var r = _targetOutput
   .replace("model_gia-ds-", "")
+  .replace("_ast_", "")
   .replace("gia-ds-", "")
   .replace("model_gia-", "")
   .replace("model_", "")
   .replace("-1-1-", "_")
   .replace("-1-", "_")
   .replace("-1", "_")
+  .replace("-x_", "_")
   .replace("___", "__")
-  .replace("-864x_new", "");
+  .replace("-864x_new", "")
+  .replace("-864x_", "");
   // console.log("Cleaning the name: " + _targetOutput);
     return r;
 }
