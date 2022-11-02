@@ -291,9 +291,10 @@ if (autosuffix) {
 
 //console.log("TargetOutput: " + targetOutput);
 var portnum = config.portbase + modelid;
+if (modelid.length > 2) portnum = modelid; //Enable full use of the Port on another range than the port base
 
-const callurl = config.callprotocol + "://" + config.hostname + ":" + portnum + "/" + config.callmethod.replace("/", "");
-const callurlmeta = config.callprotocol + "://" + config.hostname + ":" + config.metaportnum + "/" + portnum + ".json";
+const callurl = `${config.callprotocol}://${config.hostname}:${portnum}/${config.callmethod.replace("/", "")}`;
+const callurlmeta = `${config.callprotocol}://${config.hostname}:${config.metaportnum}/${portnum}.json`;
 
 
 
@@ -372,6 +373,7 @@ function make_astcleanname(_targetOutput) {
     return r;
 }
 
+var metaretry=3;
 
 function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x1 = -1, x2 = -1, x3 = -1, autosuffix = false) {
   try {
@@ -416,7 +418,7 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
       httpsAgent: new https.Agent({ rejectUnauthorized: false })
 
     };
-    console.log("Calling : " + config.hostname + ":" + portnum);
+    console.log("Calling : " + callurl);
 
     axios.post(callurl, data, options)
       .then(function (response) {
@@ -470,24 +472,36 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
 
             })
             .catch(function (errMeta) {
-              console.log("There was error with meta server (your file might save right anyway");
-              console.log("---------------------------------------------------");
-              console.log(errMeta.message);
-              console.log("---------------------------------------------------");
+              if (metaretry> 0)
+              {
+                  //Launch the docker container
+                  startmeta();
+                  metaretry = metaretry -1;
+                  console.log("\t Retrying to launch this function to do the work with the Meta hopefully started");
+                  doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x1 , x2 , x3 , autosuffix );
 
-              console.log("---------------------------------------------------");
-              console.log("---------TRYING TO SAVE  WITHOUT META SERVER DATA----------");
-              console.log("---------------------------------------------------");
-              console.log("---------Make this faster by DISABLE astusemetasvr=false in .env ------");
-              console.log("---------Or start the server ------");
-              console.log("--");
-              console.log("---------------------------------------------------");
+              }
+              else {
 
-              saveStylizedResult(stylizedImage, data, targetOutput, config);
-              process.exit(3);
-            });
-
-          //@a then save result
+                console.log("There was error with meta server (your file might save right anyway");
+                console.log("---------------------------------------------------");
+                console.log(errMeta.message);
+                console.log("---------------------------------------------------");
+                
+                console.log("---------------------------------------------------");
+                console.log("---------TRYING TO SAVE  WITHOUT META SERVER DATA----------");
+                console.log("---------------------------------------------------");
+                console.log("---------Make this faster by DISABLE astusemetasvr=false in .env ------");
+                console.log("---------Or start the server ------");
+                console.log("--");
+                console.log("---------------------------------------------------");
+                
+                saveStylizedResult(stylizedImage, data, targetOutput, config);
+                process.exit(3);
+              }
+              });
+              
+              //@a then save result
           // saveStylizedResult(stylizedImage, targetOutput, config);
         }
 
@@ -545,3 +559,22 @@ function saveStylizedResult(stylizedImage, data, targetOutput, config, metaData 
   console.log("A stylizedImage should be available at that path :\n    feh " + targetOutput);
 }
 
+
+
+
+function startmeta(){
+
+  const { exec } = require("child_process");
+
+exec("docker start ast_meta_server", (error, stdout, stderr) => {
+    if (error) {
+        console.log(`error: ${error.message}`);
+        return;
+    }
+    if (stderr) {
+        console.log(`stderr: ${stderr}`);
+        return;
+    }
+    console.log(`stdout: ${stdout}`);
+});
+}
