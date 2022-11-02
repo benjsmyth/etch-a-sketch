@@ -1,13 +1,14 @@
 {
   "name": "gia-ast",
-  "version": "0.3.19",
+  "version": "0.3.20",
   "description": "A CLI Wrapping AST Web API calls to servers",
   "main": "index.js",
   "scripts": {
     "test": "node gia-ast.js sample.jpg 56",
     "prepack": "node prepack.js",
     "hum": "git commit gia-ast.js -m version",
-    "postpublish": "node postpublish.js"
+    "postpublish": "node postpublish.js",
+    "prepublish": "npm version patch"
   },
   "bin": {
     "gia-ast": "gia-ast.js",
@@ -21,6 +22,7 @@
   },
   "keywords": [
     "ast",
+    "astia",
     "gia",
     "cli"
   ],
