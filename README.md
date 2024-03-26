@@ -46,7 +46,7 @@ That's it!
 
 # About the UI
 
-A Javascript web Ui of Ben Smith's Etch-a-sketch has been hooked up with code to generate an AI stylized image on the side.
+A Javascript web Ui of Ben Smyth's Etch-a-sketch has been hooked up with code to generate an AI stylized image on the side.
 
 ## Versions
 
